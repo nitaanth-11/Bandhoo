@@ -1,0 +1,105 @@
+{
+  "stated_facts": [
+    "The complainant parked a bicycle valued at Rs 12,000 outside Bandra station west secured with a wire lock.",
+    "The complainant returned to the location approximately one hour later.",
+    "The wire lock had been cut.",
+    "The bicycle was missing."
+  ],
+  "negated_events": [
+    "No one confronted the complainant."
+  ],
+  "inferred_facts": [
+    "The bicycle was moved and taken out of the complainant's possession without consent.",
+    "The act of severing the wire lock and removing the bicycle indicates dishonest intention (animus furandi)."
+  ],
+  "missing_facts_to_clarify": [
+    "Identity, description, or number of suspect(s) involved.",
+    "Prior conviction record or criminal history of the perpetrator(s), once identified.",
+    "Current recovery or trace status of the stolen bicycle.",
+    "Availability of surveillance footage (CCTV) or eyewitness statements from the station area."
+  ],
+  "recommended_action": "The reported value of the stolen property is Rs 12,000, which exceeds the Rs 5,000 threshold under the proviso to Section 303(2) BNS. Under Schedule I of the Bharatiya Nagarik Suraksha Sanhita (BNSS), 2023, theft of property valued at Rs 5,000 or above is a cognizable and non-bailable offence. The complainant should lodge an information with the jurisdictional police station under Section 173 of the BNSS, 2023 for registration of an FIR and investigation, subject to Section 173(3) BNSS preliminary enquiry if invoked by the police.",
+  "candidate_evaluations": [
+    {
+      "section": 303,
+      "applicability_score": 0.95,
+      "reasoning": "The narrative details the non-consensual removal of movable property (bicycle) from the complainant's lawful possession. Severing the lock constitutes removing an obstacle to effect movement (Explanation 3 to Section 303), demonstrating dishonest intention. Because the stated valuation is Rs 12,000, the offence falls under the substantive penal clause of Section 303(2) rather than the community service proviso.",
+      "statutory_elements_supported": [
+        "Movable property (bicycle valued at Rs 12,000)",
+        "Taken out of the possession of the complainant",
+        "Taken without complainant's consent",
+        "Property moved by removing an obstacle (cut wire lock) in order to take it",
+        "Dishonest intention inferred from intentional severance of lock and taking"
+      ],
+      "unestablished_elements": [
+        "Specific identity and prior conviction status of the perpetrator"
+      ]
+    },
+    {
+      "section": 61,
+      "applicability_score": 0.0,
+      "reasoning": "Section 61 penalizes criminal conspiracy, which requires an explicit or implicit agreement between two or more persons to commit an illegal act. The narrative contains no facts demonstrating the participation of multiple persons or prior agreement.",
+      "statutory_elements_supported": [],
+      "unestablished_elements": [
+        "Agreement between two or more persons",
+        "Plurality of offenders"
+      ]
+    },
+    {
+      "section": 35,
+      "applicability_score": 0.0,
+      "reasoning": "Section 35 defines the general exception and statutory right of private defence of person and property; it is a legal justification, not a punishable penal offence.",
+      "statutory_elements_supported": [],
+      "unestablished_elements": [
+        "Substantive criminal offence charging requirements"
+      ]
+    },
+    {
+      "section": 97,
+      "applicability_score": 0.0,
+      "reasoning": "Section 97 requires the kidnapping or abduction of a child under ten years of age with intent to steal movable property. No child was involved.",
+      "statutory_elements_supported": [],
+      "unestablished_elements": [
+        "Kidnapping or abduction of a child under ten years of age"
+      ]
+    },
+    {
+      "section": 338,
+      "applicability_score": 0.0,
+      "reasoning": "Section 338 concerns the forgery of valuable security, wills, or authority documents. No document or valuable security was forged or used.",
+      "statutory_elements_supported": [],
+      "unestablished_elements": [
+        "Making a false document or electronic record",
+        "Valuable security, will, or authority document"
+      ]
+    },
+    {
+      "section": 345,
+      "applicability_score": 0.0,
+      "reasoning": "Section 345 deals with the fraudulent use of a false property mark. No marking or tampering with ownership marks on property or receptacles is alleged.",
+      "statutory_elements_supported": [],
+      "unestablished_elements": [
+        "Marking property or receptacle with a false property mark",
+        "Intent to defraud regarding ownership marking"
+      ]
+    },
+    {
+      "section": 9,
+      "applicability_score": 0.0,
+      "reasoning": "Section 9 is a general statutory principle governing limits of punishment when an offence is composed of several parts or falls under multiple definitions; it is not a distinct substantive charge.",
+      "statutory_elements_supported": [],
+      "unestablished_elements": [
+        "Substantive offence definition"
+      ]
+    },
+    {
+      "section": 12,
+      "applicability_score": 0.0,
+      "reasoning": "Section 12 regulates the limits and execution of solitary confinement as a judicial sentence. It is not an offence provision.",
+      "statutory_elements_supported": [],
+      "unestablished_elements": [
+        "Substantive offence definition"
+      ]
+    }
+  ]
+}

@@ -7,6 +7,14 @@ and generates 3 dataset files:
 1. bns_rag_dataset.json       — For RAG retrieval
 2. bns_finetune_dataset.json  — For LLM fine-tuning (instruction format)
 3. bns_scenarios_dataset.json — For reasoning / prediction training
+
+WARNING: output goes to scraper_staging/ only. The backend corpus (bns_rag_dataset.json) carries
+reviewed corrections and per-record verification evidence that this scraper does not produce: its
+punishment extraction picks the first "punishable" sentence (e.g. Section 309 illustration text),
+it embeds scraped "BNSS Classification" blocks in the statutory text, and it does not verify text
+against the Gazette. Never copy staged output over the live corpus or public/ directly; follow
+reports/CORPUS_UPDATE_WORKFLOW.md. Writes to the live corpus files are refused by
+legal_engine.corpus_guard.
 """
 
 import json
@@ -20,13 +28,17 @@ import concurrent.futures
 import nltk
 from nltk.corpus import stopwords
 
+from legal_engine.corpus_guard import assert_safe_scraper_output
+
 # Download NLTK stopwords if not already present
 nltk.download('stopwords', quiet=True)
 ENGLISH_STOP_WORDS = set(stopwords.words('english'))
 
 BASE_URL = "https://devgan.in"
 LISTING_URL = f"{BASE_URL}/all_sections_bns.php"
-OUTPUT_DIR = os.path.dirname(os.path.abspath(__file__))
+REPO_DIR = os.path.dirname(os.path.abspath(__file__))
+OUTPUT_DIR = os.path.join(REPO_DIR, "scraper_staging")
+OUTPUT_FILES = ("bns_rag_dataset.json", "bns_finetune_dataset.json", "bns_scenarios_dataset.json")
 
 # --- HTML Cleaning Utilities ---
 
@@ -398,6 +410,11 @@ def main():
     print("BNS FULL SCRAPER — Bharatiya Nyaya Sanhita, 2023")
     print("=" * 60)
 
+    # Refuse unsafe output paths before any network work.
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    for name in OUTPUT_FILES:
+        assert_safe_scraper_output(os.path.join(OUTPUT_DIR, name))
+
     # Step 1: Fetch listing page
     print("\n[STEP 1] Fetching section listing page...")
     listing_html = fetch_page(LISTING_URL)
@@ -457,21 +474,16 @@ def main():
 
     # --- File 1: RAG Dataset ---
     rag_path = os.path.join(OUTPUT_DIR, "bns_rag_dataset.json")
+    assert_safe_scraper_output(rag_path)
     with open(rag_path, 'w', encoding='utf-8') as f:
         json.dump(rag_dataset, f, indent=2, ensure_ascii=False)
-    print(f"  [OK] bns_rag_dataset.json - {len(rag_dataset)} sections")
-
-    # Also copy to public/ for frontend
-    public_dir = os.path.join(OUTPUT_DIR, "public")
-    os.makedirs(public_dir, exist_ok=True)
-    pub_path = os.path.join(public_dir, "bns_rag_dataset.json")
-    with open(pub_path, 'w', encoding='utf-8') as f:
-        json.dump(rag_dataset, f, indent=2, ensure_ascii=False)
-    print(f"  [OK] public/bns_rag_dataset.json (copy for frontend)")
+    print(f"  [OK] scraper_staging/bns_rag_dataset.json - {len(rag_dataset)} sections (staged, unreviewed)")
+    # No copy is written to public/ or the live corpus; see reports/CORPUS_UPDATE_WORKFLOW.md.
 
     # --- File 2: LLM Fine-tuning Dataset ---
     finetune_entries = generate_finetune_entries(rag_dataset)
     ft_path = os.path.join(OUTPUT_DIR, "bns_finetune_dataset.json")
+    assert_safe_scraper_output(ft_path)
     with open(ft_path, 'w', encoding='utf-8') as f:
         json.dump(finetune_entries, f, indent=2, ensure_ascii=False)
     print(f"  [OK] bns_finetune_dataset.json - {len(finetune_entries)} entries")
@@ -479,6 +491,7 @@ def main():
     # --- File 3: Scenarios Dataset ---
     scenarios = generate_scenarios(rag_dataset)
     sc_path = os.path.join(OUTPUT_DIR, "bns_scenarios_dataset.json")
+    assert_safe_scraper_output(sc_path)
     with open(sc_path, 'w', encoding='utf-8') as f:
         json.dump(scenarios, f, indent=2, ensure_ascii=False)
     print(f"  [OK] bns_scenarios_dataset.json - {len(scenarios)} scenarios")

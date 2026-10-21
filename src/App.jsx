@@ -1,32 +1,44 @@
 import React, { useState, useEffect, useRef } from 'react';
 import L from 'leaflet';
+import {
+  statusLadder,
+  DRAFT_NOTICE,
+  attachmentLabel,
+  analysisUnavailableState,
+  EXTERNAL_GEOCODING_ENABLED,
+  JURISDICTION_CONFIRMATION_MESSAGE,
+  assessJurisdiction,
+  reconcileJurisdiction,
+  structuredSummary,
+} from './trustSafety.js';
+import ReviewStatus from './ReviewStatus.js';
 
-// Ray-casting point-in-polygon containment check
-function pointInPolygon(point, vs) {
-  const x = point[0], y = point[1];
-  let inside = false;
-  for (let i = 0, j = vs.length - 1; i < vs.length; j = i++) {
-    const xi = vs[i][0], yi = vs[i][1];
-    const xj = vs[j][0], yj = vs[j][1];
-    const intersect = ((yi > y) !== (yj > y))
-        && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
-    if (intersect) inside = !inside;
-  }
-  return inside;
-}
+const NOT_PROVIDED = 'Not provided';
+const NOT_AVAILABLE = 'Not available in Bandhoo data';
 
-function isPointInGeometry(point, geometry) {
-  if (geometry.type === 'Polygon') {
-    return pointInPolygon(point, geometry.coordinates[0]);
-  } else if (geometry.type === 'MultiPolygon') {
-    for (const polyCoords of geometry.coordinates) {
-      if (pointInPolygon(point, polyCoords[0])) {
-        return true;
-      }
-    }
-  }
-  return false;
-}
+// Fresh object each time: witness rows are edited in place.
+const emptyForm = () => ({
+  intendedMode: '',
+  complainantName: '',
+  complainantAddress: '',
+  complainantContact: '',
+  complainantId: '',
+  occurrenceTime: '',
+  placeOfOccurrence: '',
+  natureOfOffence: '',
+  legalSections: '',
+  suspectName: '',
+  suspectAddress: '',
+  suspectDescription: '',
+  victimName: '',
+  victimContact: '',
+  victimAddress: '',
+  incidentSummary: '',
+  propertyDescription: '',
+  propertyValue: '',
+  witnesses: [{ name: '', phone: '', address: '' }],
+  typedName: ''
+});
 
 // 16 Vibrant colors for Wards to satisfy "map shall be colorful"
 const WARD_COLORS = {
@@ -56,40 +68,43 @@ function getWardColor(wardName) {
 
 const TRANSLATIONS = {
   en: {
-    logoTitle: "BNS FIR Portal",
-    logoSub: "Sec. 173, BNSS, 2023",
-    tabLocator: "Territory Locator",
-    tabDirectory: "Police Directory",
-    tabInsights: "Act Insights",
+    logoTitle: "Bandhoo Complaint Draft",
+    logoSub: "Internal testing only",
+    tabLocator: "Incident Location",
+    tabDirectory: "Jurisdiction Areas",
+    tabInsights: "About the Data",
     searchPlaceholder: "Search location in Mumbai...",
+    searchDisabled: "Address search is turned off until a data-handling policy is approved. Click the map or use GPS.",
     gpsBtn: "Use GPS Location",
-    resetBtn: "Reset Center",
-    assignedTitle: "DETECTOR JURISDICTION REPORT",
-    matching: "analyzing territory...",
-    verified: "verified boundary",
+    resetBtn: "Clear Location",
+    assignedTitle: "JURISDICTION (MAP-BASED ESTIMATE)",
+    matching: "checking map boundaries...",
+    estimate: "map estimate – police to confirm",
+    unconfirmed: "requires confirmation",
     ward: "Municipal Ward",
-    address: "HQ Address",
-    contact: "Emergency Contact",
+    address: "Station Address",
+    contact: "Station Contact",
     remarks: "Remarks",
-    coords: "Geographic Vector",
-    lodgeBtn: "LODGE ELECTRONIC FIR",
-    dirSearchPlaceholder: "Search directory by name or ward...",
-    insTitle: "BNSS, 2023 Infrastructure",
-    insActive: "Jurisdictional Offices",
+    coords: "Selected Point",
+    noLocation: "No incident location selected. Click the map, drag the marker or use GPS.",
+    lodgeBtn: "PREPARE COMPLAINT DRAFT",
+    dirSearchPlaceholder: "Search areas by name or ward...",
+    insTitle: "Map Data",
+    insActive: "Jurisdiction Areas",
     insWards: "Municipal Wards",
-    insGis: "GIS Data Specifications",
-    insGisText: "Territorial boundaries are mapped using official coordinates from Brihanmumbai Municipal Corporation (BMC) data files. Centroids are processed for precise police station plotting.",
+    insGis: "Boundary Data Status",
+    insGisText: "The source and date of the jurisdiction boundary data have not been verified. Markers show the centre of each area, not a police station address. Station addresses and contact details are not available in Bandhoo.",
     // Form fields
-    formTitle: "FIRST INFORMATION REPORT (FIR)",
-    formSub: "(Under Section 173 of the Bharatiya Nagarik Suraksha Sanhita, 2023)",
-    formMode: "Mode of Registration",
+    formTitle: "COMPLAINT DRAFT (NOT AN FIR)",
+    formSub: "Prepared by the complainant. Not submitted to the police and not registered.",
+    formMode: "How you intend to give this information to police",
     formModeWritten: "Written",
     formModeOral: "Oral",
     formModeElectronic: "Electronic / Online",
     formComplainantName: "Complainant Full Name",
     formComplainantAddress: "Complainant Address",
     formComplainantContact: "Contact Number",
-    formComplainantId: "ID Proof (Aadhaar / DL / Passport)",
+    formComplainantId: "ID document type (optional – police verify identity in person; do not enter a full Aadhaar number)",
     formOccurrenceTime: "Date and Time of Occurrence",
     formPlaceOccurrence: "Place of Occurrence (Address / Landmarks)",
     formNatureOffence: "Nature of Offence",
@@ -106,74 +121,70 @@ const TRANSLATIONS = {
     formPropertyDesc: "Property Description",
     formPropertyValue: "Estimated Value (₹)",
     formWitnesses: "Witnesses (Names & Addresses)",
-    formActionTaken: "Action Taken by Police",
-    formActionRegistered: "Case Registered",
-    formActionInvestigating: "Investigation Started",
-    formActionCyber: "Forwarded to Cyber Unit",
-    formOfficerName: "Officer Name & Rank",
-    formOfficerSteps: "Steps Taken / Remarks",
-    formSign: "Digital Signature / E-Sign Name",
-    formSignText: "I solemnly declare that the facts stated in this report are true and correct to the best of my knowledge under Section 173 BNSS, 2023.",
-    formVerifyBtn: "Authenticate & Register FIR",
-    fileUploadTitle: "1. Upload Identity Verification Document (Aadhaar / DL / Passport)",
-    fileUploadMedicalTitle: "2. Upload Medical Records / Incident Photos / Other Supporting Documents",
+    formPoliceUse: "For police use only (to be completed by the receiving officer)",
+    formSign: "Complainant's typed name (this is not a digital signature)",
+    formSignText: "I confirm that the information in this draft is true to the best of my knowledge.",
+    formVerifyBtn: "Create Complaint Draft",
+    fileUploadMedicalTitle: "Supporting material (optional): medical records, photos or other documents",
     fileUploadDrag: "Drag & drop files here, or click to browse",
-    fileUploadSuccess: "Identity document verified:",
-    fileUploadMedicalSuccess: "Supporting document verified:",
-    forgeryWarning: "WARNING: Submission of fake, forged, or altered documents is a punishable criminal offense under Section 465 and Section 468 of the BNS/IPC. If convicted, offenders face imprisonment of up to two years and substantial financial fines.",
-    aiTitle: "Dual-LLM Legal Act Classifier",
-    aiScanning: "Analyzing narration with OpenAI & HuggingFace...",
-    aiConsensus: "AI Legal Section Consensus",
-    aiAction: "Recommended Police Action",
-    emailDispatchTitle: "Draft Dispatch Email to Police Station",
-    emailDispatchTo: "To",
-    emailDispatchSub: "Subject",
-    emailDispatchBtn: "Send Email via Mail Client",
-    emailCopyBtn: "Copy Email Body Draft",
-    emailCopied: "Email Body Copied!",
+    idNotice: "Do not upload identity documents. The police verify identity in person.",
+    truthNotice: "Please give only true information and genuine documents.",
+    aiTitle: "Machine-generated legal section suggestions (not legally reviewed)",
+    aiScanning: "Analysing the description...",
+    aiConsensus: "Possibly relevant sections (machine-generated)",
+    aiAction: "Procedural note from the analysis engine (not legally reviewed)",
+    copyDraftBtn: "Copy Draft Text",
+    draftCopied: "Draft text copied!",
+    deliveryNotice: "Bandhoo does not send complaints and has no verified police contact details. Take this draft to the police station or use an official police channel.",
+    statusTitle: "Complaint status",
+    statusRecorded: "Recorded",
+    statusNotRecorded: "Not recorded",
     secComplainant: "1. Complainant / Informant Details",
     secIncident: "2. Date & Time of Occurrence",
     secPlace: "3. Place of Occurrence",
     secSummary: "8. Brief Description of Incident (Facts of the Case)",
     secNature: "4. Type / Nature of Offence",
-    secLegal: "5. BNS Act Violations",
-    secSignatures: "12. Signatures & Verified Authenticity Proofs"
+    secLegal: "5. Possibly relevant BNS sections (optional; not a legal determination)",
+    secSignatures: "12. Complainant Confirmation"
   },
   mr: {
-    logoTitle: "बी.एन.एस. एफआयआर",
-    logoSub: "कलम १७३, बी.एन.एस.एस., २०२३",
-    tabLocator: "क्षेत्र शोधक पॅनेल",
-    tabDirectory: "पोलीस निर्देशिका",
-    tabInsights: "कायदा माहिती",
+    logoTitle: "बंधू तक्रार मसुदा",
+    logoSub: "फक्त अंतर्गत चाचणीसाठी",
+    tabLocator: "घटनेचे ठिकाण",
+    tabDirectory: "हद्द क्षेत्रे",
+    tabInsights: "डेटाविषयी",
     searchPlaceholder: "मुंबईतील ठिकाण शोधा...",
+    searchDisabled: "डेटा हाताळणी धोरण मंजूर होईपर्यंत पत्ता शोध बंद आहे. नकाशावर क्लिक करा किंवा जीपीएस वापरा.",
     gpsBtn: "जीपीएस स्थान वापरा",
-    resetBtn: "नकाशा रीसेट करा",
-    assignedTitle: "अधिकार क्षेत्र अहवाल",
-    matching: "क्षेत्राचे विश्लेषण सुरू आहे...",
-    verified: "अधिकार क्षेत्र सत्यापित",
+    resetBtn: "ठिकाण काढा",
+    assignedTitle: "हद्द (नकाशावर आधारित अंदाज)",
+    matching: "नकाशाच्या सीमा तपासत आहे...",
+    estimate: "नकाशा अंदाज – पोलिसांनी खात्री करावी",
+    unconfirmed: "खात्री आवश्यक",
     ward: "प्रशासकीय प्रभाग",
-    address: "मुख्यालय पत्ता",
-    contact: "तक्रार क्रमांक",
+    address: "पोलीस ठाण्याचा पत्ता",
+    contact: "पोलीस ठाण्याचा संपर्क",
     remarks: "विशेष नोंदी",
-    coords: "भौगोलिक स्थानक",
-    lodgeBtn: "डिजिटल एफआयआर नोंदवा",
+    coords: "निवडलेले ठिकाण",
+    noLocation: "घटनेचे ठिकाण निवडलेले नाही. नकाशावर क्लिक करा, खूण ओढा किंवा जीपीएस वापरा.",
+    lodgeBtn: "तक्रारीचा मसुदा तयार करा",
     dirSearchPlaceholder: "नाव किंवा प्रभागाद्वारे शोधा...",
-    insTitle: "बी.एन.एस.एस. पायाभूत सुविधा",
-    insActive: "सक्रिय पोलीस ठाणे",
+    insTitle: "नकाशा डेटा",
+    insActive: "हद्द क्षेत्रे",
     insWards: "महानगरपालिका प्रभाग",
-    insGis: "जीआयएस नकाशा तपशील",
-    insGisText: "बृहन्मुंबई महानगरपालिका (BMC) च्या अधिकृत भौगोलिक डेटावरून पोलीस ठाण्यांची हद्द आणि सीमा निश्चित करण्यात आल्या आहेत.",
+    insGis: "सीमा डेटाची स्थिती",
+    insGisText: "हद्दीच्या सीमा डेटाचा स्रोत आणि तारीख पडताळलेली नाही. खुणा प्रत्येक क्षेत्राचे मध्य दाखवतात, पोलीस ठाण्याचा पत्ता नाही. पोलीस ठाण्यांचे पत्ते आणि संपर्क बंधूमध्ये उपलब्ध नाहीत.",
     // Form fields
-    formTitle: "पहिले खबर अहवाल (एफ.आय.आर.)",
-    formSub: "(भारतीय नागरिक सुरक्षा संहिता, २०२३ च्या कलम १७३ अंतर्गत)",
-    formMode: "नोंदणीची पद्धत",
+    formTitle: "तक्रारीचा मसुदा (एफआयआर नाही)",
+    formSub: "तक्रारदाराने तयार केलेला. पोलिसांना सादर केलेला नाही आणि नोंदवलेला नाही.",
+    formMode: "ही माहिती पोलिसांना कशी देणार",
     formModeWritten: "लेखी",
     formModeOral: "तोंडी",
     formModeElectronic: "इलेक्ट्रॉनिक / ऑनलाईन",
     formComplainantName: "तक्रारदाराचे पूर्ण नाव",
     formComplainantAddress: "तक्रारदाराचा पत्ता",
     formComplainantContact: "संपर्क क्रमांक",
-    formComplainantId: "ओळखपत्र (आधार / ड्रायव्हिंग लायसन्स / पासपोर्ट)",
+    formComplainantId: "ओळखपत्राचा प्रकार (ऐच्छिक – पोलीस ओळख प्रत्यक्ष पडताळतात; पूर्ण आधार क्रमांक लिहू नका)",
     formOccurrenceTime: "घटनेची तारीख आणि वेळ",
     formPlaceOccurrence: "घटनेचे ठिकाण (पत्ता / महत्त्वाचे खूण)",
     formNatureOffence: "गुन्ह्याचे स्वरूप",
@@ -190,38 +201,31 @@ const TRANSLATIONS = {
     formPropertyDesc: "मालमत्तेचे वर्णन",
     formPropertyValue: "अंदाजे किंमत (₹)",
     formWitnesses: "साक्षीदार (नावे आणि पत्ते)",
-    formActionTaken: "पोलिसांनी केलेली कारवाई",
-    formActionRegistered: "गुन्हा नोंदवला",
-    formActionInvestigating: "तपास सुरू झाला",
-    formActionCyber: "सायबर युनिटकडे वर्ग केले",
-    formOfficerName: "अधिकारी नाव आणि पद",
-    formOfficerSteps: "केलेली कारवाई / शेरा",
-    formSign: "डिजिटल स्वाक्षरी / नाव",
-    formSignText: "मी याद्वारे जाहीर करतो की वरील अहवालातील सर्व तथ्ये माझ्या माहितीनुसार सत्य आहेत.",
-    formVerifyBtn: "प्रमाणित करा आणि एफआयआर नोंदवा",
-    fileUploadTitle: "१. ओळखपत्राची पडताळणी (आधार / परवाना / पासपोर्ट)",
-    fileUploadMedicalTitle: "२. वैद्यकीय अहवाल / घटनेचे फोटो / इतर पुरावे अपलोड करा",
+    formPoliceUse: "फक्त पोलिसांच्या वापरासाठी (तक्रार स्वीकारणाऱ्या अधिकाऱ्याने भरावे)",
+    formSign: "तक्रारदाराचे टाइप केलेले नाव (ही डिजिटल स्वाक्षरी नाही)",
+    formSignText: "मी याद्वारे जाहीर करतो की या मसुद्यातील माहिती माझ्या माहितीनुसार सत्य आहे.",
+    formVerifyBtn: "तक्रारीचा मसुदा तयार करा",
+    fileUploadMedicalTitle: "सहाय्यक साहित्य (ऐच्छिक): वैद्यकीय अहवाल, फोटो किंवा इतर कागदपत्रे",
     fileUploadDrag: "फायली येथे ड्रॅग आणि ड्रॉप करा, किंवा ब्राउझ करण्यासाठी क्लिक करा",
-    fileUploadSuccess: "ओळखपत्र यशस्वीरित्या सत्यापित झाले:",
-    fileUploadMedicalSuccess: "सहाय्यक कागदपत्र यशस्वीरित्या सत्यापित झाले:",
-    forgeryWarning: "इशारा: खोट्या, बनावट किंवा फेरबदल केलेली कागदपत्रे दाखल करणे हा बी.एन.एस./आय.पी.सी. च्या कलम ४६५ आणि ४६८ अंतर्गत एक गंभीर दंडनीय गुन्हा आहे. दोषी आढळल्यास २ वर्षांपर्यंतचा कारावास आणि मोठा आर्थिक दंड होऊ शकतो.",
-    aiTitle: "ड्युअल-एलएलएम कायदेशीर विश्लेषण",
-    aiScanning: "ओपनएआय आणि हगिंगफेस द्वारे घटनेचे विश्लेषण सुरू आहे...",
-    aiConsensus: "कायदेशीर कलम शोध (बी.एन.एस.)",
-    aiAction: "शिारस केलेली पोलीस कारवाई",
-    emailDispatchTitle: "पोलीस ठाण्याला पाठवण्यासाठी ईमेलचा मसुदा",
-    emailDispatchTo: "प्रति",
-    emailDispatchSub: "विषय",
-    emailDispatchBtn: "ईमेल पाठवा",
-    emailCopyBtn: "ईमेल कॉपी करा",
-    emailCopied: "ईमेल मसुदा कॉपी केला!",
+    idNotice: "ओळखपत्रे अपलोड करू नका. पोलीस ओळख प्रत्यक्ष पडताळतात.",
+    truthNotice: "कृपया केवळ खरी माहिती आणि खरी कागदपत्रे द्या.",
+    aiTitle: "मशीनने सुचवलेली कायदेशीर कलमे (कायदेशीर पुनरावलोकन झालेले नाही)",
+    aiScanning: "वर्णनाचे विश्लेषण सुरू आहे...",
+    aiConsensus: "संभाव्य संबंधित कलमे (मशीनने सुचवलेली)",
+    aiAction: "विश्लेषण प्रणालीची प्रक्रियात्मक नोंद (कायदेशीर पुनरावलोकन झालेले नाही)",
+    copyDraftBtn: "मसुदा मजकूर कॉपी करा",
+    draftCopied: "मसुदा मजकूर कॉपी केला!",
+    deliveryNotice: "बंधू तक्रारी पाठवत नाही आणि त्याच्याकडे पडताळलेले पोलीस संपर्क तपशील नाहीत. हा मसुदा पोलीस ठाण्यात घेऊन जा किंवा अधिकृत पोलीस माध्यम वापरा.",
+    statusTitle: "तक्रारीची स्थिती",
+    statusRecorded: "नोंदवले",
+    statusNotRecorded: "नोंद नाही",
     secComplainant: "१. तक्रारदार / माहिती देणाऱ्याचा तपशील",
     secIncident: "२. घटनेची तारीख आणि वेळ",
     secPlace: "३. घटनेचे ठिकाण",
     secSummary: "८. घटनेचे संक्षिप्त वर्णन (तथ्ये)",
     secNature: "४. गुन्ह्याचे स्वरूप",
-    secLegal: "५. बी.एन.एस. कायदेशीर कलमे",
-    secSignatures: "१२. स्वाक्षरी आणि सत्यता पडताळणी"
+    secLegal: "५. संभाव्य संबंधित बी.एन.एस. कलमे (ऐच्छिक; कायदेशीर निर्णय नाही)",
+    secSignatures: "१२. तक्रारदाराची पुष्टी"
   }
 };
 
@@ -240,52 +244,30 @@ export default function App() {
   
   // Locator coordinates
   const [coords, setCoords] = useState({ lat: 19.0760, lng: 72.8777 });
-  const [assignedStation, setAssignedStation] = useState(null);
+  // Incident location is only set when the complainant picks it (map click, marker drag or GPS).
+  const [locationSelected, setLocationSelected] = useState(false);
+  // Reconciled jurisdiction: { confirmed, stationName, status, message } (see trustSafety.js)
+  const [jurisdiction, setJurisdiction] = useState(reconcileJurisdiction(assessJurisdiction(null, null), null));
+  const [localJurisdiction, setLocalJurisdiction] = useState(null);
   const [isCheckingJurisdiction, setIsCheckingJurisdiction] = useState(false);
-  const [district, setDistrict] = useState('Mumbai Suburban');
-  const [osmAddress, setOsmAddress] = useState('');
 
   // AI legal scanning
   const [isAiScanning, setIsAiScanning] = useState(false);
   const [aiLegalResult, setAiLegalResult] = useState(null);
 
-  // File Upload states (ID and Medical/Supporting Proofs)
-  const [uploadedFile, setUploadedFile] = useState(null);
+  // Supporting material: the file stays in the browser; only its name and size are shown.
   const [uploadedMedicalFile, setUploadedMedicalFile] = useState(null);
 
-  // Complaint Workspace State
+  // Complaint Workspace State. Bandhoo can only create drafts; it never submits or registers.
   const [showForm, setShowForm] = useState(false);
-  const [firSubmitted, setFirSubmitted] = useState(false);
-  const [firNo, setFirNo] = useState('');
-  const [registrationTime, setRegistrationTime] = useState('');
-  const [isEmailCopied, setIsEmailCopied] = useState(false);
+  const [draftCreated, setDraftCreated] = useState(false);
+  const [draftCreatedAt, setDraftCreatedAt] = useState('');
+  const [isDraftCopied, setIsDraftCopied] = useState(false);
+  // Structured record from the backend workflow: { state: 'idle'|'loading'|'ok'|'unavailable', summary }
+  const [structured, setStructured] = useState({ state: 'idle', summary: null });
 
-  // 12-Section FIR Form inputs
-  const [formInputs, setFormInputs] = useState({
-    registrationMode: 'Electronic / Online',
-    complainantName: '',
-    complainantAddress: '',
-    complainantContact: '',
-    complainantId: '',
-    occurrenceTime: '',
-    placeOfOccurrence: '',
-    natureOfOffence: 'Theft',
-    legalSections: 'Section 303 (Theft), BNS, 2023',
-    suspectName: 'Unknown',
-    suspectAddress: 'Unknown',
-    suspectDescription: '',
-    victimName: '',
-    victimContact: '',
-    victimAddress: '',
-    incidentSummary: '',
-    propertyDescription: '',
-    propertyValue: '',
-    witnesses: [{ name: '', phone: '', address: '' }],
-    policeAction: 'Investigation Started',
-    policeOfficer: 'R. K. Patil, Inspector',
-    policeRemarks: 'Case registered online, preliminary inquiry initiated.',
-    eSignature: ''
-  });
+  // Complaint draft inputs (no prefilled offence, legal section, suspect or police entries)
+  const [formInputs, setFormInputs] = useState(emptyForm);
 
   const [directorySearch, setDirectorySearch] = useState('');
   
@@ -387,10 +369,9 @@ export default function App() {
         .addTo(map)
         .bindPopup(`
           <div style="font-family: 'Inter', sans-serif; min-width: 180px;">
-            <b style="font-family: 'Outfit', sans-serif; font-size:13px; color:#004080;">${s.name} Police Station</b>
-            <div style="margin-top:6px; font-size:11px; color:#475569;"><b>Ward:</b> ${s.ward || 'N/A'}</div>
-            <div style="font-size:11px; color:#475569;"><b>Address:</b> ${s.address || 'Address not listed'}</div>
-            <div style="font-size:11px; color:#004080; font-weight:700; margin-top:4px;"><b>Contact:</b> ${s.contact || 'N/A'}</div>
+            <b style="font-family: 'Outfit', sans-serif; font-size:13px; color:#004080;">${s.name} jurisdiction area</b>
+            <div style="margin-top:6px; font-size:11px; color:#475569;">Marker shows the centre of the area, not the police station address.</div>
+            <div style="font-size:11px; color:#475569;"><b>Station address / contact:</b> ${NOT_AVAILABLE}</div>
           </div>
         `);
     });
@@ -417,101 +398,62 @@ export default function App() {
       updateLocation(e.latlng.lat, e.latlng.lng);
     });
 
-    updateLocation(coords.lat, coords.lng);
+    // No jurisdiction is assessed for the default map centre: the complainant must pick a location.
 
     return () => {
       map.remove();
     };
   }, [stations, jurisdictionsGeoJSON, showForm]);
 
-  // Reverse geocoding
+  // Incident location → jurisdiction. The local polygon-containment result is authoritative;
+  // the backend result is only a cross-check and can never override it (see reconcileJurisdiction).
   const updateLocation = (lat, lng) => {
     setCoords({ lat, lng });
-    
+    setLocationSelected(true);
+
     if (userMarkerRef.current) {
       userMarkerRef.current.setLatLng([lat, lng]);
     }
 
+    const local = assessJurisdiction({ lat, lng }, jurisdictionsGeoJSON);
+    setLocalJurisdiction(local);
+    setJurisdiction(reconcileJurisdiction(local, null));
     setIsCheckingJurisdiction(true);
 
-    let foundLocal = false;
-    let localMatchedName = '';
-    if (jurisdictionsGeoJSON) {
-      const point = [lng, lat];
-      for (const feature of jurisdictionsGeoJSON.features) {
-        if (isPointInGeometry(point, feature.geometry)) {
-          localMatchedName = feature.properties.name;
-          const matchedStation = stations.find(s => s.name === localMatchedName);
-          if (matchedStation) {
-            setAssignedStation(matchedStation);
-            foundLocal = true;
-            break;
-          }
-        }
-      }
-    }
-
-    fetch('http://localhost:8000/api/get-jurisdiction', {
+    fetch('http://localhost:8001/api/get-jurisdiction', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ latitude: lat, longitude: lng })
     })
       .then(res => {
-        if (!res.ok) throw new Error('API offline');
+        if (!res.ok) throw new Error('Jurisdiction service unavailable');
         return res.json();
       })
-      .then(data => {
-        const apiStation = stations.find(s => s.name === data.station);
-        if (apiStation) {
-          setAssignedStation(apiStation);
-        }
-      })
-      .catch(err => {
-        console.warn("Backend API offline. Fallback to local matching.");
-        if (!foundLocal && stations.length > 0) {
-          let minDistance = Infinity;
-          let closest = null;
-          stations.forEach(s => {
-            const dist = Math.pow(s.latitude - lat, 2) + Math.pow(s.longitude - lng, 2);
-            if (dist < minDistance) {
-              minDistance = dist;
-              closest = s;
-            }
-          });
-          setAssignedStation(closest);
-        }
+      .then(data => setJurisdiction(reconcileJurisdiction(local, data)))
+      .catch(() => {
+        // Backend unavailable: keep the local result. Never fall back to a nearest-station guess.
       })
       .finally(() => {
         setIsCheckingJurisdiction(false);
       });
 
-    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`)
-      .then(res => res.json())
-      .then(data => {
-        const addr = data.address || {};
-        
-        let dist = addr.district || addr.county || addr.subdistrict || 'Mumbai Suburban';
-        if (dist.includes('Mumbai City') || lat < 19.02) {
-          dist = 'Mumbai City';
-        } else if (!dist.toLowerCase().includes('mumbai')) {
-          dist = 'Mumbai Suburban';
-        }
-        setDistrict(dist);
+    // Reverse geocoding sends the location to a third party; off until a data-handling policy is approved.
+    if (EXTERNAL_GEOCODING_ENABLED) {
+      fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`)
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.display_name) {
+            setFormInputs(prev => ({ ...prev, placeOfOccurrence: data.display_name }));
+          }
+        })
+        .catch(() => {});
+    }
+  };
 
-        const road = addr.road || '';
-        const suburb = addr.suburb || addr.neighbourhood || addr.city_district || '';
-        const landmark = data.display_name.split(',')[1] || '';
-        const formatted = `${road ? road + ', ' : ''}${suburb ? suburb + ', ' : ''}${landmark ? landmark + ' (Landmark), ' : ''}Mumbai, Maharashtra`;
-        
-        setOsmAddress(formatted);
-
-        setFormInputs(prev => ({
-          ...prev,
-          placeOfOccurrence: formatted,
-          district: dist
-        }));
-      })
-      .catch(err => console.error("Reverse geocoding error:", err));
+  const clearLocation = () => {
+    setLocationSelected(false);
+    setLocalJurisdiction(null);
+    setJurisdiction(reconcileJurisdiction(assessJurisdiction(null, jurisdictionsGeoJSON), null));
   };
 
   // AI Narrative Classifier — RAG-based via /api/classify-offence
@@ -530,7 +472,7 @@ export default function App() {
 
     debounceTimerRef.current = setTimeout(() => {
       // Call the RAG backend
-      fetch('http://localhost:8000/api/classify-offence', {
+      fetch('http://localhost:8001/api/classify-offence', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ narrative: text })
@@ -546,58 +488,41 @@ export default function App() {
               .map(p => `Section ${p.section} (${p.title})`)
               .join(' & ');
 
+            // Suggestions are shown separately; they are not copied into the complainant's draft
+            // unless the complainant chooses to (see "Use suggestions in draft").
             setAiLegalResult({
               offence: top.title,
               bnsSection: sectionsList + ' of BNS, 2023',
               bnssAction: data.recommended_action,
               predictions: data.predictions,
               model: data.model,
+              inferenceStatus: data.inference_status,
               standardizedNarrative: data.standardized_narrative,
               translations: data.translations,
               isRag: true
             });
-            setFormInputs(prev => ({
-              ...prev,
-              natureOfOffence: top.title,
-              legalSections: sectionsList + ' of BNS, 2023'
-            }));
           } else {
             setAiLegalResult(null);
           }
           setIsAiScanning(false);
         })
-        .catch(err => {
-          console.warn('RAG API offline, using local fallback:', err);
-          // Fallback to local keyword matching
-          const lower = text.toLowerCase();
-          let classification = {
-            offence: 'Theft',
-            bnsSection: 'Section 303 (Theft) of BNS, 2023',
-            bnssAction: 'Cognizable offense under Section 173 BNSS. Initiate FIR registration immediately.',
-            isRag: false
-          };
-          if (lower.includes('hit') || lower.includes('assault') || lower.includes('beat') || lower.includes('slap') || lower.includes('fight')) {
-            classification = { offence: 'Assault', bnsSection: 'Section 115 (Voluntarily causing hurt) & Section 117 (Grievous hurt) of BNS, 2023', bnssAction: 'Cognizable offense. Record complaint under Section 173 BNSS, order medical assessment.', isRag: false };
-          } else if (lower.includes('fraud') || lower.includes('cheat') || lower.includes('scam') || lower.includes('money')) {
-            classification = { offence: 'Fraud', bnsSection: 'Section 318 (Cheating) & Section 319 (Cheating by personation) of BNS, 2023', bnssAction: 'Cognizable. Register electronic FIR under Section 173 BNSS. Forward logs to Cyber Unit.', isRag: false };
-          } else if (lower.includes('accident') || lower.includes('car') || lower.includes('crash') || lower.includes('drive')) {
-            classification = { offence: 'Accident', bnsSection: 'Section 281 (Rash driving) & Section 106(2) (Hit-and-run) of BNS, 2023', bnssAction: 'Cognizable. Secure crash vector site, review traffic logs, file FIR under Sec 173 BNSS.', isRag: false };
-          }
-          setAiLegalResult(classification);
-          setFormInputs(prev => ({
-            ...prev,
-            natureOfOffence: classification.offence,
-            legalSections: classification.bnsSection
-          }));
+        .catch(() => {
+          // Backend unavailable: show a neutral state. No legal sections or advice are suggested.
+          setAiLegalResult(analysisUnavailableState());
           setIsAiScanning(false);
         });
     }, 800);
   };
 
-  // Address Search
+  // Address Search (third-party geocoding; off until a data-handling policy is approved)
   const handleSearchChange = (e) => {
     const query = e.target.value;
     setSearchText(query);
+
+    if (!EXTERNAL_GEOCODING_ENABLED) {
+      setSuggestions([]);
+      return;
+    }
 
     if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
 
@@ -611,7 +536,7 @@ export default function App() {
       fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query + ', Mumbai')}&addressdetails=1&limit=5`)
         .then(res => res.json())
         .then(data => setSuggestions(data))
-        .catch(err => console.error(err))
+        .catch(() => setSuggestions([]))
         .finally(() => setIsSearching(false));
     }, 400);
   };
@@ -640,75 +565,58 @@ export default function App() {
     });
   };
 
+  // Moves the map only. An area's centre is not the incident location.
   const focusOnStation = (station) => {
-    if (mapRef.current) mapRef.current.flyTo([station.latitude, station.longitude], 15, { animate: true });
-    updateLocation(station.latitude, station.longitude);
+    if (mapRef.current) mapRef.current.flyTo([station.latitude, station.longitude], 14, { animate: true });
   };
 
-  // Document Uploads
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setUploadedFile({
-        name: file.name,
-        size: (file.size / 1024).toFixed(1) + ' KB'
-      });
-    }
-  };
-
+  // Supporting material: name and size only; nothing is uploaded or verified.
   const handleMedicalFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setUploadedMedicalFile({
         name: file.name,
-        size: (file.size / 1024).toFixed(1) + ' KB'
+        size: (file.size / 1024).toFixed(1) + ' KB',
+        bytes: file.size
       });
     }
   };
 
-  // Submit FIR form
-  const handleFIRSubmit = (e) => {
+  // Creates a local draft only. Nothing is submitted, received or registered.
+  const handleDraftSubmit = (e) => {
     e.preventDefault();
-    if (!uploadedFile) {
-      alert(lang === 'en' ? "Please upload an identity verification document." : "कृपया ओळखीचे पुरावा दस्तऐवज अपलोड करा.");
-      return;
-    }
-    const randomNo = Math.floor(1000 + Math.random() * 9000);
-    setFirNo(`MUM-${randomNo}/${new Date().getFullYear()}`);
-    setRegistrationTime(new Date().toLocaleString());
-    setFirSubmitted(true);
+    setDraftCreatedAt(new Date().toISOString());
+    setDraftCreated(true);
+
+    // Ask Bandhoo's own backend to structure the account (no external service is called).
+    setStructured({ state: 'loading', summary: null });
+    fetch('http://localhost:8001/api/v1/complaints/structure', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        statement: formInputs.incidentSummary,
+        clarifications: [],
+        evidence: uploadedMedicalFile
+          ? [{ evidence_type: 'supporting document', file_name: uploadedMedicalFile.name, file_size_bytes: uploadedMedicalFile.bytes }]
+          : [],
+        location: locationSelected ? { latitude: coords.lat, longitude: coords.lng, source: 'map_pin' } : null
+      })
+    })
+      .then(res => {
+        if (!res.ok) throw new Error('Structuring service unavailable');
+        return res.json();
+      })
+      .then(report => setStructured({ state: 'ok', summary: structuredSummary(report) }))
+      .catch(() => setStructured({ state: 'unavailable', summary: null }));
   };
 
   const closeComplaintModal = () => {
     setShowForm(false);
-    setFirSubmitted(false);
-    setUploadedFile(null);
+    setDraftCreated(false);
+    setDraftCreatedAt('');
+    setStructured({ state: 'idle', summary: null });
     setUploadedMedicalFile(null);
-    setFormInputs({
-      registrationMode: 'Electronic / Online',
-      complainantName: '',
-      complainantAddress: '',
-      complainantContact: '',
-      complainantId: '',
-      occurrenceTime: '',
-      placeOfOccurrence: '',
-      natureOfOffence: 'Theft',
-      legalSections: 'Section 303 (Theft), BNS, 2023',
-      suspectName: 'Unknown',
-      suspectAddress: 'Unknown',
-      suspectDescription: '',
-      victimName: '',
-      victimContact: '',
-      victimAddress: '',
-      incidentSummary: '',
-      propertyDescription: '',
-      propertyValue: '',
-      witnesses: [{ name: '', phone: '', address: '' }],
-      policeAction: 'Investigation Started',
-      policeOfficer: 'R. K. Patil, Inspector',
-      policeRemarks: 'Case registered online, preliminary inquiry initiated.',
-      eSignature: ''
-    });
+    setFormInputs(emptyForm());
   };
 
   const handleAddWitness = () => {
@@ -733,46 +641,47 @@ export default function App() {
     });
   };
 
+  // Complainant chooses to add the machine suggestions to the draft; they stay marked as machine-suggested.
+  const applySuggestionsToDraft = () => {
+    if (!aiLegalResult || !aiLegalResult.bnsSection) return;
+    setFormInputs(prev => ({ ...prev, legalSections: `Machine-suggested, not legally reviewed: ${aiLegalResult.bnsSection}` }));
+  };
+
   const handlePrint = () => {
     window.print();
   };
 
-  const copyEmailBody = () => {
-    const witnessStr = formInputs.witnesses && formInputs.witnesses.length > 0
-      ? formInputs.witnesses.map((w, i) => `${i + 1}. ${w.name || 'N/A'} (Ph: ${w.phone || 'N/A'}, Addr: ${w.address || 'N/A'})`).join('\n  ')
-      : 'None';
+  const jurisdictionText = () => (jurisdiction.confirmed
+    ? `${jurisdiction.stationName} (map-based estimate; police to confirm)`
+    : JURISDICTION_CONFIRMATION_MESSAGE);
 
-    const text = `
-To,
-The Station House Officer (SHO),
-${assignedStation?.name} Police Station,
-District: ${district}, Mumbai.
+  const draftText = () => {
+    const show = (v) => (v && String(v).trim() ? v : NOT_PROVIDED);
+    const witnesses = formInputs.witnesses.filter(w => w.name || w.phone || w.address);
+    const witnessStr = witnesses.length > 0
+      ? witnesses.map((w, i) => `${i + 1}. ${show(w.name)} (Ph: ${show(w.phone)}, Addr: ${show(w.address)})`).join('\n  ')
+      : NOT_PROVIDED;
+    return `COMPLAINT DRAFT (NOT AN FIR)
+${DRAFT_NOTICE}
 
-Subject: Submission of Digital First Information Report (FIR) - FIR No. ${firNo}
-
-Sir/Madam,
-
-Please find attached the official First Information Report (FIR) registered electronically under Section 173 of the Bharatiya Nagarik Suraksha Sanhita (BNSS), 2023.
-
-Details of the case are as follows:
-- FIR Registration Number: ${firNo}
-- Complainant Name: ${formInputs.complainantName}
-- Contact Reference: ${formInputs.complainantContact}
-- Occurrence Date/Time: ${formInputs.occurrenceTime}
-- Place of Occurrence: ${formInputs.placeOfOccurrence}
-- Violations Classified: ${formInputs.legalSections}
-- Witnesses Registered:
+Draft created: ${draftCreatedAt}
+Jurisdiction: ${jurisdictionText()}
+Complainant: ${show(formInputs.complainantName)}
+Contact: ${show(formInputs.complainantContact)}
+Date/time of occurrence (as stated): ${show(formInputs.occurrenceTime)}
+Place of occurrence (as stated): ${show(formInputs.placeOfOccurrence)}
+Description (complainant's words):
+${show(formInputs.incidentSummary)}
+Witnesses:
   ${witnessStr}
-
-An official acknowledgement receipt is attached for your reference and action.
-
-Sincerely,
-${formInputs.complainantName}
-(E-Signed Authentically Digitally)
+Possibly relevant sections (not a legal determination): ${show(formInputs.legalSections)}
 `;
-    navigator.clipboard.writeText(text);
-    setIsEmailCopied(true);
-    setTimeout(() => setIsEmailCopied(false), 2000);
+  };
+
+  const copyDraftText = () => {
+    navigator.clipboard.writeText(draftText());
+    setIsDraftCopied(true);
+    setTimeout(() => setIsDraftCopied(false), 2000);
   };
 
   // Filter lists
@@ -780,6 +689,23 @@ ${formInputs.complainantName}
     s.name.toLowerCase().includes(directorySearch.toLowerCase()) ||
     s.ward.toLowerCase().includes(directorySearch.toLowerCase())
   );
+
+  // Station details only when containment is confirmed by the map check (never from a nearest-centre guess).
+  const assignedStation = jurisdiction.confirmed
+    ? (stations.find(s => s.name === jurisdiction.stationName) || { name: jurisdiction.stationName })
+    : null;
+
+  const jurisdictionReason = () => {
+    if (!locationSelected) return t.noLocation;
+    switch (jurisdiction.status) {
+      case 'outside_all': return 'The selected point is outside all known jurisdiction areas.';
+      case 'near_boundary': return `The selected point is close to a boundary (about ${localJurisdiction?.distanceToBoundaryM ?? '?'} m).`;
+      case 'multiple': return 'The selected point falls in more than one area in the boundary data.';
+      case 'conflict': return 'The map check and the server check disagree.';
+      case 'data_unavailable': return 'Boundary data is not loaded.';
+      default: return '';
+    }
+  };
 
   const groupedDirectory = {};
   filteredDirectory.forEach(s => {
@@ -817,19 +743,19 @@ ${formInputs.complainantName}
         <div className="tabs-nav">
           <button 
             className={`tab-btn ${activeTab === 'locator' ? 'active' : ''}`}
-            onClick={() => { setActiveTab('locator'); if (!firSubmitted) setShowForm(false); }}
+            onClick={() => { setActiveTab('locator'); if (!draftCreated) setShowForm(false); }}
           >
             {t.tabLocator}
           </button>
           <button 
             className={`tab-btn ${activeTab === 'directory' ? 'active' : ''}`}
-            onClick={() => { setActiveTab('directory'); if (!firSubmitted) setShowForm(false); }}
+            onClick={() => { setActiveTab('directory'); if (!draftCreated) setShowForm(false); }}
           >
             {t.tabDirectory}
           </button>
           <button 
             className={`tab-btn ${activeTab === 'analytics' ? 'active' : ''}`}
-            onClick={() => { setActiveTab('analytics'); if (!firSubmitted) setShowForm(false); }}
+            onClick={() => { setActiveTab('analytics'); if (!draftCreated) setShowForm(false); }}
           >
             {t.tabInsights}
           </button>
@@ -853,7 +779,10 @@ ${formInputs.complainantName}
                   />
                   {isSearching && <span style={{fontSize: '11px', color: 'var(--color-primary)'}}>...</span>}
                 </div>
-                
+                {!EXTERNAL_GEOCODING_ENABLED && (
+                  <div style={{fontSize: '11px', color: 'var(--text-muted)', marginTop: '6px'}}>{t.searchDisabled}</div>
+                )}
+
                 {suggestions.length > 0 && (
                   <div className="suggestions-dropdown">
                     {suggestions.map((item, idx) => (
@@ -874,62 +803,70 @@ ${formInputs.complainantName}
                 <button className="btn-secondary" onClick={triggerGPS}>
                   {t.gpsBtn}
                 </button>
-                <button className="btn-secondary" onClick={() => updateLocation(19.0760, 72.8777)}>
+                <button className="btn-secondary" onClick={clearLocation}>
                   {t.resetBtn}
                 </button>
               </div>
 
-              {/* Jurisdiction Result panel */}
+              {/* Jurisdiction Result panel: a map-based estimate, never a confirmation */}
               <div className="glass-panel alert-card success">
                 <div className="alert-header">
                   <span className="panel-title" style={{margin: 0, border: 0, padding: 0}}>{t.assignedTitle}</span>
                   <span className={`status-badge ${isCheckingJurisdiction ? 'searching' : 'assigned'}`}>
-                    {isCheckingJurisdiction ? t.matching : t.verified}
+                    {isCheckingJurisdiction ? t.matching : (jurisdiction.confirmed ? t.estimate : t.unconfirmed)}
                   </span>
                 </div>
-                
+
                 {assignedStation ? (
                   <div>
-                    <h2 className="station-title">{assignedStation.name} Police Station</h2>
-                    
+                    <h2 className="station-title">{assignedStation.name} jurisdiction area</h2>
+                    <div style={{fontSize: '11px', color: 'var(--text-muted)', marginTop: '4px'}}>
+                      Based on the selected map point and boundary data whose source has not been verified. Police to confirm.
+                    </div>
+
                     <div className="detail-row" style={{marginTop: '15px'}}>
                       <span className="label">{t.ward}</span>
-                      <span className="value">{assignedStation.ward || 'N/A'}</span>
-                    </div>
-                    <div className="detail-row">
-                      <span className="label">POLICE DISTRICT</span>
-                      <span className="value" style={{color: 'var(--color-accent)', fontWeight: 7}}>{district}</span>
+                      <span className="value">{assignedStation.ward || NOT_AVAILABLE}</span>
                     </div>
                     <div className="detail-row">
                       <span className="label">{t.address}</span>
-                      <span className="value">{assignedStation.address || 'Mumbai Headquarters'}</span>
+                      <span className="value">{assignedStation.address || NOT_AVAILABLE}</span>
                     </div>
                     <div className="detail-row">
                       <span className="label">{t.contact}</span>
-                      <span className="value" style={{color: 'var(--color-success)', fontWeight: 7}}>{assignedStation.contact || '100 / 112'}</span>
+                      <span className="value">{assignedStation.contact || NOT_AVAILABLE}</span>
                     </div>
-
-                    <div className="detail-row" style={{borderTop: '1px solid var(--border-color)', paddingTop: '10px', marginTop: '10px'}}>
-                      <span className="label">{t.coords}</span>
-                      <span className="value" style={{fontFamily: 'monospace', fontSize: '11px', color: 'var(--text-muted)'}}>
-                        {coords.lat.toFixed(5)}, {coords.lng.toFixed(5)}
-                      </span>
-                    </div>
-                    
-                    {!showForm && (
-                      <button 
-                        className="btn-pink" 
-                        style={{marginTop: '15px'}}
-                        onClick={() => setShowForm(true)}
-                      >
-                        {t.lodgeBtn}
-                      </button>
+                    {localJurisdiction && Number.isFinite(localJurisdiction.distanceToBoundaryM) && (
+                      <div className="detail-row">
+                        <span className="label">Distance to boundary</span>
+                        <span className="value">about {localJurisdiction.distanceToBoundaryM} m</span>
+                      </div>
                     )}
                   </div>
                 ) : (
-                  <div style={{color: 'var(--text-muted)', textAlign: 'center', padding: '20px 0'}}>
-                    Locating territorial office... Click map or search address.
+                  <div style={{color: 'var(--text-muted)', padding: '12px 0'}}>
+                    <div style={{fontWeight: 700, color: 'var(--text-main)'}}>{JURISDICTION_CONFIRMATION_MESSAGE}</div>
+                    <div style={{fontSize: '12px', marginTop: '6px'}}>{jurisdictionReason()}</div>
                   </div>
+                )}
+
+                {locationSelected && (
+                  <div className="detail-row" style={{borderTop: '1px solid var(--border-color)', paddingTop: '10px', marginTop: '10px'}}>
+                    <span className="label">{t.coords}</span>
+                    <span className="value" style={{fontFamily: 'monospace', fontSize: '11px', color: 'var(--text-muted)'}}>
+                      {coords.lat.toFixed(5)}, {coords.lng.toFixed(5)}
+                    </span>
+                  </div>
+                )}
+
+                {!showForm && (
+                  <button
+                    className="btn-pink"
+                    style={{marginTop: '15px'}}
+                    onClick={() => setShowForm(true)}
+                  >
+                    {t.lodgeBtn}
+                  </button>
                 )}
               </div>
             </div>
@@ -962,8 +899,8 @@ ${formInputs.complainantName}
                       >
                         <div className="station-item-name">{s.name}</div>
                         <div className="station-item-desc">
-                          <span>Phone Reference: {s.contact || '100'}</span>
-                          <span style={{color: 'var(--color-accent)', fontWeight: '700'}}>Focus Map</span>
+                          <span>Contact: {s.contact || NOT_AVAILABLE}</span>
+                          <span style={{color: 'var(--color-accent)', fontWeight: '700'}}>Show on map</span>
                         </div>
                       </div>
                     ))}
@@ -995,9 +932,6 @@ ${formInputs.complainantName}
                 <p style={{fontSize: '12px', color: 'var(--text-muted)', lineHeight: 1.5}}>
                   {t.insGisText}
                 </p>
-                <p style={{fontSize: '12px', color: 'var(--text-muted)', lineHeight: 1.5, marginTop: '10px'}}>
-                  Under **Section 173 of the Bharatiya Nagarik Suraksha Sanhita (BNSS), 2023**, electronic/online registration of FIR is legally recognized. Police jurisdictions must process online complaints based on coordinates within their boundaries.
-                </p>
               </div>
             </div>
           )}
@@ -1011,28 +945,30 @@ ${formInputs.complainantName}
         {!showForm ? (
           /* VIEW A: COLORFUL MAP VIEW */
           <div className="map-container-wrapper">
-            {assignedStation && (
+            {locationSelected && (
               <div className="map-overlay-badge">
-                🏢 District: <span style={{color: 'var(--color-accent)'}}>{district}</span> &nbsp;|&nbsp; Station Sector: {assignedStation.name}
+                {assignedStation
+                  ? <>Jurisdiction (map estimate, police to confirm): {assignedStation.name}</>
+                  : <>{JURISDICTION_CONFIRMATION_MESSAGE}</>}
               </div>
             )}
 
             {/* Map Legend */}
             <div className="floating-legend">
-              <div className="legend-title">COLORFUL JURISDICTION MAP</div>
+              <div className="legend-title">JURISDICTION MAP (BOUNDARY SOURCE UNVERIFIED)</div>
               <div className="legend-item">
                 <span className="legend-color" style={{backgroundColor: '#6366f1', opacity: 0.3, borderColor: '#334155'}}></span>
-                <span>Active Jurisdiction Boundaries (Color by Ward)</span>
+                <span>Jurisdiction boundaries</span>
               </div>
               <div className="legend-item">
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="var(--color-primary)" style={{display: 'block'}}>
                   <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
                 </svg>
-                <span>Police Station Headquarters</span>
+                <span>Area centre (not a police station address)</span>
               </div>
               <div className="legend-item">
                 <span className="user-pin-custom" style={{display: 'inline-block', width: '12px', height: '12px'}}></span>
-                <span>Locator Reference dot (Draggable)</span>
+                <span>Selected incident location (draggable)</span>
               </div>
             </div>
 
@@ -1045,14 +981,14 @@ ${formInputs.complainantName}
             {/* Header bar to toggle back */}
             <div className="workspace-header-bar" style={{borderRadius: '6px 6px 0 0', margin: '0 auto 20px auto', maxWidth: '900px'}}>
               <h3 style={{fontFamily: 'var(--font-heading)', color: 'var(--color-primary)'}}>
-                {t.formTitle} Drafting Panel
+                {t.formTitle}
               </h3>
               <button className="btn-secondary" style={{width: 'auto', padding: '6px 14px'}} onClick={closeComplaintModal}>
                 ← Return to Map
               </button>
             </div>
 
-            {!firSubmitted ? (
+            {!draftCreated ? (
               /* DRAFTING INTERFACE */
               <div className="form-paper">
                 <div className="form-header-title">
@@ -1060,37 +996,32 @@ ${formInputs.complainantName}
                   <p>{t.formSub}</p>
                 </div>
 
-                <form onSubmit={handleFIRSubmit}>
+                <form onSubmit={handleDraftSubmit}>
                   
                   {/* Automatic Geographic Details Section */}
-                  <div className="form-section-header">Location Details (Auto-Fetched from map pin)</div>
-                  
-                  <div className="form-row two-cols">
-                    <div className="form-group-field">
-                      <label>Assigned Police Station</label>
-                      <input type="text" readOnly value={assignedStation?.name || ''} style={{borderColor: 'var(--color-accent)', fontWeight: 6}} />
-                    </div>
-                    <div className="form-group-field">
-                      <label>Police District</label>
-                      <input type="text" readOnly value={district} style={{borderColor: 'var(--color-accent)', fontWeight: 6}} />
-                    </div>
+                  <div className="form-section-header">Location Details (from the map point you selected)</div>
+
+                  <div className="form-group-field">
+                    <label>Police station jurisdiction (map-based estimate; police to confirm)</label>
+                    <input type="text" readOnly value={jurisdictionText()} style={{borderColor: 'var(--color-accent)', fontWeight: 6}} />
                   </div>
 
                   <div className="form-row two-cols">
                     <div className="form-group-field">
                       <label>{t.formMode}</label>
-                      <select 
-                        value={formInputs.registrationMode}
-                        onChange={(e) => setFormInputs({...formInputs, registrationMode: e.target.value})}
+                      <select
+                        value={formInputs.intendedMode}
+                        onChange={(e) => setFormInputs({...formInputs, intendedMode: e.target.value})}
                       >
+                        <option value="">Not decided</option>
                         <option value="Written">{t.formModeWritten}</option>
                         <option value="Oral">{t.formModeOral}</option>
                         <option value="Electronic / Online">{t.formModeElectronic}</option>
                       </select>
                     </div>
                     <div className="form-group-field">
-                      <label>Territorial Coords (Lat, Lng)</label>
-                      <input type="text" readOnly value={`${coords.lat.toFixed(5)}, ${coords.lng.toFixed(5)}`} />
+                      <label>Selected map point (Lat, Lng)</label>
+                      <input type="text" readOnly value={locationSelected ? `${coords.lat.toFixed(5)}, ${coords.lng.toFixed(5)}` : NOT_PROVIDED} />
                     </div>
                   </div>
 
@@ -1132,10 +1063,9 @@ ${formInputs.complainantName}
                     </div>
                     <div className="form-group-field">
                       <label>{t.formComplainantId}</label>
-                      <input 
-                        type="text" 
-                        required 
-                        placeholder="Aadhaar / DL Number" 
+                      <input
+                        type="text"
+                        placeholder="e.g. Driving licence (optional)"
                         value={formInputs.complainantId}
                         onChange={(e) => setFormInputs({...formInputs, complainantId: e.target.value})}
                       />
@@ -1194,13 +1124,16 @@ ${formInputs.complainantName}
                       <div className="ai-header">
                         <span>💡</span>
                         <span className="ai-badge">
-                          {aiLegalResult.isRag ? 'BNS RAG Legal Classifier' : t.aiTitle}
-                        </span>
-                        <span style={{fontSize: '11px', color: 'var(--color-success)', fontWeight: 6}}>
-                          {aiLegalResult.isRag ? '✓ RAG Corpus Match' : 'Fallback Mode'}
+                          {aiLegalResult.unavailable ? 'Automatic analysis' : t.aiTitle}
                         </span>
                       </div>
+                      {aiLegalResult.unavailable ? (
+                        <div style={{fontSize: '12px', color: 'var(--text-muted)', padding: '8px 0'}}>{aiLegalResult.message}</div>
+                      ) : (
                       <div className="ai-scan-lines">
+                        <div style={{fontSize: '11px', color: 'var(--text-muted)', marginBottom: '6px'}}>
+                          Machine-generated from your description{aiLegalResult.inferenceStatus ? ` (mode: ${aiLegalResult.inferenceStatus})` : ''}. These are suggestions, not facts or a legal determination.
+                        </div>
                         {/* Synonym mappings */}
                         {aiLegalResult.translations && aiLegalResult.translations.length > 0 && (
                           <div style={{
@@ -1280,7 +1213,7 @@ ${formInputs.complainantName}
                                       </span>
                                     </div>
                                     <div style={{fontSize: '8.5px', color: 'var(--text-muted)', marginTop: '2px', fontWeight: 500}}>
-                                      TF-IDF: {(pred.rag_score * 100).toFixed(0)}% | LogReg: {(pred.lr_prob * 100).toFixed(0)}%
+                                      Retrieval score: {(pred.rag_score * 100).toFixed(0)}%
                                     </div>
                                   </div>
                                 </div>
@@ -1299,19 +1232,12 @@ ${formInputs.complainantName}
                               </div>
                             ))}
                           </div>
-                        ) : (
-                          <div className="llm-consensus-grid">
-                            <div className="llm-box">
-                              <div style={{color: 'var(--color-accent)', fontWeight: 6}}>Local Classifier</div>
-                              <div style={{fontSize: '11px', fontWeight: 6}}>{aiLegalResult.offence} (Keyword Match)</div>
-                            </div>
-                            <div className="llm-box">
-                              <div style={{color: 'var(--color-primary)', fontWeight: 6}}>Status</div>
-                              <div style={{fontSize: '11px', fontWeight: 6}}>RAG API Offline — Fallback Active</div>
-                            </div>
-                          </div>
-                        )}
+                        ) : null}
+                        <button type="button" className="btn-secondary" style={{marginTop: '8px'}} onClick={applySuggestionsToDraft}>
+                          Use suggestions in draft (marked as machine-suggested)
+                        </button>
                       </div>
+                      )}
                     </div>
                   )}
 
@@ -1321,10 +1247,11 @@ ${formInputs.complainantName}
                   <div className="form-row two-cols">
                     <div className="form-group-field">
                       <label>{t.formNatureOffence}</label>
-                      <select 
+                      <select
                         value={formInputs.natureOfOffence}
                         onChange={(e) => setFormInputs({...formInputs, natureOfOffence: e.target.value})}
                       >
+                        <option value="">Not specified</option>
                         <option value="Theft">Theft</option>
                         <option value="Assault">Assault</option>
                         <option value="Fraud">Fraud</option>
@@ -1334,10 +1261,10 @@ ${formInputs.complainantName}
                       </select>
                     </div>
                     <div className="form-group-field">
-                      <label>BNS Act Violations</label>
-                      <input 
-                        type="text" 
-                        required 
+                      <label>Possibly relevant BNS sections (optional)</label>
+                      <input
+                        type="text"
+                        placeholder="Optional – not a legal determination"
                         value={formInputs.legalSections}
                         onChange={(e) => setFormInputs({...formInputs, legalSections: e.target.value})}
                       />
@@ -1350,8 +1277,9 @@ ${formInputs.complainantName}
                   <div className="form-row two-cols">
                     <div className="form-group-field">
                       <label>{t.formSuspectName}</label>
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
+                        placeholder="If known"
                         value={formInputs.suspectName}
                         onChange={(e) => setFormInputs({...formInputs, suspectName: e.target.value})}
                       />
@@ -1456,71 +1384,46 @@ ${formInputs.complainantName}
                     + Add Witness
                   </button>
 
-                  {/* Document Verification & Upload (Identity + Medical / Supporting proofs) */}
-                  <div className="form-section-header">Authenticity Proofs & Verification</div>
-                  
-                  <div className="form-row two-cols">
-                    {/* Identity Proof */}
-                    <div className="form-group-field">
-                      <label>{t.fileUploadTitle}</label>
-                      <div className="file-upload-drag-area">
-                        <input 
-                          type="file" 
-                          id="id-proof-upload" 
-                          style={{display: 'none'}} 
-                          onChange={handleFileChange}
-                        />
-                        <label htmlFor="id-proof-upload" style={{cursor: 'pointer'}}>
-                          <div className="upload-icon">🆔</div>
-                          <div style={{fontWeight: 7, fontSize: '11px'}}>{t.fileUploadDrag}</div>
-                        </label>
-                      </div>
-                      {uploadedFile && (
-                        <div style={{marginTop: '6px', fontSize: '11px', color: 'var(--color-success)', fontWeight: 6}}>
-                          ✓ {t.fileUploadSuccess} <b>{uploadedFile.name}</b>
-                        </div>
-                      )}
-                    </div>
+                  {/* Supporting material (optional). Nothing is uploaded or verified. */}
+                  <div className="form-section-header">Supporting Material (optional)</div>
+                  <div style={{fontSize: '11px', color: 'var(--text-muted)', marginBottom: '8px'}}>{t.idNotice}</div>
 
-                    {/* Medical / Supporting proofs */}
-                    <div className="form-group-field">
-                      <label>{t.fileUploadMedicalTitle}</label>
-                      <div className="file-upload-drag-area">
-                        <input 
-                          type="file" 
-                          id="medical-proof-upload" 
-                          style={{display: 'none'}} 
-                          onChange={handleMedicalFileChange}
-                        />
-                        <label htmlFor="medical-proof-upload" style={{cursor: 'pointer'}}>
-                          <div className="upload-icon">🏥</div>
-                          <div style={{fontWeight: 7, fontSize: '11px'}}>{t.fileUploadDrag}</div>
-                        </label>
-                      </div>
-                      {uploadedMedicalFile && (
-                        <div style={{marginTop: '6px', fontSize: '11px', color: 'var(--color-success)', fontWeight: 6}}>
-                          ✓ {t.fileUploadMedicalSuccess} <b>{uploadedMedicalFile.name}</b>
-                        </div>
-                      )}
+                  <div className="form-group-field">
+                    <label>{t.fileUploadMedicalTitle}</label>
+                    <div className="file-upload-drag-area">
+                      <input
+                        type="file"
+                        id="medical-proof-upload"
+                        style={{display: 'none'}}
+                        onChange={handleMedicalFileChange}
+                      />
+                      <label htmlFor="medical-proof-upload" style={{cursor: 'pointer'}}>
+                        <div className="upload-icon">📎</div>
+                        <div style={{fontWeight: 7, fontSize: '11px'}}>{t.fileUploadDrag}</div>
+                      </label>
                     </div>
+                    {uploadedMedicalFile && (
+                      <div style={{marginTop: '6px', fontSize: '11px', color: 'var(--text-muted)', fontWeight: 6}}>
+                        {attachmentLabel(uploadedMedicalFile)}
+                      </div>
+                    )}
                   </div>
 
-                  {/* Penal warning regarding forgery under Sec 465/468 */}
                   <div className="legal-warning-box">
-                    ⚠️ <b>{lang === 'en' ? 'LEGAL PENAL WARNING' : 'कायदेशीर फौजदारी इशारा'}:</b> {t.forgeryWarning}
+                    {t.truthNotice}
                   </div>
 
-                  {/* Section 12: Signatures */}
+                  {/* Section 12: Complainant confirmation (typed name; not a digital signature) */}
                   <div className="form-section-header">{t.secSignatures}</div>
-                  
+
                   <div className="form-group-field">
                     <label>{t.formSign}</label>
-                    <input 
-                      type="text" 
-                      required 
-                      placeholder="Type name as signature verification" 
-                      value={formInputs.eSignature}
-                      onChange={(e) => setFormInputs({...formInputs, eSignature: e.target.value})}
+                    <input
+                      type="text"
+                      required
+                      placeholder="Type your name"
+                      value={formInputs.typedName}
+                      onChange={(e) => setFormInputs({...formInputs, typedName: e.target.value})}
                     />
                   </div>
 
@@ -1539,86 +1442,90 @@ ${formInputs.complainantName}
                 </form>
               </div>
             ) : (
-              /* PDF PRINT PREVIEW & VERIFICATION & EMAIL DISPATCH WORKSPACE */
+              /* COMPLAINT DRAFT VIEW: a draft only. Not submitted, not received, not registered. */
               <div className="form-paper" style={{padding: '30px'}}>
-                
-                {/* Official Printable document */}
+
                 <div id="printable-fir-sheet" className="printable-fir-page">
                   <div className="printable-fir-header">
-                    <div style={{fontSize: '28px'}}>🇮🇳</div>
-                    <h2 style={{fontFamily: 'var(--font-heading)', color: '#000000', fontSize: '18px', margin: '6px 0'}}>FIRST INFORMATION REPORT (FIR)</h2>
-                    <div style={{fontSize: '11px', fontStyle: 'italic'}}>(Under Section 173 of the Bharatiya Nagarik Suraksha Sanhita, 2023)</div>
+                    <h2 style={{fontFamily: 'var(--font-heading)', color: '#000000', fontSize: '18px', margin: '6px 0'}}>COMPLAINT DRAFT (NOT AN FIR)</h2>
+                    <div style={{fontSize: '11px', fontStyle: 'italic'}}>{DRAFT_NOTICE}</div>
+                  </div>
+
+                  <div className="printable-fir-section">
+                    <div className="printable-fir-section-title">{t.statusTitle}</div>
+                    {statusLadder({ draft: { createdAt: draftCreatedAt } }).map(s => (
+                      <div key={s.status}>
+                        <b>{s.label}:</b> {s.recorded ? `${t.statusRecorded} (${draftCreatedAt})` : t.statusNotRecorded}
+                      </div>
+                    ))}
                   </div>
 
                   <div className="printable-fir-grid">
                     <div>
-                      <b>District:</b> {district}<br />
-                      <b>Police Station:</b> {assignedStation?.name}<br />
-                      <b>FIR Number:</b> {firNo}
+                      <b>Jurisdiction:</b> {jurisdictionText()}
                     </div>
                     <div style={{textAlign: 'right'}}>
-                      <b>Date & Time:</b> {registrationTime}<br />
-                      <b>Registration Mode:</b> {formInputs.registrationMode}
+                      <b>Intended mode:</b> {formInputs.intendedMode || NOT_PROVIDED}
                     </div>
                   </div>
 
                   <div className="printable-fir-section">
                     <div className="printable-fir-section-title">1. Complainant / Informant Details</div>
-                    <b>Name:</b> {formInputs.complainantName}<br />
-                    <b>Address:</b> {formInputs.complainantAddress}<br />
-                    <b>Contact No:</b> {formInputs.complainantContact}<br />
-                    <b>ID Reference:</b> {formInputs.complainantId}
+                    <b>Name:</b> {formInputs.complainantName || NOT_PROVIDED}<br />
+                    <b>Address:</b> {formInputs.complainantAddress || NOT_PROVIDED}<br />
+                    <b>Contact No:</b> {formInputs.complainantContact || NOT_PROVIDED}<br />
+                    <b>ID document type:</b> {formInputs.complainantId || NOT_PROVIDED} (identity to be verified by police)
                   </div>
 
                   <div className="printable-fir-section">
-                    <div className="printable-fir-section-title">2. Date and Time of Occurrence</div>
-                    <b>Timeline:</b> {formInputs.occurrenceTime}
+                    <div className="printable-fir-section-title">2. Date and Time of Occurrence (as stated)</div>
+                    {formInputs.occurrenceTime || NOT_PROVIDED}
                   </div>
 
                   <div className="printable-fir-section">
-                    <div className="printable-fir-section-title">3. Place of Occurrence</div>
-                    <b>Address:</b> {formInputs.placeOfOccurrence}<br />
-                    <b>Coordinates:</b> Lat {coords.lat.toFixed(5)}, Lng {coords.lng.toFixed(5)}
+                    <div className="printable-fir-section-title">3. Place of Occurrence (as stated)</div>
+                    <b>Address:</b> {formInputs.placeOfOccurrence || NOT_PROVIDED}<br />
+                    <b>Selected map point:</b> {locationSelected ? `Lat ${coords.lat.toFixed(5)}, Lng ${coords.lng.toFixed(5)}` : NOT_PROVIDED}
                   </div>
 
                   <div className="printable-fir-section">
-                    <div className="printable-fir-section-title">4. Nature of Offence</div>
-                    <b>Classification:</b> {formInputs.natureOfOffence}
+                    <div className="printable-fir-section-title">4. Nature of Incident (as selected by complainant)</div>
+                    {formInputs.natureOfOffence || NOT_PROVIDED}
                   </div>
 
                   <div className="printable-fir-section">
-                    <div className="printable-fir-section-title">5. Relevant Legal Sections (BNS, 2023)</div>
-                    <b>Classified Sections:</b> {formInputs.legalSections}
+                    <div className="printable-fir-section-title">5. Possibly Relevant Sections (not a legal determination)</div>
+                    {formInputs.legalSections || NOT_PROVIDED}
                   </div>
 
                   <div className="printable-fir-section">
-                    <div className="printable-fir-section-title">6. Details of Accused / Suspects</div>
-                    <b>Name:</b> {formInputs.suspectName}<br />
-                    <b>Address:</b> {formInputs.suspectAddress}<br />
-                    <b>Physical Description:</b> {formInputs.suspectDescription || 'None recorded'}
+                    <div className="printable-fir-section-title">6. Details of Accused / Suspects (as stated)</div>
+                    <b>Name:</b> {formInputs.suspectName || NOT_PROVIDED}<br />
+                    <b>Address:</b> {formInputs.suspectAddress || NOT_PROVIDED}<br />
+                    <b>Physical Description:</b> {formInputs.suspectDescription || NOT_PROVIDED}
                   </div>
 
                   <div className="printable-fir-section">
-                    <div className="printable-fir-section-title">7. Details of Victims</div>
-                    <b>Name:</b> {formInputs.victimName || 'Same as Complainant'}<br />
-                    <b>Contact No:</b> {formInputs.victimContact || 'N/A'}<br />
-                    <b>Address:</b> {formInputs.victimAddress || 'N/A'}
+                    <div className="printable-fir-section-title">7. Details of Victims (as stated)</div>
+                    <b>Name:</b> {formInputs.victimName || NOT_PROVIDED}<br />
+                    <b>Contact No:</b> {formInputs.victimContact || NOT_PROVIDED}<br />
+                    <b>Address:</b> {formInputs.victimAddress || NOT_PROVIDED}
                   </div>
 
                   <div className="printable-fir-section">
-                    <div className="printable-fir-section-title">8. Summary of Incident (Facts of the Case)</div>
-                    <div style={{whiteSpace: 'pre-wrap', lineHeight: 1.5}}>{formInputs.incidentSummary}</div>
+                    <div className="printable-fir-section-title">8. Description of Incident (complainant's words)</div>
+                    <div style={{whiteSpace: 'pre-wrap', lineHeight: 1.5}}>{formInputs.incidentSummary || NOT_PROVIDED}</div>
                   </div>
 
                   <div className="printable-fir-section">
-                    <div className="printable-fir-section-title">9. Property Involved (if any)</div>
-                    <b>Description:</b> {formInputs.propertyDescription || 'None'}<br />
-                    <b>Estimated Value:</b> {formInputs.propertyValue ? `₹ ${formInputs.propertyValue}` : 'N/A'}
+                    <div className="printable-fir-section-title">9. Property Involved (as stated)</div>
+                    <b>Description:</b> {formInputs.propertyDescription || NOT_PROVIDED}<br />
+                    <b>Estimated Value:</b> {formInputs.propertyValue ? `₹ ${formInputs.propertyValue}` : NOT_PROVIDED}
                   </div>
 
                   <div className="printable-fir-section">
-                    <div className="printable-fir-section-title">10. Witnesses (if any)</div>
-                    {formInputs.witnesses && formInputs.witnesses.length > 0 ? (
+                    <div className="printable-fir-section-title">10. Witnesses (as stated)</div>
+                    {formInputs.witnesses.some(w => w.name || w.phone || w.address) ? (
                       <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px', marginTop: '6px' }}>
                         <thead>
                           <tr style={{ borderBottom: '1px solid #000' }}>
@@ -1628,114 +1535,80 @@ ${formInputs.complainantName}
                           </tr>
                         </thead>
                         <tbody>
-                          {formInputs.witnesses.map((w, idx) => (
+                          {formInputs.witnesses.filter(w => w.name || w.phone || w.address).map((w, idx) => (
                             <tr key={idx} style={{ borderBottom: '1px solid #eee' }}>
-                              <td style={{ padding: '6px 0' }}>{w.name || 'N/A'}</td>
-                              <td style={{ padding: '6px 0' }}>{w.phone || 'N/A'}</td>
-                              <td style={{ padding: '6px 0' }}>{w.address || 'N/A'}</td>
+                              <td style={{ padding: '6px 0' }}>{w.name || NOT_PROVIDED}</td>
+                              <td style={{ padding: '6px 0' }}>{w.phone || NOT_PROVIDED}</td>
+                              <td style={{ padding: '6px 0' }}>{w.address || NOT_PROVIDED}</td>
                             </tr>
                           ))}
                         </tbody>
                       </table>
                     ) : (
-                      <span style={{ fontSize: '13px', fontStyle: 'italic' }}>None recorded</span>
+                      <span style={{ fontSize: '13px', fontStyle: 'italic' }}>{NOT_PROVIDED}</span>
                     )}
                   </div>
 
                   <div className="printable-fir-section">
-                    <div className="printable-fir-section-title">11. Action Taken by Police</div>
-                    <b>Status:</b> {formInputs.policeAction}<br />
-                    <b>Officer:</b> {formInputs.policeOfficer}<br />
-                    <b>Remarks:</b> {formInputs.policeRemarks}
+                    <div className="printable-fir-section-title">11. {t.formPoliceUse}</div>
+                    <b>Received by (name, rank):</b> ______________________<br />
+                    <b>Date and time received:</b> ______________________<br />
+                    <b>Action / reference:</b> ______________________
                   </div>
 
                   <div className="printable-fir-section">
-                    <div className="printable-fir-section-title">12. Signatures & Verified Authenticity Proofs</div>
-                    <div style={{display: 'flex', justifyContent: 'space-between', marginTop: '10px'}}>
-                      <div>
-                        <b>Complainant E-Signature:</b><br />
-                        <span style={{fontFamily: 'Georgia', fontStyle: 'italic', fontSize: '16px', borderBottom: '1px solid #000000'}}>{formInputs.eSignature}</span>
-                      </div>
-                      <div style={{textAlign: 'right', fontSize: '11px', color: '#166534', fontWeight: 'bold'}}>
-                        <b>Identity Proof:</b> {uploadedFile?.name}<br />
-                        {uploadedMedicalFile && <span><b>Supporting File:</b> {uploadedMedicalFile?.name}</span>}
-                      </div>
-                    </div>
+                    <div className="printable-fir-section-title">12. Complainant Confirmation</div>
+                    <b>Typed name (not a digital signature):</b> {formInputs.typedName || NOT_PROVIDED}<br />
+                    <b>Supporting material:</b> {uploadedMedicalFile ? attachmentLabel(uploadedMedicalFile) : NOT_PROVIDED}
                   </div>
                 </div>
 
-                {/* Email Draft dispatcher and Print actions */}
+                {/* Structured record (machine-assisted). Shown on screen only; not part of the printed draft. */}
+                <div className="no-print glass-panel" style={{marginTop: '24px'}}>
+                  <div className="panel-title">Structured record (machine-assisted, nothing verified)</div>
+                  {structured.state === 'loading' && <div style={{fontSize: '12px'}}>Preparing the structured record...</div>}
+                  {structured.state === 'unavailable' && (
+                    <div style={{fontSize: '12px', color: 'var(--text-muted)'}}>The structured record could not be prepared. Review status unavailable; human review required. The draft above is unaffected.</div>
+                  )}
+                  {structured.state === 'ok' && structured.summary && (
+                    <div style={{fontSize: '12px', lineHeight: 1.6}}>
+                      <div style={{color: 'var(--text-muted)'}}>{structured.summary.notice}</div>
+                      <ReviewStatus summary={structured.summary} />
+                      {structured.summary.reasons.length > 0 && (
+                        <ul>{structured.summary.reasons.map((r, i) => <li key={i}>{r}</li>)}</ul>
+                      )}
+                      <div><b>Jurisdiction:</b> {structured.summary.jurisdiction}</div>
+                      <div><b>Missing information:</b> {structured.summary.missing.length ? structured.summary.missing.join('; ') : 'None identified'}</div>
+                      {structured.summary.questions.length > 0 && (
+                        <div><b>Questions for the complainant:</b><ul>{structured.summary.questions.map((q, i) => <li key={i}>{q}</li>)}</ul></div>
+                      )}
+                      {structured.summary.contradictions.length > 0 && (
+                        <div><b>Possible inconsistencies to clarify:</b><ul>{structured.summary.contradictions.map((c, i) => <li key={i}>{c}</li>)}</ul></div>
+                      )}
+                      <div><b>Supporting material:</b> {structured.summary.evidence.length ? structured.summary.evidence.join('; ') : NOT_PROVIDED}</div>
+                      {structured.summary.draftText && (
+                        <details style={{marginTop: '8px'}}>
+                          <summary><b>Structured complaint draft and verification checklist</b></summary>
+                          <pre className="structured-draft" style={{whiteSpace: 'pre-wrap', fontSize: '11px'}}>{structured.summary.draftText}</pre>
+                        </details>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* Print and copy actions. Nothing is sent anywhere. */}
                 <div className="no-print" style={{marginTop: '30px', borderTop: '1px solid #cbd5e1', paddingTop: '20px'}}>
+                  <div style={{fontSize: '12px', color: 'var(--text-muted)', marginBottom: '12px'}}>{t.deliveryNotice}</div>
                   <div className="btn-group">
                     <button className="btn-primary" onClick={handlePrint}>
-                      🖨️ {lang === 'en' ? 'Print / Download Official PDF Report' : 'अधिकृत पीडीएफ अहवाल प्रिंट / डाउनलोड करा'}
+                      🖨️ {lang === 'en' ? 'Print complaint draft' : 'तक्रारीचा मसुदा प्रिंट करा'}
+                    </button>
+                    <button className="btn-secondary" onClick={copyDraftText}>
+                      {isDraftCopied ? t.draftCopied : t.copyDraftBtn}
                     </button>
                     <button className="btn-secondary" onClick={closeComplaintModal}>
                       Close and return to map
                     </button>
-                  </div>
-
-                  {/* Email drafting dispatcher */}
-                  <div className="dispatch-email-preview">
-                    <div className="dispatch-header">
-                      📬 {t.emailDispatchTitle}
-                    </div>
-
-                    <div className="detail-row">
-                      <span className="label">{t.emailDispatchTo}:</span>
-                      <span className="value" style={{fontFamily: 'monospace'}}>{assignedStation?.name.toLowerCase().replace(' ', '')}.ps@mumbaipolice.gov.in</span>
-                    </div>
-
-                    <div className="detail-row">
-                      <span className="label">{t.emailDispatchSub}:</span>
-                      <span className="value" style={{fontWeight: 6}}>Official Filing of FIR No. {firNo} - Sec. 173 BNSS</span>
-                    </div>
-
-                    <div style={{fontSize: '11px', color: 'var(--text-muted)', marginBottom: '8px', fontWeight: 6}}>
-                      Email Body Draft:
-                    </div>
-
-                    <div className="dispatch-text-body">
-{`To,
-The Station House Officer (SHO),
-${assignedStation?.name} Police Station,
-District: ${district}, Mumbai.
-
-Subject: Submission of Digital First Information Report (FIR) - FIR No. ${firNo}
-
-Sir/Madam,
-
-Please find attached the official First Information Report (FIR) registered electronically under Section 173 of the Bharatiya Nagarik Suraksha Sanhita (BNSS), 2023.
-
-Details of the case are as follows:
-- FIR Registration Number: ${firNo}
-- Complainant Name: ${formInputs.complainantName}
-- Contact Reference: ${formInputs.complainantContact}
-- Occurrence Date/Time: ${formInputs.occurrenceTime}
-- Place of Occurrence: ${formInputs.placeOfOccurrence}
-- Violations Classified: ${formInputs.legalSections}
-- Witnesses Registered:
-  ${formInputs.witnesses && formInputs.witnesses.length > 0 ? formInputs.witnesses.map((w, i) => `${i + 1}. ${w.name || 'N/A'} (Ph: ${w.phone || 'N/A'}, Addr: ${w.address || 'N/A'})`).join('\n  ') : 'None'}
-
-An official acknowledgement receipt is attached for your reference and action.
-
-Sincerely,
-${formInputs.complainantName}
-(E-Signed Authentically Digitally)`}
-                    </div>
-
-                    <div className="btn-group" style={{marginTop: '15px', marginBottom: 0}}>
-                      <button className="btn-secondary" onClick={copyEmailBody}>
-                        {isEmailCopied ? t.emailCopied : t.emailCopyBtn}
-                      </button>
-                      <a 
-                        href={`mailto:${assignedStation?.name.toLowerCase().replace(' ', '')}.ps@mumbaipolice.gov.in?subject=Official Dispatch: Registered FIR complaint No. ${firNo}&body=Sir/Madam,%0D%0DPlease find attached the official First Information Report (FIR) registered electronically under Section 173 of the Bharatiya Nagarik Suraksha Sanhita (BNSS), 2023.%0D%0DFIR No: ${firNo}%0DComplainant: ${formInputs.complainantName}%0DOffence: ${formInputs.legalSections}%0D%0DSincerely,%0D${formInputs.complainantName}`} 
-                        className="btn-primary"
-                        style={{textDecoration: 'none'}}
-                      >
-                        {t.emailDispatchBtn}
-                      </a>
-                    </div>
                   </div>
                 </div>
 

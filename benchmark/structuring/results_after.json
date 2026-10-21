@@ -1,0 +1,6396 @@
+{
+ "note": "Synthetic cases only; results do not measure real-world police effectiveness.",
+ "summary": {
+  "dev": {
+   "cases": 20,
+   "extraction": {
+    "people": {
+     "gold": 23,
+     "predicted": 24,
+     "precision": 1.0,
+     "recall": 1.0
+    },
+    "datetime": {
+     "gold": 31,
+     "predicted": 32,
+     "precision": 1.0,
+     "recall": 1.0
+    },
+    "location": {
+     "gold": 15,
+     "predicted": 16,
+     "precision": 1.0,
+     "recall": 1.0
+    },
+    "action": {
+     "gold": 29,
+     "predicted": 33,
+     "precision": 0.9091,
+     "recall": 1.0
+    },
+    "loss": {
+     "gold": 20,
+     "predicted": 21,
+     "precision": 1.0,
+     "recall": 1.0
+    },
+    "witness": {
+     "gold": 6,
+     "predicted": 6,
+     "precision": 1.0,
+     "recall": 1.0
+    },
+    "evidence": {
+     "gold": 7,
+     "predicted": 9,
+     "precision": 1.0,
+     "recall": 1.0
+    },
+    "micro": {
+     "gold": 131,
+     "predicted": 141,
+     "precision": 0.9787,
+     "recall": 1.0
+    }
+   },
+   "integrity": {
+    "non_verbatim_quotes": 0,
+    "unbacked_verification_claims": 0,
+    "non_draft_submission_status": 0,
+    "invalid_contradictions": 0,
+    "statements_not_preserved": 0
+   },
+   "polarity_accuracy": {
+    "correct": 131,
+    "assessed": 131,
+    "accuracy": 1.0
+   },
+   "unsupported_fact_rate": {
+    "unsupported": 3,
+    "overstated": 0,
+    "predicted": 141,
+    "rate": 0.0213
+   },
+   "missing_information": {
+    "fields": 140,
+    "accuracy": 1.0,
+    "false_missing": 0,
+    "missed_missing": 0
+   },
+   "contradictions": {
+    "expected": 7,
+    "predicted": 7,
+    "correct": 7,
+    "precision": 1.0,
+    "recall": 1.0,
+    "missed": [],
+    "spurious": []
+   },
+   "language": {
+    "correct": 20,
+    "cases": 20
+   },
+   "draft": {
+    "passed": 20,
+    "cases": 20
+   }
+  },
+  "heldout": {
+   "cases": 14,
+   "extraction": {
+    "people": {
+     "gold": 17,
+     "predicted": 11,
+     "precision": 1.0,
+     "recall": 0.5882
+    },
+    "datetime": {
+     "gold": 21,
+     "predicted": 20,
+     "precision": 1.0,
+     "recall": 0.9524
+    },
+    "location": {
+     "gold": 10,
+     "predicted": 9,
+     "precision": 1.0,
+     "recall": 0.9
+    },
+    "action": {
+     "gold": 21,
+     "predicted": 18,
+     "precision": 0.9444,
+     "recall": 0.8095
+    },
+    "loss": {
+     "gold": 13,
+     "predicted": 13,
+     "precision": 1.0,
+     "recall": 1.0
+    },
+    "witness": {
+     "gold": 6,
+     "predicted": 6,
+     "precision": 1.0,
+     "recall": 1.0
+    },
+    "evidence": {
+     "gold": 1,
+     "predicted": 1,
+     "precision": 1.0,
+     "recall": 1.0
+    },
+    "micro": {
+     "gold": 89,
+     "predicted": 78,
+     "precision": 0.9872,
+     "recall": 0.8539
+    }
+   },
+   "integrity": {
+    "non_verbatim_quotes": 0,
+    "unbacked_verification_claims": 0,
+    "non_draft_submission_status": 0,
+    "invalid_contradictions": 0,
+    "statements_not_preserved": 0
+   },
+   "polarity_accuracy": {
+    "correct": 74,
+    "assessed": 76,
+    "accuracy": 0.9737
+   },
+   "unsupported_fact_rate": {
+    "unsupported": 1,
+    "overstated": 1,
+    "predicted": 78,
+    "rate": 0.0256
+   },
+   "missing_information": {
+    "fields": 98,
+    "accuracy": 0.9286,
+    "false_missing": 5,
+    "missed_missing": 1
+   },
+   "contradictions": {
+    "expected": 7,
+    "predicted": 5,
+    "correct": 5,
+    "precision": 1.0,
+    "recall": 0.7143,
+    "missed": [
+     "H04:identity",
+     "H13:number_of_persons"
+    ],
+    "spurious": []
+   },
+   "language": {
+    "correct": 14,
+    "cases": 14
+   },
+   "draft": {
+    "passed": 14,
+    "cases": 14
+   }
+  },
+  "all": {
+   "cases": 34,
+   "extraction": {
+    "people": {
+     "gold": 40,
+     "predicted": 35,
+     "precision": 1.0,
+     "recall": 0.825
+    },
+    "datetime": {
+     "gold": 52,
+     "predicted": 52,
+     "precision": 1.0,
+     "recall": 0.9808
+    },
+    "location": {
+     "gold": 25,
+     "predicted": 25,
+     "precision": 1.0,
+     "recall": 0.96
+    },
+    "action": {
+     "gold": 50,
+     "predicted": 51,
+     "precision": 0.9216,
+     "recall": 0.92
+    },
+    "loss": {
+     "gold": 33,
+     "predicted": 34,
+     "precision": 1.0,
+     "recall": 1.0
+    },
+    "witness": {
+     "gold": 12,
+     "predicted": 12,
+     "precision": 1.0,
+     "recall": 1.0
+    },
+    "evidence": {
+     "gold": 8,
+     "predicted": 10,
+     "precision": 1.0,
+     "recall": 1.0
+    },
+    "micro": {
+     "gold": 220,
+     "predicted": 219,
+     "precision": 0.9817,
+     "recall": 0.9409
+    }
+   },
+   "integrity": {
+    "non_verbatim_quotes": 0,
+    "unbacked_verification_claims": 0,
+    "non_draft_submission_status": 0,
+    "invalid_contradictions": 0,
+    "statements_not_preserved": 0
+   },
+   "polarity_accuracy": {
+    "correct": 205,
+    "assessed": 207,
+    "accuracy": 0.9903
+   },
+   "unsupported_fact_rate": {
+    "unsupported": 4,
+    "overstated": 1,
+    "predicted": 219,
+    "rate": 0.0228
+   },
+   "missing_information": {
+    "fields": 238,
+    "accuracy": 0.9706,
+    "false_missing": 5,
+    "missed_missing": 1
+   },
+   "contradictions": {
+    "expected": 14,
+    "predicted": 12,
+    "correct": 12,
+    "precision": 1.0,
+    "recall": 0.8571,
+    "missed": [
+     "H04:identity",
+     "H13:number_of_persons"
+    ],
+    "spurious": []
+   },
+   "language": {
+    "correct": 34,
+    "cases": 34
+   },
+   "draft": {
+    "passed": 34,
+    "cases": 34
+   }
+  }
+ },
+ "jurisdiction": {
+  "correct": 11,
+  "cases": 11,
+  "unsafe": 0,
+  "results": [
+   {
+    "id": "J01",
+    "boundaries": "synthetic",
+    "expected": {
+     "status": "inside",
+     "station": "Alpha"
+    },
+    "predicted": {
+     "status": "inside",
+     "station": "Alpha"
+    },
+    "correct": true,
+    "unsafe": false
+   },
+   {
+    "id": "J02",
+    "boundaries": "synthetic",
+    "expected": {
+     "status": "inside",
+     "station": "Beta"
+    },
+    "predicted": {
+     "status": "inside",
+     "station": "Beta"
+    },
+    "correct": true,
+    "unsafe": false
+   },
+   {
+    "id": "J03",
+    "boundaries": "synthetic",
+    "expected": {
+     "status": "near_boundary",
+     "station": null
+    },
+    "predicted": {
+     "status": "near_boundary",
+     "station": null
+    },
+    "correct": true,
+    "unsafe": false
+   },
+   {
+    "id": "J04",
+    "boundaries": "synthetic",
+    "expected": {
+     "status": "near_boundary",
+     "station": null
+    },
+    "predicted": {
+     "status": "near_boundary",
+     "station": null
+    },
+    "correct": true,
+    "unsafe": false
+   },
+   {
+    "id": "J05",
+    "boundaries": "synthetic",
+    "expected": {
+     "status": "outside_all",
+     "station": null
+    },
+    "predicted": {
+     "status": "outside_all",
+     "station": null
+    },
+    "correct": true,
+    "unsafe": false
+   },
+   {
+    "id": "J06",
+    "boundaries": "synthetic",
+    "expected": {
+     "status": "outside_all",
+     "station": null
+    },
+    "predicted": {
+     "status": "outside_all",
+     "station": null
+    },
+    "correct": true,
+    "unsafe": false
+   },
+   {
+    "id": "J07",
+    "boundaries": "synthetic",
+    "expected": {
+     "status": "multiple",
+     "station": null
+    },
+    "predicted": {
+     "status": "multiple",
+     "station": null
+    },
+    "correct": true,
+    "unsafe": false
+   },
+   {
+    "id": "J08",
+    "boundaries": "synthetic",
+    "expected": {
+     "status": "no_location",
+     "station": null
+    },
+    "predicted": {
+     "status": "no_location",
+     "station": null
+    },
+    "correct": true,
+    "unsafe": false
+   },
+   {
+    "id": "J09",
+    "boundaries": "missing_file",
+    "expected": {
+     "status": "data_unavailable",
+     "station": null
+    },
+    "predicted": {
+     "status": "data_unavailable",
+     "station": null
+    },
+    "correct": true,
+    "unsafe": false
+   },
+   {
+    "id": "J10",
+    "boundaries": "real",
+    "expected": {
+     "status": "outside_all",
+     "station": null
+    },
+    "predicted": {
+     "status": "outside_all",
+     "station": null
+    },
+    "correct": true,
+    "unsafe": false
+   },
+   {
+    "id": "J11",
+    "boundaries": "real",
+    "expected": {
+     "status": "outside_all",
+     "station": null
+    },
+    "predicted": {
+     "status": "outside_all",
+     "station": null
+    },
+    "correct": true,
+    "unsafe": false
+   }
+  ]
+ },
+ "cases": [
+  {
+   "id": "D01",
+   "split": "dev",
+   "group": "clear_complete",
+   "categories": {
+    "people": {
+     "gold": 2,
+     "predicted": 2,
+     "supported": 2,
+     "found": 2,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "datetime": {
+     "gold": 2,
+     "predicted": 2,
+     "supported": 2,
+     "found": 2,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "location": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "action": {
+     "gold": 2,
+     "predicted": 2,
+     "supported": 2,
+     "found": 2,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "loss": {
+     "gold": 2,
+     "predicted": 2,
+     "supported": 2,
+     "found": 2,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "witness": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "evidence": {
+     "gold": 1,
+     "predicted": 2,
+     "supported": 2,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    }
+   },
+   "integrity": {
+    "non_verbatim_quotes": 0,
+    "unbacked_verification_claims": 0,
+    "non_draft_submission_status": 0,
+    "invalid_contradictions": 0,
+    "statements_not_preserved": 0
+   },
+   "polarity": {
+    "correct": 11,
+    "assessed": 11
+   },
+   "unsupported": {
+    "unsupported": 0,
+    "overstated": 0,
+    "predicted": 12
+   },
+   "missing": {
+    "what_happened": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "when": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "where": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "who": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "loss_value": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "evidence": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "witnesses": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    }
+   },
+   "contradictions": {
+    "expected": [],
+    "predicted": []
+   },
+   "language": {
+    "expected": "full",
+    "predicted": "full",
+    "route": "human_review_required",
+    "correct": true
+   },
+   "draft": {
+    "present": true,
+    "checks": {
+     "sections_present": true,
+     "statements_verbatim": true,
+     "details_quoted": true,
+     "checklist_present": true,
+     "no_forbidden_claims": true
+    },
+    "passed": true
+   }
+  },
+  {
+   "id": "D02",
+   "split": "dev",
+   "group": "clear_complete",
+   "categories": {
+    "people": {
+     "gold": 2,
+     "predicted": 2,
+     "supported": 2,
+     "found": 2,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "datetime": {
+     "gold": 2,
+     "predicted": 3,
+     "supported": 3,
+     "found": 2,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "location": {
+     "gold": 2,
+     "predicted": 2,
+     "supported": 2,
+     "found": 2,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "action": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "loss": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "witness": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "evidence": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    }
+   },
+   "integrity": {
+    "non_verbatim_quotes": 0,
+    "unbacked_verification_claims": 0,
+    "non_draft_submission_status": 0,
+    "invalid_contradictions": 0,
+    "statements_not_preserved": 0
+   },
+   "polarity": {
+    "correct": 9,
+    "assessed": 9
+   },
+   "unsupported": {
+    "unsupported": 0,
+    "overstated": 0,
+    "predicted": 10
+   },
+   "missing": {
+    "what_happened": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "when": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "where": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "who": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "loss_value": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "evidence": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "witnesses": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    }
+   },
+   "contradictions": {
+    "expected": [],
+    "predicted": []
+   },
+   "language": {
+    "expected": "full",
+    "predicted": "full",
+    "route": "human_review_required",
+    "correct": true
+   },
+   "draft": {
+    "present": true,
+    "checks": {
+     "sections_present": true,
+     "statements_verbatim": true,
+     "details_quoted": true,
+     "checklist_present": true,
+     "no_forbidden_claims": true
+    },
+    "passed": true
+   }
+  },
+  {
+   "id": "D03",
+   "split": "dev",
+   "group": "incomplete",
+   "categories": {
+    "people": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "datetime": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "location": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "action": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "loss": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "witness": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "evidence": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    }
+   },
+   "integrity": {
+    "non_verbatim_quotes": 0,
+    "unbacked_verification_claims": 0,
+    "non_draft_submission_status": 0,
+    "invalid_contradictions": 0,
+    "statements_not_preserved": 0
+   },
+   "polarity": {
+    "correct": 2,
+    "assessed": 2
+   },
+   "unsupported": {
+    "unsupported": 0,
+    "overstated": 0,
+    "predicted": 2
+   },
+   "missing": {
+    "what_happened": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "when": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "where": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "who": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "loss_value": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "evidence": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "witnesses": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    }
+   },
+   "contradictions": {
+    "expected": [],
+    "predicted": []
+   },
+   "language": {
+    "expected": "full",
+    "predicted": "full",
+    "route": "human_review_required",
+    "correct": true
+   },
+   "draft": {
+    "present": true,
+    "checks": {
+     "sections_present": true,
+     "statements_verbatim": true,
+     "details_quoted": true,
+     "checklist_present": true,
+     "no_forbidden_claims": true
+    },
+    "passed": true
+   }
+  },
+  {
+   "id": "D04",
+   "split": "dev",
+   "group": "incomplete",
+   "categories": {
+    "people": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "datetime": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "location": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "action": {
+     "gold": 2,
+     "predicted": 2,
+     "supported": 2,
+     "found": 2,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "loss": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "witness": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "evidence": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    }
+   },
+   "integrity": {
+    "non_verbatim_quotes": 0,
+    "unbacked_verification_claims": 0,
+    "non_draft_submission_status": 0,
+    "invalid_contradictions": 0,
+    "statements_not_preserved": 0
+   },
+   "polarity": {
+    "correct": 4,
+    "assessed": 4
+   },
+   "unsupported": {
+    "unsupported": 0,
+    "overstated": 0,
+    "predicted": 4
+   },
+   "missing": {
+    "what_happened": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "when": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "where": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "who": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "loss_value": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "evidence": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "witnesses": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    }
+   },
+   "contradictions": {
+    "expected": [],
+    "predicted": []
+   },
+   "language": {
+    "expected": "full",
+    "predicted": "full",
+    "route": "human_review_required",
+    "correct": true
+   },
+   "draft": {
+    "present": true,
+    "checks": {
+     "sections_present": true,
+     "statements_verbatim": true,
+     "details_quoted": true,
+     "checklist_present": true,
+     "no_forbidden_claims": true
+    },
+    "passed": true
+   }
+  },
+  {
+   "id": "D05",
+   "split": "dev",
+   "group": "contradiction_date",
+   "categories": {
+    "people": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "datetime": {
+     "gold": 3,
+     "predicted": 3,
+     "supported": 3,
+     "found": 3,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "location": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "action": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "loss": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "witness": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "evidence": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    }
+   },
+   "integrity": {
+    "non_verbatim_quotes": 0,
+    "unbacked_verification_claims": 0,
+    "non_draft_submission_status": 0,
+    "invalid_contradictions": 0,
+    "statements_not_preserved": 0
+   },
+   "polarity": {
+    "correct": 7,
+    "assessed": 7
+   },
+   "unsupported": {
+    "unsupported": 0,
+    "overstated": 0,
+    "predicted": 7
+   },
+   "missing": {
+    "what_happened": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "when": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "where": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "who": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "loss_value": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "evidence": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "witnesses": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    }
+   },
+   "contradictions": {
+    "expected": [
+     "date"
+    ],
+    "predicted": [
+     "date"
+    ]
+   },
+   "language": {
+    "expected": "full",
+    "predicted": "full",
+    "route": "human_review_required",
+    "correct": true
+   },
+   "draft": {
+    "present": true,
+    "checks": {
+     "sections_present": true,
+     "statements_verbatim": true,
+     "details_quoted": true,
+     "checklist_present": true,
+     "no_forbidden_claims": true
+    },
+    "passed": true
+   }
+  },
+  {
+   "id": "D06",
+   "split": "dev",
+   "group": "contradiction_amount",
+   "categories": {
+    "people": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "datetime": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "location": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "action": {
+     "gold": 2,
+     "predicted": 2,
+     "supported": 2,
+     "found": 2,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "loss": {
+     "gold": 2,
+     "predicted": 2,
+     "supported": 2,
+     "found": 2,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "witness": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "evidence": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    }
+   },
+   "integrity": {
+    "non_verbatim_quotes": 0,
+    "unbacked_verification_claims": 0,
+    "non_draft_submission_status": 0,
+    "invalid_contradictions": 0,
+    "statements_not_preserved": 0
+   },
+   "polarity": {
+    "correct": 6,
+    "assessed": 6
+   },
+   "unsupported": {
+    "unsupported": 0,
+    "overstated": 0,
+    "predicted": 6
+   },
+   "missing": {
+    "what_happened": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "when": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "where": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "who": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "loss_value": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "evidence": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "witnesses": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    }
+   },
+   "contradictions": {
+    "expected": [
+     "amount"
+    ],
+    "predicted": [
+     "amount"
+    ]
+   },
+   "language": {
+    "expected": "full",
+    "predicted": "full",
+    "route": "human_review_required",
+    "correct": true
+   },
+   "draft": {
+    "present": true,
+    "checks": {
+     "sections_present": true,
+     "statements_verbatim": true,
+     "details_quoted": true,
+     "checklist_present": true,
+     "no_forbidden_claims": true
+    },
+    "passed": true
+   }
+  },
+  {
+   "id": "D07",
+   "split": "dev",
+   "group": "contradiction_identity",
+   "categories": {
+    "people": {
+     "gold": 2,
+     "predicted": 2,
+     "supported": 2,
+     "found": 2,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "datetime": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "location": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "action": {
+     "gold": 2,
+     "predicted": 3,
+     "supported": 3,
+     "found": 2,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "loss": {
+     "gold": 1,
+     "predicted": 2,
+     "supported": 2,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "witness": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "evidence": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    }
+   },
+   "integrity": {
+    "non_verbatim_quotes": 0,
+    "unbacked_verification_claims": 0,
+    "non_draft_submission_status": 0,
+    "invalid_contradictions": 0,
+    "statements_not_preserved": 0
+   },
+   "polarity": {
+    "correct": 7,
+    "assessed": 7
+   },
+   "unsupported": {
+    "unsupported": 0,
+    "overstated": 0,
+    "predicted": 9
+   },
+   "missing": {
+    "what_happened": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "when": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "where": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "who": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "loss_value": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "evidence": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "witnesses": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    }
+   },
+   "contradictions": {
+    "expected": [
+     "identity"
+    ],
+    "predicted": [
+     "identity"
+    ]
+   },
+   "language": {
+    "expected": "full",
+    "predicted": "full",
+    "route": "human_review_required",
+    "correct": true
+   },
+   "draft": {
+    "present": true,
+    "checks": {
+     "sections_present": true,
+     "statements_verbatim": true,
+     "details_quoted": true,
+     "checklist_present": true,
+     "no_forbidden_claims": true
+    },
+    "passed": true
+   }
+  },
+  {
+   "id": "D08",
+   "split": "dev",
+   "group": "contradiction_count_time",
+   "categories": {
+    "people": {
+     "gold": 3,
+     "predicted": 4,
+     "supported": 4,
+     "found": 3,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "datetime": {
+     "gold": 3,
+     "predicted": 3,
+     "supported": 3,
+     "found": 3,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "location": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "action": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "loss": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "witness": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "evidence": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    }
+   },
+   "integrity": {
+    "non_verbatim_quotes": 0,
+    "unbacked_verification_claims": 0,
+    "non_draft_submission_status": 0,
+    "invalid_contradictions": 0,
+    "statements_not_preserved": 0
+   },
+   "polarity": {
+    "correct": 8,
+    "assessed": 8
+   },
+   "unsupported": {
+    "unsupported": 0,
+    "overstated": 0,
+    "predicted": 9
+   },
+   "missing": {
+    "what_happened": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "when": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "where": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "who": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "loss_value": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "evidence": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "witnesses": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    }
+   },
+   "contradictions": {
+    "expected": [
+     "number_of_persons",
+     "time"
+    ],
+    "predicted": [
+     "number_of_persons",
+     "time"
+    ]
+   },
+   "language": {
+    "expected": "full",
+    "predicted": "full",
+    "route": "human_review_required",
+    "correct": true
+   },
+   "draft": {
+    "present": true,
+    "checks": {
+     "sections_present": true,
+     "statements_verbatim": true,
+     "details_quoted": true,
+     "checklist_present": true,
+     "no_forbidden_claims": true
+    },
+    "passed": true
+   }
+  },
+  {
+   "id": "D09",
+   "split": "dev",
+   "group": "uncertain_denied",
+   "categories": {
+    "people": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "datetime": {
+     "gold": 2,
+     "predicted": 2,
+     "supported": 2,
+     "found": 2,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "location": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "action": {
+     "gold": 2,
+     "predicted": 2,
+     "supported": 2,
+     "found": 2,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "loss": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "witness": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "evidence": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    }
+   },
+   "integrity": {
+    "non_verbatim_quotes": 0,
+    "unbacked_verification_claims": 0,
+    "non_draft_submission_status": 0,
+    "invalid_contradictions": 0,
+    "statements_not_preserved": 0
+   },
+   "polarity": {
+    "correct": 6,
+    "assessed": 6
+   },
+   "unsupported": {
+    "unsupported": 0,
+    "overstated": 0,
+    "predicted": 6
+   },
+   "missing": {
+    "what_happened": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "when": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "where": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "who": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "loss_value": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "evidence": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "witnesses": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    }
+   },
+   "contradictions": {
+    "expected": [],
+    "predicted": []
+   },
+   "language": {
+    "expected": "full",
+    "predicted": "full",
+    "route": "human_review_required",
+    "correct": true
+   },
+   "draft": {
+    "present": true,
+    "checks": {
+     "sections_present": true,
+     "statements_verbatim": true,
+     "details_quoted": true,
+     "checklist_present": true,
+     "no_forbidden_claims": true
+    },
+    "passed": true
+   }
+  },
+  {
+   "id": "D10",
+   "split": "dev",
+   "group": "uncertain_denied",
+   "categories": {
+    "people": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "datetime": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "location": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "action": {
+     "gold": 1,
+     "predicted": 3,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [
+      "taken",
+      "took"
+     ],
+     "polarity_errors": []
+    },
+    "loss": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "witness": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "evidence": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    }
+   },
+   "integrity": {
+    "non_verbatim_quotes": 0,
+    "unbacked_verification_claims": 0,
+    "non_draft_submission_status": 0,
+    "invalid_contradictions": 0,
+    "statements_not_preserved": 0
+   },
+   "polarity": {
+    "correct": 5,
+    "assessed": 5
+   },
+   "unsupported": {
+    "unsupported": 2,
+    "overstated": 0,
+    "predicted": 7
+   },
+   "missing": {
+    "what_happened": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "when": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "where": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "who": {
+     "expected": [
+      "unknown_to_complainant"
+     ],
+     "predicted": "unknown_to_complainant",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "loss_value": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "evidence": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "witnesses": {
+     "expected": [
+      "explicitly_denied"
+     ],
+     "predicted": "explicitly_denied",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    }
+   },
+   "contradictions": {
+    "expected": [],
+    "predicted": []
+   },
+   "language": {
+    "expected": "full",
+    "predicted": "full",
+    "route": "human_review_required",
+    "correct": true
+   },
+   "draft": {
+    "present": true,
+    "checks": {
+     "sections_present": true,
+     "statements_verbatim": true,
+     "details_quoted": true,
+     "checklist_present": true,
+     "no_forbidden_claims": true
+    },
+    "passed": true
+   }
+  },
+  {
+   "id": "D11",
+   "split": "dev",
+   "group": "unsupported_allegation",
+   "categories": {
+    "people": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "datetime": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "location": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "action": {
+     "gold": 2,
+     "predicted": 2,
+     "supported": 2,
+     "found": 2,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "loss": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "witness": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "evidence": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    }
+   },
+   "integrity": {
+    "non_verbatim_quotes": 0,
+    "unbacked_verification_claims": 0,
+    "non_draft_submission_status": 0,
+    "invalid_contradictions": 0,
+    "statements_not_preserved": 0
+   },
+   "polarity": {
+    "correct": 5,
+    "assessed": 5
+   },
+   "unsupported": {
+    "unsupported": 0,
+    "overstated": 0,
+    "predicted": 5
+   },
+   "missing": {
+    "what_happened": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "when": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "where": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "who": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "loss_value": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "evidence": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "witnesses": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    }
+   },
+   "contradictions": {
+    "expected": [],
+    "predicted": []
+   },
+   "language": {
+    "expected": "full",
+    "predicted": "full",
+    "route": "human_review_required",
+    "correct": true
+   },
+   "draft": {
+    "present": true,
+    "checks": {
+     "sections_present": true,
+     "statements_verbatim": true,
+     "details_quoted": true,
+     "checklist_present": true,
+     "no_forbidden_claims": true
+    },
+    "passed": true
+   }
+  },
+  {
+   "id": "D12",
+   "split": "dev",
+   "group": "hinglish",
+   "categories": {
+    "people": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "datetime": {
+     "gold": 2,
+     "predicted": 2,
+     "supported": 2,
+     "found": 2,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "location": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "action": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "loss": {
+     "gold": 2,
+     "predicted": 2,
+     "supported": 2,
+     "found": 2,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "witness": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "evidence": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    }
+   },
+   "integrity": {
+    "non_verbatim_quotes": 0,
+    "unbacked_verification_claims": 0,
+    "non_draft_submission_status": 0,
+    "invalid_contradictions": 0,
+    "statements_not_preserved": 0
+   },
+   "polarity": {
+    "correct": 7,
+    "assessed": 7
+   },
+   "unsupported": {
+    "unsupported": 0,
+    "overstated": 0,
+    "predicted": 7
+   },
+   "missing": {
+    "what_happened": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "when": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "where": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "who": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "loss_value": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "evidence": {
+     "expected": [
+      "not_determined"
+     ],
+     "predicted": "not_determined",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "witnesses": {
+     "expected": [
+      "not_determined"
+     ],
+     "predicted": "not_determined",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    }
+   },
+   "contradictions": {
+    "expected": [],
+    "predicted": []
+   },
+   "language": {
+    "expected": "limited",
+    "predicted": "limited",
+    "route": "human_review_required",
+    "correct": true
+   },
+   "draft": {
+    "present": true,
+    "checks": {
+     "sections_present": true,
+     "statements_verbatim": true,
+     "details_quoted": true,
+     "checklist_present": true,
+     "no_forbidden_claims": true
+    },
+    "passed": true
+   }
+  },
+  {
+   "id": "D13",
+   "split": "dev",
+   "group": "marathi",
+   "categories": {
+    "people": {
+     "gold": 2,
+     "predicted": 2,
+     "supported": 2,
+     "found": 2,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "datetime": {
+     "gold": 2,
+     "predicted": 2,
+     "supported": 2,
+     "found": 2,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "location": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "action": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "loss": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "witness": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "evidence": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    }
+   },
+   "integrity": {
+    "non_verbatim_quotes": 0,
+    "unbacked_verification_claims": 0,
+    "non_draft_submission_status": 0,
+    "invalid_contradictions": 0,
+    "statements_not_preserved": 0
+   },
+   "polarity": {
+    "correct": 8,
+    "assessed": 8
+   },
+   "unsupported": {
+    "unsupported": 0,
+    "overstated": 0,
+    "predicted": 8
+   },
+   "missing": {
+    "what_happened": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "when": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "where": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "who": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "loss_value": {
+     "expected": [
+      "not_determined"
+     ],
+     "predicted": "not_determined",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "evidence": {
+     "expected": [
+      "not_determined"
+     ],
+     "predicted": "not_determined",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "witnesses": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    }
+   },
+   "contradictions": {
+    "expected": [],
+    "predicted": []
+   },
+   "language": {
+    "expected": "limited",
+    "predicted": "limited",
+    "route": "human_review_required",
+    "correct": true
+   },
+   "draft": {
+    "present": true,
+    "checks": {
+     "sections_present": true,
+     "statements_verbatim": true,
+     "details_quoted": true,
+     "checklist_present": true,
+     "no_forbidden_claims": true
+    },
+    "passed": true
+   }
+  },
+  {
+   "id": "D14",
+   "split": "dev",
+   "group": "missing_location",
+   "categories": {
+    "people": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "datetime": {
+     "gold": 2,
+     "predicted": 2,
+     "supported": 2,
+     "found": 2,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "location": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "action": {
+     "gold": 2,
+     "predicted": 2,
+     "supported": 2,
+     "found": 2,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "loss": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "witness": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "evidence": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    }
+   },
+   "integrity": {
+    "non_verbatim_quotes": 0,
+    "unbacked_verification_claims": 0,
+    "non_draft_submission_status": 0,
+    "invalid_contradictions": 0,
+    "statements_not_preserved": 0
+   },
+   "polarity": {
+    "correct": 6,
+    "assessed": 6
+   },
+   "unsupported": {
+    "unsupported": 0,
+    "overstated": 0,
+    "predicted": 6
+   },
+   "missing": {
+    "what_happened": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "when": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "where": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "who": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "loss_value": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "evidence": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "witnesses": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    }
+   },
+   "contradictions": {
+    "expected": [],
+    "predicted": []
+   },
+   "language": {
+    "expected": "full",
+    "predicted": "full",
+    "route": "human_review_required",
+    "correct": true
+   },
+   "draft": {
+    "present": true,
+    "checks": {
+     "sections_present": true,
+     "statements_verbatim": true,
+     "details_quoted": true,
+     "checklist_present": true,
+     "no_forbidden_claims": true
+    },
+    "passed": true
+   }
+  },
+  {
+   "id": "D15",
+   "split": "dev",
+   "group": "evidence_fraud",
+   "categories": {
+    "people": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "datetime": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "location": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "action": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "loss": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "witness": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "evidence": {
+     "gold": 3,
+     "predicted": 4,
+     "supported": 4,
+     "found": 3,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    }
+   },
+   "integrity": {
+    "non_verbatim_quotes": 0,
+    "unbacked_verification_claims": 0,
+    "non_draft_submission_status": 0,
+    "invalid_contradictions": 0,
+    "statements_not_preserved": 0
+   },
+   "polarity": {
+    "correct": 6,
+    "assessed": 6
+   },
+   "unsupported": {
+    "unsupported": 0,
+    "overstated": 0,
+    "predicted": 7
+   },
+   "missing": {
+    "what_happened": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "when": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "where": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "who": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "loss_value": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "evidence": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "witnesses": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    }
+   },
+   "contradictions": {
+    "expected": [],
+    "predicted": []
+   },
+   "language": {
+    "expected": "full",
+    "predicted": "full",
+    "route": "human_review_required",
+    "correct": true
+   },
+   "draft": {
+    "present": true,
+    "checks": {
+     "sections_present": true,
+     "statements_verbatim": true,
+     "details_quoted": true,
+     "checklist_present": true,
+     "no_forbidden_claims": true
+    },
+    "passed": true
+   }
+  },
+  {
+   "id": "D16",
+   "split": "dev",
+   "group": "clear_complete",
+   "categories": {
+    "people": {
+     "gold": 2,
+     "predicted": 2,
+     "supported": 2,
+     "found": 2,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "datetime": {
+     "gold": 2,
+     "predicted": 2,
+     "supported": 2,
+     "found": 2,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "location": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "action": {
+     "gold": 2,
+     "predicted": 3,
+     "supported": 2,
+     "found": 2,
+     "missed": [],
+     "unsupported": [
+      "damaged"
+     ],
+     "polarity_errors": []
+    },
+    "loss": {
+     "gold": 2,
+     "predicted": 2,
+     "supported": 2,
+     "found": 2,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "witness": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "evidence": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    }
+   },
+   "integrity": {
+    "non_verbatim_quotes": 0,
+    "unbacked_verification_claims": 0,
+    "non_draft_submission_status": 0,
+    "invalid_contradictions": 0,
+    "statements_not_preserved": 0
+   },
+   "polarity": {
+    "correct": 10,
+    "assessed": 10
+   },
+   "unsupported": {
+    "unsupported": 1,
+    "overstated": 0,
+    "predicted": 11
+   },
+   "missing": {
+    "what_happened": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "when": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "where": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "who": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "loss_value": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "evidence": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "witnesses": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    }
+   },
+   "contradictions": {
+    "expected": [],
+    "predicted": []
+   },
+   "language": {
+    "expected": "full",
+    "predicted": "full",
+    "route": "human_review_required",
+    "correct": true
+   },
+   "draft": {
+    "present": true,
+    "checks": {
+     "sections_present": true,
+     "statements_verbatim": true,
+     "details_quoted": true,
+     "checklist_present": true,
+     "no_forbidden_claims": true
+    },
+    "passed": true
+   }
+  },
+  {
+   "id": "D17",
+   "split": "dev",
+   "group": "incomplete",
+   "categories": {
+    "people": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "datetime": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "location": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "action": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "loss": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "witness": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "evidence": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    }
+   },
+   "integrity": {
+    "non_verbatim_quotes": 0,
+    "unbacked_verification_claims": 0,
+    "non_draft_submission_status": 0,
+    "invalid_contradictions": 0,
+    "statements_not_preserved": 0
+   },
+   "polarity": {
+    "correct": 4,
+    "assessed": 4
+   },
+   "unsupported": {
+    "unsupported": 0,
+    "overstated": 0,
+    "predicted": 4
+   },
+   "missing": {
+    "what_happened": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "when": {
+     "expected": [
+      "unknown_to_complainant"
+     ],
+     "predicted": "unknown_to_complainant",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "where": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "who": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "loss_value": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "evidence": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "witnesses": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    }
+   },
+   "contradictions": {
+    "expected": [],
+    "predicted": []
+   },
+   "language": {
+    "expected": "full",
+    "predicted": "full",
+    "route": "human_review_required",
+    "correct": true
+   },
+   "draft": {
+    "present": true,
+    "checks": {
+     "sections_present": true,
+     "statements_verbatim": true,
+     "details_quoted": true,
+     "checklist_present": true,
+     "no_forbidden_claims": true
+    },
+    "passed": true
+   }
+  },
+  {
+   "id": "D18",
+   "split": "dev",
+   "group": "contradiction_injury",
+   "categories": {
+    "people": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "datetime": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "location": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "action": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "loss": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "witness": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "evidence": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    }
+   },
+   "integrity": {
+    "non_verbatim_quotes": 0,
+    "unbacked_verification_claims": 0,
+    "non_draft_submission_status": 0,
+    "invalid_contradictions": 0,
+    "statements_not_preserved": 0
+   },
+   "polarity": {
+    "correct": 4,
+    "assessed": 4
+   },
+   "unsupported": {
+    "unsupported": 0,
+    "overstated": 0,
+    "predicted": 4
+   },
+   "missing": {
+    "what_happened": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "when": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "where": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "who": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "loss_value": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "evidence": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "witnesses": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    }
+   },
+   "contradictions": {
+    "expected": [
+     "injury_denied_and_asserted"
+    ],
+    "predicted": [
+     "injury_denied_and_asserted"
+    ]
+   },
+   "language": {
+    "expected": "full",
+    "predicted": "full",
+    "route": "human_review_required",
+    "correct": true
+   },
+   "draft": {
+    "present": true,
+    "checks": {
+     "sections_present": true,
+     "statements_verbatim": true,
+     "details_quoted": true,
+     "checklist_present": true,
+     "no_forbidden_claims": true
+    },
+    "passed": true
+   }
+  },
+  {
+   "id": "D19",
+   "split": "dev",
+   "group": "contradiction_time",
+   "categories": {
+    "people": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "datetime": {
+     "gold": 3,
+     "predicted": 3,
+     "supported": 3,
+     "found": 3,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "location": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "action": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "loss": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "witness": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "evidence": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    }
+   },
+   "integrity": {
+    "non_verbatim_quotes": 0,
+    "unbacked_verification_claims": 0,
+    "non_draft_submission_status": 0,
+    "invalid_contradictions": 0,
+    "statements_not_preserved": 0
+   },
+   "polarity": {
+    "correct": 7,
+    "assessed": 7
+   },
+   "unsupported": {
+    "unsupported": 0,
+    "overstated": 0,
+    "predicted": 7
+   },
+   "missing": {
+    "what_happened": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "when": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "where": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "who": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "loss_value": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "evidence": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "witnesses": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    }
+   },
+   "contradictions": {
+    "expected": [
+     "time"
+    ],
+    "predicted": [
+     "time"
+    ]
+   },
+   "language": {
+    "expected": "full",
+    "predicted": "full",
+    "route": "human_review_required",
+    "correct": true
+   },
+   "draft": {
+    "present": true,
+    "checks": {
+     "sections_present": true,
+     "statements_verbatim": true,
+     "details_quoted": true,
+     "checklist_present": true,
+     "no_forbidden_claims": true
+    },
+    "passed": true
+   }
+  },
+  {
+   "id": "D20",
+   "split": "dev",
+   "group": "uncertain_denied",
+   "categories": {
+    "people": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "datetime": {
+     "gold": 2,
+     "predicted": 2,
+     "supported": 2,
+     "found": 2,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "location": {
+     "gold": 1,
+     "predicted": 2,
+     "supported": 2,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "action": {
+     "gold": 2,
+     "predicted": 2,
+     "supported": 2,
+     "found": 2,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "loss": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "witness": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "evidence": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    }
+   },
+   "integrity": {
+    "non_verbatim_quotes": 0,
+    "unbacked_verification_claims": 0,
+    "non_draft_submission_status": 0,
+    "invalid_contradictions": 0,
+    "statements_not_preserved": 0
+   },
+   "polarity": {
+    "correct": 9,
+    "assessed": 9
+   },
+   "unsupported": {
+    "unsupported": 0,
+    "overstated": 0,
+    "predicted": 10
+   },
+   "missing": {
+    "what_happened": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "when": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "where": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "who": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "loss_value": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "evidence": {
+     "expected": [
+      "explicitly_denied"
+     ],
+     "predicted": "explicitly_denied",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "witnesses": {
+     "expected": [
+      "explicitly_denied"
+     ],
+     "predicted": "explicitly_denied",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    }
+   },
+   "contradictions": {
+    "expected": [],
+    "predicted": []
+   },
+   "language": {
+    "expected": "full",
+    "predicted": "full",
+    "route": "human_review_required",
+    "correct": true
+   },
+   "draft": {
+    "present": true,
+    "checks": {
+     "sections_present": true,
+     "statements_verbatim": true,
+     "details_quoted": true,
+     "checklist_present": true,
+     "no_forbidden_claims": true
+    },
+    "passed": true
+   }
+  },
+  {
+   "id": "H01",
+   "split": "heldout",
+   "group": "clear_complete",
+   "categories": {
+    "people": {
+     "gold": 2,
+     "predicted": 2,
+     "supported": 2,
+     "found": 2,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "datetime": {
+     "gold": 2,
+     "predicted": 2,
+     "supported": 2,
+     "found": 2,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "location": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "action": {
+     "gold": 2,
+     "predicted": 2,
+     "supported": 2,
+     "found": 2,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "loss": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "witness": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "evidence": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    }
+   },
+   "integrity": {
+    "non_verbatim_quotes": 0,
+    "unbacked_verification_claims": 0,
+    "non_draft_submission_status": 0,
+    "invalid_contradictions": 0,
+    "statements_not_preserved": 0
+   },
+   "polarity": {
+    "correct": 10,
+    "assessed": 10
+   },
+   "unsupported": {
+    "unsupported": 0,
+    "overstated": 0,
+    "predicted": 10
+   },
+   "missing": {
+    "what_happened": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "when": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "where": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "who": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "loss_value": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "evidence": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "witnesses": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    }
+   },
+   "contradictions": {
+    "expected": [],
+    "predicted": []
+   },
+   "language": {
+    "expected": "full",
+    "predicted": "full",
+    "route": "human_review_required",
+    "correct": true
+   },
+   "draft": {
+    "present": true,
+    "checks": {
+     "sections_present": true,
+     "statements_verbatim": true,
+     "details_quoted": true,
+     "checklist_present": true,
+     "no_forbidden_claims": true
+    },
+    "passed": true
+   }
+  },
+  {
+   "id": "H02",
+   "split": "heldout",
+   "group": "incomplete",
+   "categories": {
+    "people": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "datetime": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "location": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "action": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "loss": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "witness": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "evidence": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    }
+   },
+   "integrity": {
+    "non_verbatim_quotes": 0,
+    "unbacked_verification_claims": 0,
+    "non_draft_submission_status": 0,
+    "invalid_contradictions": 0,
+    "statements_not_preserved": 0
+   },
+   "polarity": {
+    "correct": 2,
+    "assessed": 2
+   },
+   "unsupported": {
+    "unsupported": 0,
+    "overstated": 0,
+    "predicted": 2
+   },
+   "missing": {
+    "what_happened": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "when": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "where": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "who": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "loss_value": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "evidence": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "witnesses": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    }
+   },
+   "contradictions": {
+    "expected": [],
+    "predicted": []
+   },
+   "language": {
+    "expected": "full",
+    "predicted": "full",
+    "route": "human_review_required",
+    "correct": true
+   },
+   "draft": {
+    "present": true,
+    "checks": {
+     "sections_present": true,
+     "statements_verbatim": true,
+     "details_quoted": true,
+     "checklist_present": true,
+     "no_forbidden_claims": true
+    },
+    "passed": true
+   }
+  },
+  {
+   "id": "H03",
+   "split": "heldout",
+   "group": "contradiction_date",
+   "categories": {
+    "people": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "datetime": {
+     "gold": 2,
+     "predicted": 2,
+     "supported": 2,
+     "found": 2,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "location": {
+     "gold": 1,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [
+      "my house in Vikhroli"
+     ],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "action": {
+     "gold": 2,
+     "predicted": 2,
+     "supported": 2,
+     "found": 2,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "loss": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "witness": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "evidence": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    }
+   },
+   "integrity": {
+    "non_verbatim_quotes": 0,
+    "unbacked_verification_claims": 0,
+    "non_draft_submission_status": 0,
+    "invalid_contradictions": 0,
+    "statements_not_preserved": 0
+   },
+   "polarity": {
+    "correct": 5,
+    "assessed": 5
+   },
+   "unsupported": {
+    "unsupported": 0,
+    "overstated": 0,
+    "predicted": 5
+   },
+   "missing": {
+    "what_happened": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "when": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "where": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "open",
+     "correct": false,
+     "false_missing": true,
+     "missed_missing": false
+    },
+    "who": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "loss_value": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "evidence": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "witnesses": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    }
+   },
+   "contradictions": {
+    "expected": [
+     "date"
+    ],
+    "predicted": [
+     "date"
+    ]
+   },
+   "language": {
+    "expected": "full",
+    "predicted": "full",
+    "route": "human_review_required",
+    "correct": true
+   },
+   "draft": {
+    "present": true,
+    "checks": {
+     "sections_present": true,
+     "statements_verbatim": true,
+     "details_quoted": true,
+     "checklist_present": true,
+     "no_forbidden_claims": true
+    },
+    "passed": true
+   }
+  },
+  {
+   "id": "H04",
+   "split": "heldout",
+   "group": "contradiction_identity",
+   "categories": {
+    "people": {
+     "gold": 2,
+     "predicted": 2,
+     "supported": 2,
+     "found": 1,
+     "missed": [
+      "Kishor Shinde"
+     ],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "datetime": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "location": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "action": {
+     "gold": 2,
+     "predicted": 2,
+     "supported": 2,
+     "found": 2,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "loss": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "witness": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "evidence": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    }
+   },
+   "integrity": {
+    "non_verbatim_quotes": 0,
+    "unbacked_verification_claims": 0,
+    "non_draft_submission_status": 0,
+    "invalid_contradictions": 0,
+    "statements_not_preserved": 0
+   },
+   "polarity": {
+    "correct": 5,
+    "assessed": 5
+   },
+   "unsupported": {
+    "unsupported": 0,
+    "overstated": 0,
+    "predicted": 6
+   },
+   "missing": {
+    "what_happened": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "when": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "where": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "who": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "loss_value": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "evidence": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "witnesses": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    }
+   },
+   "contradictions": {
+    "expected": [
+     "identity"
+    ],
+    "predicted": []
+   },
+   "language": {
+    "expected": "full",
+    "predicted": "full",
+    "route": "human_review_required",
+    "correct": true
+   },
+   "draft": {
+    "present": true,
+    "checks": {
+     "sections_present": true,
+     "statements_verbatim": true,
+     "details_quoted": true,
+     "checklist_present": true,
+     "no_forbidden_claims": true
+    },
+    "passed": true
+   }
+  },
+  {
+   "id": "H05",
+   "split": "heldout",
+   "group": "contradiction_date_amount",
+   "categories": {
+    "people": {
+     "gold": 1,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [
+      "a delivery boy"
+     ],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "datetime": {
+     "gold": 2,
+     "predicted": 2,
+     "supported": 2,
+     "found": 2,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "location": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "action": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "loss": {
+     "gold": 2,
+     "predicted": 2,
+     "supported": 2,
+     "found": 2,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "witness": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "evidence": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    }
+   },
+   "integrity": {
+    "non_verbatim_quotes": 0,
+    "unbacked_verification_claims": 0,
+    "non_draft_submission_status": 0,
+    "invalid_contradictions": 0,
+    "statements_not_preserved": 0
+   },
+   "polarity": {
+    "correct": 5,
+    "assessed": 5
+   },
+   "unsupported": {
+    "unsupported": 0,
+    "overstated": 0,
+    "predicted": 5
+   },
+   "missing": {
+    "what_happened": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "when": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "where": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "who": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "open",
+     "correct": false,
+     "false_missing": true,
+     "missed_missing": false
+    },
+    "loss_value": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "evidence": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "witnesses": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    }
+   },
+   "contradictions": {
+    "expected": [
+     "amount",
+     "date"
+    ],
+    "predicted": [
+     "amount",
+     "date"
+    ]
+   },
+   "language": {
+    "expected": "full",
+    "predicted": "full",
+    "route": "human_review_required",
+    "correct": true
+   },
+   "draft": {
+    "present": true,
+    "checks": {
+     "sections_present": true,
+     "statements_verbatim": true,
+     "details_quoted": true,
+     "checklist_present": true,
+     "no_forbidden_claims": true
+    },
+    "passed": true
+   }
+  },
+  {
+   "id": "H06",
+   "split": "heldout",
+   "group": "uncertain_denied",
+   "categories": {
+    "people": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "datetime": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "location": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": [
+      {
+       "gold": "Powai Lake",
+       "expected": "asserted",
+       "predicted": "uncertain"
+      }
+     ]
+    },
+    "action": {
+     "gold": 2,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [
+      "opened"
+     ],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "loss": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "witness": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "evidence": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    }
+   },
+   "integrity": {
+    "non_verbatim_quotes": 0,
+    "unbacked_verification_claims": 0,
+    "non_draft_submission_status": 0,
+    "invalid_contradictions": 0,
+    "statements_not_preserved": 0
+   },
+   "polarity": {
+    "correct": 3,
+    "assessed": 4
+   },
+   "unsupported": {
+    "unsupported": 0,
+    "overstated": 0,
+    "predicted": 4
+   },
+   "missing": {
+    "what_happened": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "when": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "where": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "who": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "loss_value": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "evidence": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "witnesses": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    }
+   },
+   "contradictions": {
+    "expected": [],
+    "predicted": []
+   },
+   "language": {
+    "expected": "full",
+    "predicted": "full",
+    "route": "human_review_required",
+    "correct": true
+   },
+   "draft": {
+    "present": true,
+    "checks": {
+     "sections_present": true,
+     "statements_verbatim": true,
+     "details_quoted": true,
+     "checklist_present": true,
+     "no_forbidden_claims": true
+    },
+    "passed": true
+   }
+  },
+  {
+   "id": "H07",
+   "split": "heldout",
+   "group": "uncertain_denied",
+   "categories": {
+    "people": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "datetime": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "location": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "action": {
+     "gold": 2,
+     "predicted": 1,
+     "supported": 0,
+     "found": 0,
+     "missed": [
+      "shouted",
+      "touch"
+     ],
+     "unsupported": [
+      "taken"
+     ],
+     "polarity_errors": []
+    },
+    "loss": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "witness": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "evidence": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    }
+   },
+   "integrity": {
+    "non_verbatim_quotes": 0,
+    "unbacked_verification_claims": 0,
+    "non_draft_submission_status": 0,
+    "invalid_contradictions": 0,
+    "statements_not_preserved": 0
+   },
+   "polarity": {
+    "correct": 4,
+    "assessed": 4
+   },
+   "unsupported": {
+    "unsupported": 1,
+    "overstated": 0,
+    "predicted": 5
+   },
+   "missing": {
+    "what_happened": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "when": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "where": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "who": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "loss_value": {
+     "expected": [
+      "explicitly_denied"
+     ],
+     "predicted": "explicitly_denied",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "evidence": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "witnesses": {
+     "expected": [
+      "explicitly_denied"
+     ],
+     "predicted": "open",
+     "correct": false,
+     "false_missing": true,
+     "missed_missing": false
+    }
+   },
+   "contradictions": {
+    "expected": [],
+    "predicted": []
+   },
+   "language": {
+    "expected": "full",
+    "predicted": "full",
+    "route": "human_review_required",
+    "correct": true
+   },
+   "draft": {
+    "present": true,
+    "checks": {
+     "sections_present": true,
+     "statements_verbatim": true,
+     "details_quoted": true,
+     "checklist_present": true,
+     "no_forbidden_claims": true
+    },
+    "passed": true
+   }
+  },
+  {
+   "id": "H08",
+   "split": "heldout",
+   "group": "unsupported_allegation",
+   "categories": {
+    "people": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "datetime": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "location": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "action": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": [
+      {
+       "gold": "took",
+       "expected": "uncertain",
+       "predicted": "asserted"
+      }
+     ]
+    },
+    "loss": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "witness": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "evidence": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    }
+   },
+   "integrity": {
+    "non_verbatim_quotes": 0,
+    "unbacked_verification_claims": 0,
+    "non_draft_submission_status": 0,
+    "invalid_contradictions": 0,
+    "statements_not_preserved": 0
+   },
+   "polarity": {
+    "correct": 3,
+    "assessed": 4
+   },
+   "unsupported": {
+    "unsupported": 0,
+    "overstated": 1,
+    "predicted": 4
+   },
+   "missing": {
+    "what_happened": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "when": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "where": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "who": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "loss_value": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "evidence": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "witnesses": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    }
+   },
+   "contradictions": {
+    "expected": [],
+    "predicted": []
+   },
+   "language": {
+    "expected": "full",
+    "predicted": "full",
+    "route": "human_review_required",
+    "correct": true
+   },
+   "draft": {
+    "present": true,
+    "checks": {
+     "sections_present": true,
+     "statements_verbatim": true,
+     "details_quoted": true,
+     "checklist_present": true,
+     "no_forbidden_claims": true
+    },
+    "passed": true
+   }
+  },
+  {
+   "id": "H09",
+   "split": "heldout",
+   "group": "hinglish",
+   "categories": {
+    "people": {
+     "gold": 2,
+     "predicted": 2,
+     "supported": 2,
+     "found": 2,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "datetime": {
+     "gold": 2,
+     "predicted": 2,
+     "supported": 2,
+     "found": 2,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "location": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "action": {
+     "gold": 2,
+     "predicted": 2,
+     "supported": 2,
+     "found": 2,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "loss": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "witness": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "evidence": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    }
+   },
+   "integrity": {
+    "non_verbatim_quotes": 0,
+    "unbacked_verification_claims": 0,
+    "non_draft_submission_status": 0,
+    "invalid_contradictions": 0,
+    "statements_not_preserved": 0
+   },
+   "polarity": {
+    "correct": 9,
+    "assessed": 9
+   },
+   "unsupported": {
+    "unsupported": 0,
+    "overstated": 0,
+    "predicted": 9
+   },
+   "missing": {
+    "what_happened": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "when": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "where": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "who": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "loss_value": {
+     "expected": [
+      "not_determined"
+     ],
+     "predicted": "not_determined",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "evidence": {
+     "expected": [
+      "not_determined"
+     ],
+     "predicted": "not_determined",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "witnesses": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    }
+   },
+   "contradictions": {
+    "expected": [],
+    "predicted": []
+   },
+   "language": {
+    "expected": "limited",
+    "predicted": "limited",
+    "route": "human_review_required",
+    "correct": true
+   },
+   "draft": {
+    "present": true,
+    "checks": {
+     "sections_present": true,
+     "statements_verbatim": true,
+     "details_quoted": true,
+     "checklist_present": true,
+     "no_forbidden_claims": true
+    },
+    "passed": true
+   }
+  },
+  {
+   "id": "H10",
+   "split": "heldout",
+   "group": "marathi",
+   "categories": {
+    "people": {
+     "gold": 1,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [
+      "एका माणसाने"
+     ],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "datetime": {
+     "gold": 4,
+     "predicted": 3,
+     "supported": 3,
+     "found": 3,
+     "missed": [
+      "संध्याकाळी"
+     ],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "location": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "action": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "loss": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "witness": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "evidence": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    }
+   },
+   "integrity": {
+    "non_verbatim_quotes": 0,
+    "unbacked_verification_claims": 0,
+    "non_draft_submission_status": 0,
+    "invalid_contradictions": 0,
+    "statements_not_preserved": 0
+   },
+   "polarity": {
+    "correct": 6,
+    "assessed": 6
+   },
+   "unsupported": {
+    "unsupported": 0,
+    "overstated": 0,
+    "predicted": 6
+   },
+   "missing": {
+    "what_happened": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "when": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "where": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "who": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_determined",
+     "correct": false,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "loss_value": {
+     "expected": [
+      "not_determined"
+     ],
+     "predicted": "not_determined",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "evidence": {
+     "expected": [
+      "not_determined"
+     ],
+     "predicted": "not_determined",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "witnesses": {
+     "expected": [
+      "not_determined"
+     ],
+     "predicted": "not_determined",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    }
+   },
+   "contradictions": {
+    "expected": [
+     "date"
+    ],
+    "predicted": [
+     "date"
+    ]
+   },
+   "language": {
+    "expected": "limited",
+    "predicted": "limited",
+    "route": "human_review_required",
+    "correct": true
+   },
+   "draft": {
+    "present": true,
+    "checks": {
+     "sections_present": true,
+     "statements_verbatim": true,
+     "details_quoted": true,
+     "checklist_present": true,
+     "no_forbidden_claims": true
+    },
+    "passed": true
+   }
+  },
+  {
+   "id": "H11",
+   "split": "heldout",
+   "group": "mixed_english",
+   "categories": {
+    "people": {
+     "gold": 2,
+     "predicted": 2,
+     "supported": 2,
+     "found": 2,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "datetime": {
+     "gold": 2,
+     "predicted": 2,
+     "supported": 2,
+     "found": 2,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "location": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "action": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "loss": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "witness": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "evidence": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    }
+   },
+   "integrity": {
+    "non_verbatim_quotes": 0,
+    "unbacked_verification_claims": 0,
+    "non_draft_submission_status": 0,
+    "invalid_contradictions": 0,
+    "statements_not_preserved": 0
+   },
+   "polarity": {
+    "correct": 8,
+    "assessed": 8
+   },
+   "unsupported": {
+    "unsupported": 0,
+    "overstated": 0,
+    "predicted": 8
+   },
+   "missing": {
+    "what_happened": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "when": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "where": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "who": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "loss_value": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "not_listed",
+     "correct": false,
+     "false_missing": false,
+     "missed_missing": true
+    },
+    "evidence": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "witnesses": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    }
+   },
+   "contradictions": {
+    "expected": [],
+    "predicted": []
+   },
+   "language": {
+    "expected": "full",
+    "predicted": "full",
+    "route": "human_review_required",
+    "correct": true
+   },
+   "draft": {
+    "present": true,
+    "checks": {
+     "sections_present": true,
+     "statements_verbatim": true,
+     "details_quoted": true,
+     "checklist_present": true,
+     "no_forbidden_claims": true
+    },
+    "passed": true
+   }
+  },
+  {
+   "id": "H12",
+   "split": "heldout",
+   "group": "unknown_location",
+   "categories": {
+    "people": {
+     "gold": 1,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [
+      "A bike rider"
+     ],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "datetime": {
+     "gold": 2,
+     "predicted": 2,
+     "supported": 2,
+     "found": 2,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "location": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "action": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "loss": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "witness": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "evidence": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    }
+   },
+   "integrity": {
+    "non_verbatim_quotes": 0,
+    "unbacked_verification_claims": 0,
+    "non_draft_submission_status": 0,
+    "invalid_contradictions": 0,
+    "statements_not_preserved": 0
+   },
+   "polarity": {
+    "correct": 4,
+    "assessed": 4
+   },
+   "unsupported": {
+    "unsupported": 0,
+    "overstated": 0,
+    "predicted": 4
+   },
+   "missing": {
+    "what_happened": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "when": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "where": {
+     "expected": [
+      "unknown_to_complainant"
+     ],
+     "predicted": "unknown_to_complainant",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "who": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "open",
+     "correct": false,
+     "false_missing": true,
+     "missed_missing": false
+    },
+    "loss_value": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "evidence": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "witnesses": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    }
+   },
+   "contradictions": {
+    "expected": [],
+    "predicted": []
+   },
+   "language": {
+    "expected": "full",
+    "predicted": "full",
+    "route": "human_review_required",
+    "correct": true
+   },
+   "draft": {
+    "present": true,
+    "checks": {
+     "sections_present": true,
+     "statements_verbatim": true,
+     "details_quoted": true,
+     "checklist_present": true,
+     "no_forbidden_claims": true
+    },
+    "passed": true
+   }
+  },
+  {
+   "id": "H13",
+   "split": "heldout",
+   "group": "contradiction_count",
+   "categories": {
+    "people": {
+     "gold": 2,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [
+      "five of them"
+     ],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "datetime": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "location": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "action": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "loss": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "witness": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "evidence": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    }
+   },
+   "integrity": {
+    "non_verbatim_quotes": 0,
+    "unbacked_verification_claims": 0,
+    "non_draft_submission_status": 0,
+    "invalid_contradictions": 0,
+    "statements_not_preserved": 0
+   },
+   "polarity": {
+    "correct": 4,
+    "assessed": 4
+   },
+   "unsupported": {
+    "unsupported": 0,
+    "overstated": 0,
+    "predicted": 4
+   },
+   "missing": {
+    "what_happened": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "when": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "where": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "who": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "loss_value": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "evidence": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "witnesses": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    }
+   },
+   "contradictions": {
+    "expected": [
+     "number_of_persons"
+    ],
+    "predicted": []
+   },
+   "language": {
+    "expected": "full",
+    "predicted": "full",
+    "route": "human_review_required",
+    "correct": true
+   },
+   "draft": {
+    "present": true,
+    "checks": {
+     "sections_present": true,
+     "statements_verbatim": true,
+     "details_quoted": true,
+     "checklist_present": true,
+     "no_forbidden_claims": true
+    },
+    "passed": true
+   }
+  },
+  {
+   "id": "H14",
+   "split": "heldout",
+   "group": "contradiction_witness",
+   "categories": {
+    "people": {
+     "gold": 2,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [
+      "A tea seller",
+      "the man"
+     ],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "datetime": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "location": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "action": {
+     "gold": 2,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [
+      "take"
+     ],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "loss": {
+     "gold": 1,
+     "predicted": 1,
+     "supported": 1,
+     "found": 1,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "witness": {
+     "gold": 2,
+     "predicted": 2,
+     "supported": 2,
+     "found": 2,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    },
+    "evidence": {
+     "gold": 0,
+     "predicted": 0,
+     "supported": 0,
+     "found": 0,
+     "missed": [],
+     "unsupported": [],
+     "polarity_errors": []
+    }
+   },
+   "integrity": {
+    "non_verbatim_quotes": 0,
+    "unbacked_verification_claims": 0,
+    "non_draft_submission_status": 0,
+    "invalid_contradictions": 0,
+    "statements_not_preserved": 0
+   },
+   "polarity": {
+    "correct": 6,
+    "assessed": 6
+   },
+   "unsupported": {
+    "unsupported": 0,
+    "overstated": 0,
+    "predicted": 6
+   },
+   "missing": {
+    "what_happened": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "when": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "where": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "not_listed",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "who": {
+     "expected": [
+      "not_listed"
+     ],
+     "predicted": "open",
+     "correct": false,
+     "false_missing": true,
+     "missed_missing": false
+    },
+    "loss_value": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "evidence": {
+     "expected": [
+      "open"
+     ],
+     "predicted": "open",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    },
+    "witnesses": {
+     "expected": [
+      "not_listed",
+      "explicitly_denied"
+     ],
+     "predicted": "explicitly_denied",
+     "correct": true,
+     "false_missing": false,
+     "missed_missing": false
+    }
+   },
+   "contradictions": {
+    "expected": [
+     "witness_denied_and_asserted"
+    ],
+    "predicted": [
+     "witness_denied_and_asserted"
+    ]
+   },
+   "language": {
+    "expected": "full",
+    "predicted": "full",
+    "route": "human_review_required",
+    "correct": true
+   },
+   "draft": {
+    "present": true,
+    "checks": {
+     "sections_present": true,
+     "statements_verbatim": true,
+     "details_quoted": true,
+     "checklist_present": true,
+     "no_forbidden_claims": true
+    },
+    "passed": true
+   }
+  }
+ ]
+}

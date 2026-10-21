@@ -1,0 +1,102 @@
+{
+  "stated_facts": [
+    "The complainant's laptop bag was taken from their office desk while they were away for lunch.",
+    "The bag contained a laptop valued at approximately Rs. 65,000.",
+    "An unidentified person took and carried away the bag stealthily."
+  ],
+  "negated_events": [
+    "No fight or physical confrontation took place during the incident."
+  ],
+  "inferred_facts": [
+    "The property was moved and taken out of the complainant's possession without consent.",
+    "The clandestine removal implies dishonest intention (animus furandi) at the time of taking."
+  ],
+  "missing_facts_to_clarify": [
+    "Identity, description, or CCTV footage identifying the suspect.",
+    "Prior criminal or conviction record of the accused once identified.",
+    "Serial number, MAC address, and current recovery status of the stolen laptop."
+  ],
+  "recommended_action": "The reported act establishes prima facie ingredients of Theft under BNS Section 303. Because the stated value of the stolen property is Rs. 65,000 (exceeding Rs. 5,000, rendering the Section 303(2) community service proviso inapplicable), the offence is classified as cognizable and non-bailable under BNSS Schedule I. The complainant should report the information under Section 173 of the Bharatiya Nagarik Suraksha Sanhita (BNSS), 2023 for registration of an FIR, subject to preliminary verification or inquiry under Section 173(3) BNSS by the police officer if deemed necessary.",
+  "candidate_evaluations": [
+    {
+      "section": 303,
+      "applicability_score": 0.95,
+      "reasoning": "The narrative satisfies the core elements of theft: movable property (laptop bag and laptop) was taken out of the complainant's possession without consent by moving it with dishonest intent. Since the stated property value is Rs. 65,000, the standard penal provision applies rather than the minor proviso under Section 303(2).",
+      "statutory_elements_supported": [
+        "Movable property (laptop bag and laptop)",
+        "Property was in the possession of the complainant",
+        "Property was moved out of possession without consent",
+        "Dishonest intention at the time of taking"
+      ],
+      "unestablished_elements": [
+        "Identification and proof of identity of the specific offender"
+      ]
+    },
+    {
+      "section": 314,
+      "applicability_score": 0.05,
+      "reasoning": "Section 314 requires property to come into possession innocently or non-trespassorily and subsequently be dishonestly converted or misappropriated. Here, the initial taking was directly from the desk without consent (trespassory taking), squarely constituting theft rather than criminal misappropriation.",
+      "statutory_elements_supported": [
+        "Movable property involved"
+      ],
+      "unestablished_elements": [
+        "Initial non-trespassory or innocent possession prior to conversion",
+        "Subsequent conversion or disposal of property"
+      ]
+    },
+    {
+      "section": 35,
+      "applicability_score": 0.0,
+      "reasoning": "Section 35 provides the general right of private defence of body and property against certain offences. It is a defence provision, not a substantive charging offence, and is inapplicable to lodging a criminal complaint post-incident.",
+      "statutory_elements_supported": [],
+      "unestablished_elements": [
+        "Immediate necessity to exercise private defence against an ongoing offence"
+      ]
+    },
+    {
+      "section": 97,
+      "applicability_score": 0.0,
+      "reasoning": "Section 97 pertains exclusively to kidnapping or abducting a child under ten years of age with intent to steal from their person. No child or abduction is involved.",
+      "statutory_elements_supported": [],
+      "unestablished_elements": [
+        "Kidnapping or abduction of a child under ten years of age"
+      ]
+    },
+    {
+      "section": 252,
+      "applicability_score": 0.0,
+      "reasoning": "Section 252 penalizes taking gratification or reward under pretence of helping recover stolen property without using means to apprehend the offender. No such gratification or intermediary is mentioned in the narrative.",
+      "statutory_elements_supported": [],
+      "unestablished_elements": [
+        "Taking or agreeing to take gratification to help recover stolen property"
+      ]
+    },
+    {
+      "section": 328,
+      "applicability_score": 0.0,
+      "reasoning": "Section 328 deals with intentionally running a vessel aground or ashore to commit theft or misappropriation. There is no vessel or maritime context involved.",
+      "statutory_elements_supported": [],
+      "unestablished_elements": [
+        "Running a vessel aground or ashore"
+      ]
+    },
+    {
+      "section": 338,
+      "applicability_score": 0.0,
+      "reasoning": "Section 338 concerns forgery of valuable securities, wills, or authorities to transfer assets. The complaint relates entirely to physical theft of personal electronics with no document forgery.",
+      "statutory_elements_supported": [],
+      "unestablished_elements": [
+        "Forgery of a valuable security, will, or authorization document"
+      ]
+    },
+    {
+      "section": 345,
+      "applicability_score": 0.0,
+      "reasoning": "Section 345 deals with the fraudulent use of a false property mark to deceive ownership. No allegations of false marking or counterfeit receptacles exist in the complaint.",
+      "statutory_elements_supported": [],
+      "unestablished_elements": [
+        "Use of a false property mark with intent to defraud"
+      ]
+    }
+  ]
+}
