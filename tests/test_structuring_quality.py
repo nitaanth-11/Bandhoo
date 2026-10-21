@@ -225,7 +225,7 @@ def test_evaluation_harness_integrity_invariants(tmp_path):
     env = {**os.environ, "GEMINI_API_KEY": "", "GOOGLE_API_KEY": "", "BANDHOO_SKIP_DOTENV": "1", "PYTHONDONTWRITEBYTECODE": "1"}
     subprocess.run([sys.executable, "-B", os.path.join(ROOT, "benchmark", "structuring", "evaluate_structuring.py"),
                     "--out", str(out)], check=True, capture_output=True, env=env, cwd=ROOT, timeout=300)
-    result = json.loads(out.read_text())
+    result = json.loads(out.read_text(encoding="utf-8"))
     assert set(result["summary"]["all"]["integrity"].values()) == {0}
     assert result["jurisdiction"]["unsafe"] == 0
     assert result["summary"]["all"]["draft"]["passed"] == result["summary"]["all"]["draft"]["cases"]

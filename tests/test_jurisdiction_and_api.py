@@ -122,14 +122,17 @@ def test_get_jurisdiction_endpoint_inside_a_polygon(main_module):
     features, _ = load_boundaries()
     name, geom = features[0]
     ring = geom["coordinates"][0]
-    x = sum(p[0] for p in ring[:-1]) / (len(ring) - 1)
-    y = sum(p[1] for p in ring[:-1]) / (len(ring) - 1)
+    a = cx = cy = 0.0
+    for (x0, y0), (x1, y1) in zip(ring, ring[1:]):
+        c = x0 * y1 - x1 * y0
+        a += c; cx += (x0 + x1) * c; cy += (y0 + y1) * c
+    a /= 2
+    x = cx / (6 * a)
+    y = cy / (6 * a)
     out = asyncio.run(main_module.get_jurisdiction(Location(latitude=y, longitude=x)))
     assert out["method"] == "polygon_containment"
-    if out["status"] == "inside":
-        assert out["station"] == name and out["details"]["name"] == name
-    else:
-        assert out["station"] is None
+    assert out["status"] == "inside"
+    assert out["station"] == name and out["details"]["name"] == name
 
 
 def test_structure_endpoint_returns_unverified_draft_record(main_module):

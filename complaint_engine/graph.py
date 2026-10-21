@@ -285,10 +285,18 @@ def build_report(state: ComplaintState, config: RunnableConfig) -> dict:
 
     position = {st.statement_id: n for n, st in enumerate(_statements(state))}
 
+    def _with_category(item_dict: dict, f: FactItem) -> dict:
+        if not item_dict.get("display_category"):
+            item_dict["display_category"] = (
+                CATEGORY["verified"] if f.verification_status == "independently_verified"
+                else CATEGORY["inference" if f.provenance == "ai_inference" else "unverified"]
+            )
+        return item_dict
+
     def by_kind(*kinds):  # in the order the complainant said them
         items = [f for f in statement_facts if f.kind in kinds]
         items.sort(key=lambda f: (position.get(f.spans[0].statement_id, 0), f.spans[0].start) if f.spans else (0, 0))
-        return [f.model_dump() for f in items]
+        return [_with_category(f.model_dump(), f) for f in items]
 
     j = state.get("jurisdiction")
     errors = state.get("errors") or []
@@ -338,12 +346,12 @@ def build_report(state: ComplaintState, config: RunnableConfig) -> dict:
         "evidence_references_in_statement": by_kind("evidence_reference"),
         "explicit_denials": by_kind("denial"),
         "supporting_evidence_provided": [e.model_dump() for e in state.get("evidence") or []],
-        "independently_verified": [f.model_dump() for f in facts if f.verification_status == "independently_verified"]
+        "independently_verified": [_with_category(f.model_dump(), f) for f in facts if f.verification_status == "independently_verified"]
         + [e.model_dump() for e in state.get("evidence") or [] if e.verification_status == "independently_verified"],
         "missing_information": [m.model_dump() for m in state.get("missing") or []],
         "questions_for_complainant": list(state.get("questions") or []),
         "contradictions": [c.model_dump() for c in state.get("contradictions") or []],
-        "ai_inferences": [f.model_dump() for f in facts if f.provenance == "ai_inference"],
+        "ai_inferences": [_with_category(f.model_dump(), f) for f in facts if f.provenance == "ai_inference"],
         "rejected_items": [r.model_dump() for r in state.get("rejected_items") or []],
         "jurisdiction": j.model_dump() if j else None,
         "legal_provisions": "Not included. Legal classification is a separate, machine-generated service and is not part of this record.",

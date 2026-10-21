@@ -42,19 +42,30 @@ TIME_PATTERNS = [
 ]
 RELATIONS = (r"neighbou?r|friend|brother|sister|wife|husband|son|daughter|father|mother|employer|boss|landlord|tenant|"
              r"colleague|cousin|uncle|aunt|driver|maid|manager|partner|business\s+partner|co-?worker|relative")
+ROLES = (r"driver|shopkeeper|shop\s+owner|conductor|security\s+guard|watchman|guard|vendor|accused|thief|thieves|"
+         r"robber|robbers|attacker|attackers|caller|agent|delivery\s+(?:boy|person|man)|bike\s+rider|rider|"
+         r"tea\s+seller|seller|worker|waiter|cashier")
 PERSON_PATTERNS = [
     # A relation, optionally followed by a name: "my landlord, Mahesh Jadhav", "his brother Ganesh Jadhav".
     rf"\b(?i:my|his|her|their|our)\s+(?i:{RELATIONS})\b(?:,?[ \t]+(?P<name>[A-Z][a-z]+(?:[ \t]+[A-Z][a-z]+){{0,2}}))?",
     r"\b(?i:a|an|one|two|three|four|five|six|some|several)\s+(?i:unknown\s+)?(?i:man|men|woman|women|boy|boys|girl|girls|person|persons|people|youth|youths|stranger|strangers|individual|individuals)\b",
-    r"\b(?i:the)\s+(?i:driver|shopkeeper|shop\s+owner|conductor|security\s+guard|watchman|guard|vendor|accused|thief|thieves|robber|robbers|attacker|attackers|caller|agent)\b",
+    rf"\b(?i:the|a|an)\s+(?i:{ROLES})\b",
+    r"\b(?i:the)\s+(?i:man|men|woman|women|boy|boys|girl|girls|person|persons|people)\b",
 ]
-NAMED_PERSON = r"\b(?:named|called|name is|name was)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+){0,2})"
-COUNT_WORDS = {"a": 1, "an": 1, "one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6}
+GROUP_QUANTITY_PATTERN = r"\b(?i:(?P<count>one|two|three|four|five|six|seven|eight|nine|ten))\s+of\s+them\b"
+NAMED_PERSON = r"\b(?:named|called|name\s+(?:is|was)(?:\s+(?:actually|really))?)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+){0,2})"
+COUNT_WORDS = {"a": 1, "an": 1, "one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10}
 PLACE_WORDS = r"(?:Road|Rd|Station|Market|Nagar|Street|Lane|Chowk|Mall|Park|Bridge|Bus|Stop|Depot|Gate|Colony|West|East|Junction|Hospital|Signal)"
+SUBJECT_LOCATION = (
+    r"\b((?:my|our|the)\s+(?:home|house|office|shop|building|society|flat|room|store)"
+    r"(?:\s+in\s+[A-Z][\w'-]+(?:[ \t]+[A-Z][\w'-]+){0,3})?)\b"
+    r"(?=\s+(?:was|were|got|is|are)\s+(?:broken\s+into|burgled|robbed|attacked|damaged|entered|looted|vandalized))"
+)
 LOCATION_PATTERNS = [
     rf"\b(?:at|near|outside|inside|opposite|behind|in front of)\s+(?:the\s+)?([A-Z][\w'-]*(?:[ \t]+(?:[A-Z][\w'-]*|{PLACE_WORDS})){{0,5}})",
     r"\b(?:at|near|outside|inside|in front of|to|from|into)\s+((?:my|our|the)\s+(?:home|house|office|shop|building|society|flat|room|school|college|bus stop|market|gate))\b",
     r"\b(?:in|on|inside|aboard)\s+((?:the|a)\s+(?:[a-z]+\s+)?(?:local\s+)?(?:train|bus|taxi|auto|auto-rickshaw|rickshaw|metro|cab))\b",
+    SUBJECT_LOCATION,
 ]
 PHONE = r"(?<!\d)(?:\+91[\s-]?)?[6-9]\d{9}(?!\d)"
 VEHICLE = r"\b[A-Z]{2}[\s-]?\d{1,2}[\s-]?[A-Z]{1,3}[\s-]?\d{4}\b"
@@ -67,7 +78,7 @@ EVIDENCE = (
     r"IMEI(?:\s+number)?|medical (?:report|certificate))\b"
 )
 EXTRA_DENIALS = [
-    r"\bno\s*(?:one|body)\s+(?:saw|was\s+(?:there|present)|witnessed)\b",
+    r"\bno\s*(?:one|body)(?:\s+else)?\s+(?:saw|(?:was|were)\s+(?:there|present)|witnessed)\b",
     r"\bno\s+witness(?:es)?\b",
     r"\bnothing\s+(?:was\s+)?(?:taken|stolen)\b",
 ]
@@ -90,7 +101,7 @@ INDIC_TIME_PATTERNS = [
     rf"(?<![\d{DEV}])\d{{1,2}}\s*वाजता(?![{DEV}])",
 ]
 INDIC_COUNT = {"ek": 1, "do": 2, "teen": 3, "char": 4, "chaar": 4, "paanch": 5,
-               "एक": 1, "दोन": 2, "तीन": 3, "चार": 4, "पाच": 5}
+               "एक": 1, "एका": 1, "दोन": 2, "तीन": 3, "चार": 4, "पाच": 5}
 INDIC_RELATION_PATTERNS = [
     r"\b(?:mera|mere|meri)\s+(?:bhai|dost|behen|behan|pati|patni|beta|beti|papa|maa|padosi|saathi)\b",
     rf"(?<![{DEV}])(?:माझ्या|माझा|माझी|माझे)\s+(?:मित्राने|मित्रांनी|मित्र|मैत्रिणीने|मैत्रीण|भावाने|भाऊ|बहिणीने|बहीण|पत्नीने|"
@@ -103,7 +114,7 @@ INDIC_WITNESS_PATTERNS = [
 INDIC_PERSON_PATTERNS = [
     r"\b(?:ek|do|teen|char|chaar|paanch)\s+(?:aadmi|aadmiyon|admi|ladke|ladkon|ladko|log|logon|aurat|aurton|auraton|"
     r"mahila|mahilaon|chor)\b",
-    rf"(?<![{DEV}])(?:एक|दोन|तीन|चार|पाच)\s+(?:माणूस|माणसे|माणसं|माणसांनी|माणसाने|मुलगा|मुले|मुलं|मुलांनी|मुलाने|इसम|इसमांनी|"
+    rf"(?<![{DEV}])(?:एक|एका|दोन|तीन|चार|पाच)\s+(?:माणूस|माणसे|माणसं|माणसांनी|माणसाने|मुलगा|मुले|मुलं|मुलांनी|मुलाने|इसम|इसमांनी|"
     rf"इसमाने|व्यक्ती|व्यक्तींनी|व्यक्तीने|महिला|महिलांनी|महिलेने|बायका|चोर|चोरांनी|चोराने)(?![{DEV}])",
 ]
 HINGLISH_ACTION = (r"(?:cheen\s+(?:liya|li|le|kar)|chura\s+(?:liya|li|le)|chori\s+(?:kar\s+)?(?:li|liya|ki)|maar(?:a|i|pit\s+ki)|"
@@ -111,7 +122,8 @@ HINGLISH_ACTION = (r"(?:cheen\s+(?:liya|li|le|kar)|chura\s+(?:liya|li|le)|chori\
 # Alleged actions: what others are said to have done. Not after "I"/"we" (the complainant's own acts);
 # "called" not when it introduces a name ("a man called Ramesh"); "asked" only for money.
 ACTION_PATTERNS = [
-    r"(?<!\bI )(?<!\bwe )(?<!\bWe )\b(?:snatch(?:ed|es|ing)?|st(?:ole|olen|eals?|ealing)|took|taken|robbed|grabbed|pickpocketed|"
+    r"(?<!\bI )(?<!\bwe )(?<!\bWe )\b(?:snatch(?:ed|es|ing)?|st(?:ole|olen|eals?|ealing)|took|taken|take(?:s)?|taking|"
+    r"robbed|grabbed|pickpocketed|open(?:ed|ing|s)?|shout(?:ed|ing|s)?|touch(?:ed|ing|es)?|"
     r"hit|beat(?:en)?|push(?:ed)?|slapped|punched|kicked|attacked|assaulted|stabbed|threaten(?:ed|ing)?|abused|"
     r"harass(?:ed|ing)|molested|cheated|defrauded|scammed|promis(?:ed|ing)|pretend(?:ed|ing)|offer(?:ed|ing)|demanded|"
     r"extorted|damaged|smashed|broke(?:n)?(?:\s+into)?|drove\s+away|ran\s+away|fled)\b",
@@ -184,18 +196,25 @@ def _sentence_of(spans: List[Tuple[int, int]], pos: int) -> Tuple[int, int]:
 
 
 def _polarity(text: str, start: int, end: int, sentences: List[Tuple[int, int]], kind: str = "") -> str:
-    s, _ = _sentence_of(sentences, start)
+    s, e = _sentence_of(sentences, start)
     before = text[s:start]
+    sent = text[s:e]
     if NEG_CUE.search(before) and not EPISTEMIC_NEG.search(before):
         return "explicitly_denied"
     for r in DENIAL_RES:  # item lies inside a denial phrase, e.g. "no weapon was used"
         m = r.search(text, s, end + 40)
         if m and m.start() <= start and m.end() >= end:
             return "explicitly_denied"
+    if kind == "location":
+        # Confirmed physical locations are only uncertain if locally hedged within the immediate phrase
+        if HEDGE_CUE.search(before) or SENTENCE_HEDGE_CUE.search(before[-30:]):
+            return "uncertain"
+        return "asserted"
     if HEDGE_CUE.search(before) or SENTENCE_HEDGE_CUE.search(before):
         return "uncertain"
-    if kind == "alleged_action" and ATTRIBUTION_CUE.search(before):
-        return "uncertain"
+    if kind == "alleged_action":
+        if ATTRIBUTION_CUE.search(before) or re.search(r"\bi\s+(?:am\s+)?sure\b[^.!?]*\bbecause\b", sent, re.I):
+            return "uncertain"
     return "asserted"
 
 
@@ -278,7 +297,8 @@ def extract_deterministic(statement: Statement) -> List[FactItem]:
     for s, e in b.sentences:
         sent = b.text[s:e]
         denied = any(r.search(sent) for r in DENIAL_RES)
-        hedged = bool(SENTENCE_HEDGE_CUE.search(sent) or ATTRIBUTION_CUE.search(sent))
+        hedged = bool(SENTENCE_HEDGE_CUE.search(sent) or ATTRIBUTION_CUE.search(sent)
+                      or re.search(r"\bi\s+(?:am\s+)?sure\b[^.!?]*\bbecause\b", sent, re.I))
         b.add("event_statement", s, e, "rule:sentence",
               polarity="explicitly_denied" if denied else ("uncertain" if hedged else "asserted"))
     b.regex("datetime", DATE_PATTERNS, "rule:date", normalizer=_normalize_date)
@@ -292,6 +312,10 @@ def extract_deterministic(statement: Statement) -> List[FactItem]:
             b.add("person", m.start(), m.end(), "rule:person",
                   normalized=f"name:{name}" if name else
                   f"count:{COUNT_WORDS[first]}" if first in COUNT_WORDS and first not in ("a", "an") else None)
+    for m in re.finditer(GROUP_QUANTITY_PATTERN, b.text):
+        cnt = m.group("count").lower()
+        b.add("person", m.start(), m.end(), "rule:group_quantity",
+              normalized=f"count:{COUNT_WORDS.get(cnt)}")
     b.regex("person", INDIC_RELATION_PATTERNS, "rule:person_hi_mr")
     for p in INDIC_PERSON_PATTERNS:
         for m in re.finditer(p, b.text, re.I):

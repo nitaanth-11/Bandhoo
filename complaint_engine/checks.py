@@ -37,7 +37,7 @@ WHY = {
 }
 MAX_QUESTIONS = 5
 
-LOSS_WORDS = re.compile(r"\b(?:stole|stolen|steal|took|taken|snatch\w*|robbed|cheat\w*|lost|transferred|paid|fraud|scam\w*|"
+LOSS_WORDS = re.compile(r"\b(?:stole|stolen|steal|took|taken|snatch\w*|grab\w*|robbed|cheat\w*|lost|transferred|paid|fraud|scam\w*|"
                         r"damag\w*|broke|broken|smash\w*|destroy\w*)\b", re.I)
 MEDICAL_WORDS = re.compile(r"\b(?:hospital|doctor|clinic|treatment|treated|first aid|medical)\b", re.I)
 # "I do not know ..." counts as unknown only for the category its object names. "I do not know the date"

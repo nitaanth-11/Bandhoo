@@ -57,6 +57,16 @@ VerificationStatus = Literal["unverified", "independently_verified", "verificati
 Polarity = Literal["asserted", "explicitly_denied", "uncertain"]
 
 
+CATEGORY = {
+    "statement": "Complainant's statement",
+    "evidence": "Supporting evidence provided (not examined, not verified)",
+    "verified": "Independently verified information",
+    "unverified": "Unverified claim",
+    "missing": "Missing information",
+    "inference": "AI-generated inference",
+}
+
+
 class FactItem(BaseModel):
     item_id: str
     kind: FactKind
@@ -69,7 +79,7 @@ class FactItem(BaseModel):
     # Derived, machine-normalised value used only for comparisons (e.g. "2026-10-14", "21:30").
     normalized: Optional[str] = None
     note: str = ""
-    display_category: str = ""
+    display_category: str = Field(default_factory=lambda: CATEGORY["unverified"])
 
 
 class RejectedItem(BaseModel):

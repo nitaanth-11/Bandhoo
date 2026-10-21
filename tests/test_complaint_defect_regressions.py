@@ -45,8 +45,15 @@ def clean_case(tmp_path):
 @pytest.fixture
 def no_network(monkeypatch):
     attempts = []
+    real_connect = socket.socket.connect
 
-    def blocked(*args, **kwargs):
+    def blocked(self, *args, **kwargs):
+        import inspect
+        import sys
+        if sys.platform == "win32" and args and isinstance(args[0], tuple) and args[0][0] == "127.0.0.1":
+            frame = inspect.currentframe().f_back
+            if frame and frame.f_code.co_name == "_fallback_socketpair":
+                return real_connect(self, *args, **kwargs)
         attempts.append(args)
         raise OSError("network access blocked in tests")
     monkeypatch.setattr(socket.socket, "connect", blocked)
@@ -418,3 +425,101 @@ def test_workflow_and_api_make_no_network_calls(tracing_env, no_network):
     assert report["processing_status"] in ("complete", "incomplete")
     assert report["header"]["extraction_mode"] == "deterministic"
     assert no_network == []
+
+
+# ── Checkpoint 2 Deterministic Defect Regressions ──
+
+
+def test_workflow_step_failure_preserves_labelled_facts():
+    """Defect: Unlabelled facts when a workflow step fails."""
+    request = ComplaintStructureRequest(statement=CLEAN)
+    state = run_structuring(request, graph=build_graph({"attribute_sources": boom}))
+    report = state["report"]
+    assert report is not None
+    assert len(state["facts"]) > 0
+    for f in state["facts"]:
+        assert f.display_category, f"Fact {f.item_id} has empty display_category: {f}"
+    found_any = False
+    for cat in ["persons", "dates_and_times", "locations", "items_lost_or_damaged", "losses"]:
+        for item in report.get(cat, []):
+            found_any = True
+            assert item.get("display_category"), f"Report item has empty display_category: {item}"
+    assert found_any
+
+
+def test_structuring_edge_case_missing_roles():
+    """Role nouns like 'delivery boy' are extracted as persons with roles."""
+    from complaint_engine.extraction import extract_deterministic
+    facts = extract_deterministic(Statement.create("s1", "original", "A delivery boy came to the door."))
+    roles = [f for f in facts if f.kind == "person"]
+    assert any("delivery boy" in f.value.lower() for f in roles)
+
+
+def test_structuring_edge_case_verbs_opened():
+    """Action verbs like 'opened' are extracted as alleged actions."""
+    from complaint_engine.extraction import extract_deterministic
+    facts = extract_deterministic(Statement.create("s1", "original", "Someone opened my car."))
+    actions = [f for f in facts if f.kind == "alleged_action"]
+    assert any("opened" in f.value.lower() for f in actions)
+
+
+def test_structuring_edge_case_group_quantities():
+    """Group quantity expressions like 'five of them' are extracted with count normalization."""
+    from complaint_engine.extraction import extract_deterministic
+    facts = extract_deterministic(Statement.create("s1", "original", "Five of them blocked the path."))
+    persons = [f for f in facts if f.kind == "person"]
+    assert any(f.normalized == "count:5" for f in persons)
+
+
+def test_structuring_edge_case_identity_corrections():
+    """Identity corrections like 'His name was actually...' extract the corrected name cleanly."""
+    from complaint_engine.extraction import extract_deterministic
+    facts = extract_deterministic(Statement.create("s1", "original", "His name was actually Kishor Shinde."))
+    persons = [f for f in facts if f.kind == "person"]
+    assert any("Kishor Shinde" in (f.normalized or "") for f in persons)
+
+
+def test_structuring_edge_case_places_in_subject_position():
+    """Places in subject position like 'my house in Vikhroli was broken into' are extracted as locations."""
+    from complaint_engine.extraction import extract_deterministic
+    facts = extract_deterministic(Statement.create("s1", "original", "My house in Vikhroli was broken into."))
+    locations = [f for f in facts if f.kind == "location"]
+    assert len(locations) > 0
+    assert any("Vikhroli" in f.value for f in locations)
+
+
+def test_structuring_edge_case_negative_witness_statements():
+    """Negative witness statements like 'nobody else was present' are captured as denials."""
+    from complaint_engine.extraction import extract_deterministic
+    facts = extract_deterministic(Statement.create("s1", "original", "Nobody else was present."))
+    denials = [f for f in facts if f.kind == "denial"]
+    assert len(denials) > 0
+    assert any("nobody else was present" in f.value.lower() for f in denials)
+
+
+def test_structuring_edge_case_speculation_using_because():
+    """Speculation and uncertainty expressed using because ('I am sure it was him because...') is marked uncertain."""
+    from complaint_engine.extraction import extract_deterministic
+    facts = extract_deterministic(Statement.create("s1", "original", "I am sure it was him because he looked nervous."))
+    assert all(f.polarity in ("uncertain", "speculative") for f in facts if f.kind in ("alleged_action", "event_statement"))
+
+
+def test_structuring_edge_case_hedge_scope_does_not_taint_location():
+    """Hedge scope on datetime does not mark asserted location in the same sentence as uncertain."""
+    from complaint_engine.extraction import extract_deterministic
+    facts = extract_deterministic(Statement.create("s1", "original", "Maybe around 4 pm someone opened my car near Powai Lake."))
+    locs = [f for f in facts if f.kind == "location"]
+    assert len(locs) > 0
+    assert any(f.polarity == "asserted" and "Powai Lake" in f.value for f in locs)
+
+
+def test_detect_missing_loss_value_for_grabbed():
+    """Theft verb 'grabbed' without stated amount flags loss_value as missing."""
+    from complaint_engine.checks import detect_missing
+    from complaint_engine.extraction import extract_deterministic
+    st = Statement.create("s1", "original", "Someone grabbed my bag and ran away.")
+    facts = extract_deterministic(st)
+    missing = detect_missing(facts, [st], evidence_supplied=False, location_supplied=False)
+    assert any(m.field == "loss_value" for m in missing)
+
+
