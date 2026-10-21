@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import L from 'leaflet';
 import {
   statusLadder,
@@ -12,6 +12,8 @@ import {
   structuredSummary,
 } from './trustSafety.js';
 import ReviewStatus from './ReviewStatus.js';
+
+const API_BASE_URL = (import.meta.env && import.meta.env.VITE_API_BASE_URL) || 'http://localhost:8001';
 
 const NOT_PROVIDED = 'Not provided';
 const NOT_AVAILABLE = 'Not available in Bandhoo data';
@@ -295,12 +297,64 @@ export default function App() {
       .catch(err => console.error(err));
   }, []);
 
+  const updateLocationRef = useRef(null);
+  const initialCoordsRef = useRef(coords);
+
+  // Incident location → jurisdiction. The local polygon-containment result is authoritative;
+  // the backend result is only a cross-check and can never override it (see reconcileJurisdiction).
+  const updateLocation = useCallback((lat, lng) => {
+    setCoords({ lat, lng });
+    setLocationSelected(true);
+
+    if (userMarkerRef.current) {
+      userMarkerRef.current.setLatLng([lat, lng]);
+    }
+
+    const local = assessJurisdiction({ lat, lng }, jurisdictionsGeoJSON);
+    setLocalJurisdiction(local);
+    setJurisdiction(reconcileJurisdiction(local, null));
+    setIsCheckingJurisdiction(true);
+
+    fetch(`${API_BASE_URL}/api/get-jurisdiction`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ latitude: lat, longitude: lng })
+    })
+      .then(res => {
+        if (!res.ok) throw new Error('Jurisdiction service unavailable');
+        return res.json();
+      })
+      .then(data => setJurisdiction(reconcileJurisdiction(local, data)))
+      .catch(() => {
+        // Backend unavailable: keep the local result. Never fall back to a nearest-station guess.
+      })
+      .finally(() => {
+        setIsCheckingJurisdiction(false);
+      });
+
+    // Reverse geocoding sends the location to a third party; off until a data-handling policy is approved.
+    if (EXTERNAL_GEOCODING_ENABLED) {
+      fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`)
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.display_name) {
+            setFormInputs(prev => ({ ...prev, placeOfOccurrence: data.display_name }));
+          }
+        })
+        .catch(() => {});
+    }
+  }, [jurisdictionsGeoJSON]);
+
+  useEffect(() => {
+    updateLocationRef.current = updateLocation;
+  }, [updateLocation]);
+
   // Initialize Map
   useEffect(() => {
     if (showForm || !mapContainerRef.current || stations.length === 0 || !jurisdictionsGeoJSON) return;
 
     const map = L.map(mapContainerRef.current, {
-      center: [coords.lat, coords.lng],
+      center: [initialCoordsRef.current.lat, initialCoordsRef.current.lng],
       zoom: 12,
       zoomControl: false
     });
@@ -339,7 +393,7 @@ export default function App() {
             geojsonLayer.resetStyle(e.target);
           },
           click: (e) => {
-            updateLocation(e.latlng.lat, e.latlng.lng);
+            updateLocationRef.current?.(e.latlng.lat, e.latlng.lng);
           }
         });
         
@@ -382,7 +436,7 @@ export default function App() {
       iconAnchor: [7, 7]
     });
 
-    const userMarker = L.marker([coords.lat, coords.lng], {
+    const userMarker = L.marker([initialCoordsRef.current.lat, initialCoordsRef.current.lng], {
       draggable: true,
       icon: userIcon,
       zIndexOffset: 1000
@@ -391,11 +445,11 @@ export default function App() {
 
     userMarker.on('dragend', () => {
       const latlng = userMarker.getLatLng();
-      updateLocation(latlng.lat, latlng.lng);
+      updateLocationRef.current?.(latlng.lat, latlng.lng);
     });
 
     map.on('click', (e) => {
-      updateLocation(e.latlng.lat, e.latlng.lng);
+      updateLocationRef.current?.(e.latlng.lat, e.latlng.lng);
     });
 
     // No jurisdiction is assessed for the default map centre: the complainant must pick a location.
@@ -404,51 +458,6 @@ export default function App() {
       map.remove();
     };
   }, [stations, jurisdictionsGeoJSON, showForm]);
-
-  // Incident location → jurisdiction. The local polygon-containment result is authoritative;
-  // the backend result is only a cross-check and can never override it (see reconcileJurisdiction).
-  const updateLocation = (lat, lng) => {
-    setCoords({ lat, lng });
-    setLocationSelected(true);
-
-    if (userMarkerRef.current) {
-      userMarkerRef.current.setLatLng([lat, lng]);
-    }
-
-    const local = assessJurisdiction({ lat, lng }, jurisdictionsGeoJSON);
-    setLocalJurisdiction(local);
-    setJurisdiction(reconcileJurisdiction(local, null));
-    setIsCheckingJurisdiction(true);
-
-    fetch('http://localhost:8001/api/get-jurisdiction', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ latitude: lat, longitude: lng })
-    })
-      .then(res => {
-        if (!res.ok) throw new Error('Jurisdiction service unavailable');
-        return res.json();
-      })
-      .then(data => setJurisdiction(reconcileJurisdiction(local, data)))
-      .catch(() => {
-        // Backend unavailable: keep the local result. Never fall back to a nearest-station guess.
-      })
-      .finally(() => {
-        setIsCheckingJurisdiction(false);
-      });
-
-    // Reverse geocoding sends the location to a third party; off until a data-handling policy is approved.
-    if (EXTERNAL_GEOCODING_ENABLED) {
-      fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`)
-        .then(res => res.json())
-        .then(data => {
-          if (data && data.display_name) {
-            setFormInputs(prev => ({ ...prev, placeOfOccurrence: data.display_name }));
-          }
-        })
-        .catch(() => {});
-    }
-  };
 
   const clearLocation = () => {
     setLocationSelected(false);
@@ -472,7 +481,7 @@ export default function App() {
 
     debounceTimerRef.current = setTimeout(() => {
       // Call the RAG backend
-      fetch('http://localhost:8001/api/classify-offence', {
+      fetch(`${API_BASE_URL}/api/classify-offence`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ narrative: text })
@@ -590,7 +599,7 @@ export default function App() {
 
     // Ask Bandhoo's own backend to structure the account (no external service is called).
     setStructured({ state: 'loading', summary: null });
-    fetch('http://localhost:8001/api/v1/complaints/structure', {
+    fetch(`${API_BASE_URL}/api/v1/complaints/structure`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

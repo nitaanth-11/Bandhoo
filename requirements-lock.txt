@@ -1,0 +1,14 @@
+# Bandhoo Backend Reproducible Dependency Lockfile
+# Pinned versions tested and validated for deterministic reproducibility.
+fastapi==0.143.0
+uvicorn==0.52.4
+pydantic==2.13.5
+numpy==1.26.4
+scipy==1.16.3
+rank-bm25==0.2.2
+google-genai==2.31.0
+python-dotenv==1.1.1
+langgraph==1.2.16
+langchain-core==1.6.12
+langgraph-checkpoint==4.3.0
+pytest==9.0.3

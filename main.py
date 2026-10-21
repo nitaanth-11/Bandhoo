@@ -18,12 +18,36 @@ from complaint_engine import ComplaintStructureRequest, assess_point, structure_
 
 app = FastAPI()
 
+# CORS restrictions: configurable via BANDHOO_CORS_ORIGINS; defaults to local development origins.
+CORS_ORIGINS_ENV = os.environ.get("BANDHOO_CORS_ORIGINS", "")
+ALLOWED_ORIGINS = [o.strip() for o in CORS_ORIGINS_ENV.split(",") if o.strip()] or [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    "http://localhost:8001",
+    "http://127.0.0.1:8001",
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
+    allow_origins=ALLOWED_ORIGINS,
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
 )
+
+@app.exception_handler(Exception)
+async def unhandled_exception_handler(request, exc):
+    import logging
+    logger = logging.getLogger("bandhoo.api")
+    logger.error("Unhandled API error on %s: %s", request.url.path, type(exc).__name__)
+    return JSONResponse(
+        status_code=500,
+        content={"error": "An internal error occurred while processing the request."}
+    )
 
 from legal_engine.synonyms import DEFAULT_SYNONYM_MAP as SYNONYM_MAP
 
