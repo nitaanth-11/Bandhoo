@@ -78,3 +78,88 @@ def test_email_draft_preparation_with_strict_confirmation_gate():
     assert "NOT SUBMITTED TO POLICE" in draft.body_text
     assert draft.recipient_email == "vikram@example.com"
     assert len(draft.attachments) == 1
+
+
+def test_pdf_generation_with_predicted_section_details():
+    req = ComplaintStructureRequest(
+        statement="Someone broke into my shop and stole electronics worth 50,000 rupees.",
+        complainant=ComplainantDetails(full_name="Rajesh Sharma", phone="9811223344"),
+        predicted_sections=[
+            {
+                "section": 305,
+                "title": "Theft in a dwelling house, etc.",
+                "chapter": "Chapter XVII: Offences Against Property",
+                "score": 0.94,
+                "reasoning": "Narrative asserts unlawful taking of shop electronics without consent.",
+                "statutory_elements_supported": ["Dishonest intention", "Taking movable property", "Building used for custody of property"],
+                "punishment": "Imprisonment up to 7 years and fine",
+                "is_cognizable": True,
+                "is_bailable": False,
+                "triable_by": "Any Magistrate"
+            }
+        ]
+    )
+    compiled = compile_complaint_record(req)
+    assert len(compiled["potential_bns_sections"]) == 1
+    assert compiled["potential_bns_sections"][0]["bns_section"] == 305
+    assert compiled["potential_bns_sections"][0]["is_cognizable"] is True
+
+    pdf_bytes, filename, file_size, sha256_hash = generate_complaint_pdf(compiled)
+    assert pdf_bytes.startswith(b"%PDF-")
+    assert file_size > 1000
+    assert filename.endswith(".pdf")
+    assert len(sha256_hash) == 64
+
+
+def test_email_draft_with_police_station_email_association():
+    req = ComplaintStructureRequest(
+        statement="My bag was stolen near Colaba causeway.",
+        complainant=ComplainantDetails(full_name="Sunil Mehta", email="sunil@example.com"),
+        location={"latitude": 18.9080, "longitude": 72.8138} # Near Cuffe Parade
+    )
+    compiled = compile_complaint_record(req)
+    # Manually ensure station is Cuffe Parade to test association
+    compiled["jurisdiction_assessment"] = {
+        "status": "inside",
+        "station": "Cuffe Parade",
+        "distance_to_boundary_m": 450.0
+    }
+
+    # Draft for police station nodal email
+    draft = prepare_complaint_email_draft(compiled, recipient_type="police_nodal")
+    assert draft.recipient_email == "ps.cuffeparade.mum@mahapolice.gov.in"
+    assert draft.police_station_email == "ps.cuffeparade.mum@mahapolice.gov.in"
+    assert "ps.cuffeparade.mum@mahapolice.gov.in" in draft.body_text
+    assert draft.user_confirmation_required is True
+    assert draft.user_confirmed is False
+
+
+def test_missing_person_pdf_with_birthmarks_and_photo():
+    mp = MissingPersonDetails(
+        full_name="Rohit Patil",
+        age=16,
+        gender="Male",
+        height_cm=165.0,
+        birthmarks="Dark mole near right ear, small scar on left forehead",
+        clothing_last_seen="Blue jeans and white t-shirt",
+        last_seen_datetime="2026-10-20 18:00",
+        last_seen_location="Near Dadar Flower Market",
+        photo_filename="rohit_photo.jpg"
+    )
+    req = ComplaintStructureRequest(
+        statement="My 16 year old son Rohit went missing yesterday evening from Dadar.",
+        complainant=ComplainantDetails(full_name="Mahesh Patil", phone="9876543210"),
+        missing_person=mp
+    )
+    compiled = compile_complaint_record(req)
+    assert compiled["report_type"] == "missing_person_report"
+    assert compiled["missing_person_details"]["birthmarks"] == "Dark mole near right ear, small scar on left forehead"
+    assert compiled["missing_person_details"]["photo_filename"] == "rohit_photo.jpg"
+
+    pdf_bytes, filename, file_size, sha256_hash = generate_complaint_pdf(compiled)
+    assert pdf_bytes.startswith(b"%PDF-")
+    assert file_size > 1000
+    assert filename.endswith(".pdf")
+    assert len(sha256_hash) == 64
+
+

@@ -167,12 +167,18 @@ def generate_complaint_pdf(
         if mp.get('age') is not None and mp.get('age') < 18:
             age_disp += " (MINOR - Section 137 BNS applies)"
 
+        marks = mp.get("birthmarks") or mp.get("identifying_marks") or "None stated"
+        if mp.get("birthmarks") and mp.get("identifying_marks") and mp.get("birthmarks") != mp.get("identifying_marks"):
+            marks = f"Birthmarks: {mp.get('birthmarks')} | Marks: {mp.get('identifying_marks')}"
+        photo_label = mp.get("photo_filename") or ("Photograph attached by informant" if mp.get("photo_data") else "No photo provided")
+
         mp_data = [
             ["Full Name:", mp.get("full_name") or "Unknown", "Age / Category:", age_disp],
             ["Gender:", mp.get("gender") or "Not stated", "Height / Complexion:", f"{mp.get('height_cm') or '?'} cm / {mp.get('complexion') or 'Not stated'}"],
             ["Last Seen Date/Time:", mp.get("last_seen_datetime") or "Not stated", "Last Seen Place:", mp.get("last_seen_location") or "Not stated"],
-            ["Clothing Last Seen:", mp.get("clothing_last_seen") or "Not stated", "Identifying Marks:", mp.get("identifying_marks") or "None"],
-            ["Medical Vulnerability:", mp.get("medical_conditions_or_vulnerabilities") or "None stated", "Relationship to Informant:", mp.get("relationship_to_complainant") or "Not stated"],
+            ["Clothing Last Seen:", mp.get("clothing_last_seen") or "Not stated", "Birthmarks / Identifying Marks:", marks],
+            ["Photograph Attached:", photo_label, "Relationship to Informant:", mp.get("relationship_to_complainant") or "Not stated"],
+            ["Medical Vulnerability:", mp.get("medical_conditions_or_vulnerabilities") or "None stated", "Known Concerns:", mp.get("known_suspects_or_concerns") or "None stated"],
         ]
         mp_table = Table([[Paragraph(f"<b>{cell}</b>" if i % 2 == 0 else str(cell), body_style) for i, cell in enumerate(row)] for row in mp_data], colWidths=[110, 133, 110, 134])
         mp_table.setStyle(TableStyle([
@@ -217,18 +223,65 @@ def generate_complaint_pdf(
     j_status = j.get("status") or "unconfirmed"
     story.append(Paragraph(f"Assigned Police Station: <b>{j_station}</b> (containment status: <i>{j_status}</i>)", body_style))
 
-    # Statutory Candidates
+    # Statutory Candidates with Full Section Details
     candidates = compiled_record.get("potential_bns_sections") or []
     if candidates:
         story.append(Spacer(1, 8))
         story.append(Paragraph("6. Potential BNS Statutory Provisions (Machine-Assisted Legal Reference)", section_style))
-        cand_text = []
         for c in candidates:
-            if c.get("bns_section"):
-                cand_text.append(f"• <b>Section {c['bns_section']} BNS</b> ({c.get('title', '')}): {c.get('punishment', '')}")
-        if cand_text:
-            story.append(Paragraph("<br/>".join(cand_text), body_style))
-            story.append(Paragraph("<font size='7' color='#718096'>Note: Statutory citations are non-binding machine candidate suggestions provided for officer guidance. The police officer determines the actual offences.</font>", body_style))
+            if not c.get("bns_section"):
+                continue
+            sec_num = c.get("bns_section")
+            title = c.get("title", "")
+            chapter = c.get("chapter", "")
+            punishment = c.get("punishment", "As prescribed under BNS, 2023")
+            reasoning = c.get("reasoning", "")
+            elements = c.get("statutory_elements_supported") or []
+            statutory_text = c.get("statutory_text", "")
+            score = c.get("relevance_score")
+
+            is_cog = c.get("is_cognizable")
+            cog_str = "Cognizable" if is_cog is True else ("Non-Cognizable" if is_cog is False else "Schedule I to verify")
+            is_bail = c.get("is_bailable")
+            bail_str = "Bailable" if is_bail is True else ("Non-Bailable" if is_bail is False else "Schedule I to verify")
+            court = c.get("triable_by") or "Competent Magistrate"
+
+            header_line = f"<b>Section {sec_num} BNS</b>: {title}"
+            if chapter:
+                header_line += f" <font color='#718096' size='8'>({chapter})</font>"
+            if score is not None:
+                header_line += f" <font color='#2B6CB0' size='8'>[Relevance: {score * 100:.1f}%]</font>" if score <= 1 else f" <font color='#2B6CB0' size='8'>[Score: {score}]</font>"
+
+            table_rows = [
+                [Paragraph(header_line, body_style)],
+                [Paragraph(f"<b>Procedural Classification:</b> {cog_str} | {bail_str} | Triable by: {court}", body_style)],
+                [Paragraph(f"<b>Prescribed Penalty:</b> <font color='#9B2C2C'>{punishment}</font>", body_style)],
+            ]
+
+            if reasoning:
+                table_rows.append([Paragraph(f"<b>Applicability Reasoning (Grounded in Complainant Statement):</b> {reasoning}", body_style)])
+
+            if elements:
+                table_rows.append([Paragraph(f"<b>Statutory Elements Supported:</b> {', '.join(elements)}", body_style)])
+
+            if statutory_text:
+                clean_text = statutory_text.strip()
+                if len(clean_text) > 280:
+                    clean_text = clean_text[:280] + "..."
+                table_rows.append([Paragraph(f"<b>Statutory Excerpt:</b> <font color='#4A5568' size='8'><i>“{clean_text}”</i></font>", body_style)])
+
+            cand_table = Table(table_rows, colWidths=[487])
+            cand_table.setStyle(TableStyle([
+                ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#F8FAFC")),
+                ("BORDER", (0, 0), (-1, -1), 0.75, colors.HexColor("#CBD5E1")),
+                ("LINEBELOW", (0, 0), (-1, 0), 1, colors.HexColor("#3B82F6")),
+                ("PADDING", (0, 0), (-1, -1), 5),
+            ]))
+            story.append(Spacer(1, 4))
+            story.append(cand_table)
+
+        story.append(Spacer(1, 4))
+        story.append(Paragraph("<font size='7' color='#718096'>Note: Statutory citations and legal reasoning are machine candidate references provided for officer guidance. The police officer determines the actual offences and formal FIR provisions.</font>", body_style))
 
     # Police Verification Checklist & Sign-Off Block
     story.append(Spacer(1, 10))

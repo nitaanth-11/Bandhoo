@@ -135,15 +135,24 @@ async def get_jurisdiction(loc: Location):
     one polygon and is not near a boundary; otherwise station is null and confirmation is required.
     """
     result = assess_point(loc.latitude, loc.longitude)
+    station_details = stations_by_name.get(result.station) if result.station else None
+    station_email = None
+    if result.station:
+        clean = re.sub(r'[^a-zA-Z0-9]', '', result.station).lower()
+        station_email = f"ps.{clean}.mum@mahapolice.gov.in"
+        if station_details and not station_details.get("email"):
+            station_details["email"] = station_email
     return {
         "station": result.station,
+        "station_email": station_email,
         "status": result.status,
         "method": result.method,
         "distance_to_boundary_m": result.distance_to_boundary_m,
         "message": result.message,
         "boundary_data": result.boundary_data,
-        "details": stations_by_name.get(result.station) if result.station else None,
+        "details": station_details,
     }
+
 
 
 @app.post("/api/v1/complaints/structure")

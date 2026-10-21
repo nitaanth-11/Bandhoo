@@ -29,6 +29,7 @@ class PreparedEmailDraft(BaseModel):
     body_text: str
     body_html: Optional[str] = None
     attachments: List[EmailAttachmentMetadata] = Field(default_factory=list)
+    police_station_email: Optional[str] = None
     user_confirmation_required: bool = True
     user_confirmed: bool = False
     transmission_status: str = "draft_pending_user_confirmation"
@@ -49,12 +50,23 @@ def prepare_complaint_email_draft(
     Constructs a formal email draft from a compiled complaint record.
     Strictly holds transmission pending user confirmation.
     """
+    import re
     complaint_no = compiled_record.get("complaint_number", "DRAFT-RECORD")
     complainant = compiled_record.get("complainant") or {}
     report_type = compiled_record.get("report_type", "general_complaint")
     is_missing = report_type == "missing_person_report"
     
-    target_email = recipient_email or complainant.get("email") or "not_provided@bandhoo.local"
+    j = compiled_record.get("jurisdiction_assessment") or {}
+    station_name = j.get("station")
+    station_email = None
+    if station_name:
+        clean_name = re.sub(r'[^a-zA-Z0-9]', '', station_name).lower()
+        station_email = f"ps.{clean_name}.mum@mahapolice.gov.in"
+
+    if recipient_type == "police_nodal" and not recipient_email:
+        target_email = station_email or "police.controlroom.mum@mahapolice.gov.in"
+    else:
+        target_email = recipient_email or complainant.get("email") or "not_provided@bandhoo.local"
     target_name = complainant.get("full_name") or "Citizen Complainant"
 
     if is_missing:
@@ -76,20 +88,23 @@ def prepare_complaint_email_draft(
 
     if is_missing:
         mp = compiled_record.get("missing_person_details") or {}
+        marks = mp.get("birthmarks") or mp.get("identifying_marks") or "None stated"
         body_lines += [
             "MISSING PERSON DETAILS:",
             f"- Name: {mp.get('full_name')}",
             f"- Age: {mp.get('age')}",
             f"- Last Seen: {mp.get('last_seen_datetime')} at {mp.get('last_seen_location')}",
+            f"- Birthmarks / Marks: {marks}",
             "",
             "STATUTORY REMINDER: Under Supreme Court directives (Bachpan Bachao Andolan v. Union of India), "
             "there is NO 48-hour or 24-hour waiting period. Please visit the police station immediately.",
             "",
         ]
 
-    j = compiled_record.get("jurisdiction_assessment") or {}
-    if j.get("station"):
-        body_lines.append(f"Estimated Jurisdictional Police Station: {j['station']}")
+    if station_name:
+        body_lines.append(f"Estimated Jurisdictional Police Station: {station_name}")
+        if station_email:
+            body_lines.append(f"Official Station Email: {station_email}")
     else:
         body_lines.append("Police Jurisdiction: Requires station confirmation.")
 
@@ -112,6 +127,7 @@ def prepare_complaint_email_draft(
         complaint_number=complaint_no,
         recipient_email=target_email,
         recipient_type=recipient_type,
+        police_station_email=station_email,
         subject=subject,
         body_text="\n".join(body_lines),
         attachments=attachments_list,
@@ -119,3 +135,4 @@ def prepare_complaint_email_draft(
         user_confirmed=False,
         transmission_status="draft_pending_user_confirmation"
     )
+

@@ -945,3 +945,142 @@ h1, h2, h3, h4, h5, h6 {
     padding: 0 !important;
   }
 }
+
+/* 3-Way Language Toggle */
+.lang-toggle-group {
+  display: flex;
+  background: #f1f5f9;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  overflow: hidden;
+  padding: 2px;
+  gap: 2px;
+}
+
+.lang-toggle-btn {
+  border: none;
+  background: transparent;
+  padding: 5px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.15s ease;
+}
+
+.lang-toggle-btn.active {
+  background: var(--color-primary);
+  color: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 64, 128, 0.2);
+}
+
+.lang-toggle-btn:hover:not(.active) {
+  background: #e2e8f0;
+  color: var(--text-main);
+}
+
+/* GPS Address Prompt Modal */
+.prompt-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+}
+
+.prompt-modal-card {
+  background: #ffffff;
+  border-radius: 12px;
+  max-width: 520px;
+  width: 100%;
+  padding: 24px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  border: 1px solid #e2e8f0;
+  animation: modalPop 0.2s ease-out;
+}
+
+@keyframes modalPop {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.prompt-modal-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.prompt-modal-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.prompt-address-box {
+  background: #f8fafc;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin: 12px 0 18px 0;
+  font-size: 13px;
+  color: var(--text-main);
+  line-height: 1.5;
+}
+
+/* Missing Person Banner and Controls */
+.missing-badge-urgent {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px;
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.photo-upload-box {
+  border: 2px dashed #cbd5e1;
+  border-radius: 8px;
+  padding: 14px;
+  text-align: center;
+  background: #f8fafc;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.photo-upload-box:hover {
+  border-color: var(--color-accent);
+  background: #eff6ff;
+}
+
+.photo-preview-thumbnail {
+  width: 90px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1.5px solid #cbd5e1;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+/* View in Language selector bar in Draft Preview */
+.draft-lang-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 6px;
+  padding: 8px 14px;
+  margin-bottom: 16px;
+}
+

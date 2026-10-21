@@ -207,6 +207,9 @@ class MissingPersonDetails(BaseModel):
     last_seen_datetime: Optional[str] = None
     last_seen_location: Optional[str] = None
     relationship_to_complainant: Optional[str] = None
+    birthmarks: Optional[str] = None
+    photo_filename: Optional[str] = None
+    photo_data: Optional[str] = None
     medical_conditions_or_vulnerabilities: Optional[str] = None
     known_suspects_or_concerns: Optional[str] = None
 
@@ -219,4 +222,5 @@ class ComplaintStructureRequest(BaseModel):
     location: Optional[LocationInput] = None
     complainant: Optional[ComplainantDetails] = None
     missing_person: Optional[MissingPersonDetails] = None
+    predicted_sections: List[dict] = Field(default_factory=list, description="Machine-predicted BNS legal sections with reasoning and elements.")
 

@@ -133,10 +133,18 @@ def _retrieve_statutory_candidates(narrative_text: str) -> List[dict]:
             sec_data = corpus.get_section(sec_num) if sec_num is not None else None
             title = sec_data.get("title", "") if sec_data else ""
             punishment = sec_data.get("punishment", "") if sec_data else ""
+            chapter = sec_data.get("chapter", "") if sec_data else ""
+            statutory_text = sec_data.get("text", "") if sec_data else ""
+            sched = (sec_data.get("schedule_i_entry") or {}) if sec_data else {}
             candidates.append({
                 "bns_section": sec_num,
                 "title": title,
+                "chapter": chapter,
                 "punishment": punishment,
+                "statutory_text": statutory_text,
+                "is_cognizable": sched.get("cognizable"),
+                "is_bailable": sched.get("bailable"),
+                "triable_by": sched.get("court", ""),
                 "relevance_score": round(score, 4),
                 "disclaimer": "AI statutory candidate suggestion for human legal review only; not an official police charge or final FIR classification."
             })
@@ -203,7 +211,37 @@ def compile_complaint_record(
 
     # 6. Potential Legal Sections
     legal_candidates = []
-    if include_legal_candidates:
+    if request.predicted_sections:
+        from legal_engine import BNSCorpus
+        try:
+            corpus = BNSCorpus()
+        except Exception:
+            corpus = None
+        for p in request.predicted_sections:
+            sec_raw = p.get("section") or p.get("bns_section")
+            try:
+                sec_int = int(str(sec_raw).split("(")[0]) if sec_raw is not None else None
+            except (ValueError, TypeError):
+                sec_int = None
+            sec_data = corpus.get_section(sec_int) if (corpus and sec_int is not None) else None
+            sched = (sec_data.get("schedule_i_entry") or {}) if sec_data else {}
+            legal_candidates.append({
+                "bns_section": sec_raw,
+                "title": p.get("title") or (sec_data.get("title", "") if sec_data else f"Section {sec_raw}"),
+                "chapter": p.get("chapter") or (sec_data.get("chapter", "") if sec_data else ""),
+                "punishment": p.get("punishment") or (sec_data.get("punishment", "") if sec_data else ""),
+                "statutory_text": p.get("statutory_text") or (sec_data.get("text", "") if sec_data else ""),
+                "relevance_score": p.get("score") if p.get("score") is not None else p.get("relevance_score", 1.0),
+                "reasoning": p.get("reasoning", ""),
+                "statutory_elements_supported": p.get("statutory_elements_supported", []),
+                "unestablished_elements": p.get("unestablished_elements", []),
+                "is_cognizable": p.get("is_cognizable") if p.get("is_cognizable") is not None else sched.get("cognizable"),
+                "is_bailable": p.get("is_bailable") if p.get("is_bailable") is not None else sched.get("bailable"),
+                "triable_by": p.get("triable_by") or sched.get("court") or "",
+                "source_citation": p.get("source_citation", "Bharatiya Nyaya Sanhita, 2023"),
+                "disclaimer": "AI statutory candidate suggestion for human legal review only; not an official police charge or final FIR classification."
+            })
+    elif include_legal_candidates:
         full_text = " ".join([orig_statement] + list(request.clarifications))
         legal_candidates = _retrieve_statutory_candidates(full_text)
 
