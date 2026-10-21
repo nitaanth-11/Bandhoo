@@ -196,3 +196,51 @@ class ComplaintRepository:
         self.db.commit()
         self.db.refresh(draft)
         return draft
+
+    def record_evidence_file(
+        self,
+        complaint_id: str,
+        evidence_type: str,
+        file_name: str,
+        file_size_bytes: int,
+        mime_type: str,
+        sha256_hash: str,
+        storage_key: str,
+        description: Optional[str] = None
+    ) -> EvidenceFileModel:
+        """Stores evidence file metadata and private storage key."""
+        evidence = EvidenceFileModel(
+            complaint_id=complaint_id,
+            evidence_type=evidence_type,
+            description=description,
+            file_name=file_name,
+            file_size_bytes=file_size_bytes,
+            mime_type=mime_type,
+            sha256_hash=sha256_hash,
+            storage_key=storage_key,
+            custody_status="supplied_not_examined",
+            authenticity_status="not_assessed",
+            verification_status="unverified"
+        )
+        self.db.add(evidence)
+        
+        audit = AuditEventModel(
+            complaint_id=complaint_id,
+            entity_type="evidence_file",
+            entity_id=evidence.id,
+            action="evidence_file_uploaded_and_stored",
+            actor_type="user_or_system",
+            actor_id="bandhoo_evidence_ingest",
+            payload_after={"storage_key": storage_key, "sha256": sha256_hash, "file_name": file_name}
+        )
+        self.db.add(audit)
+        self.db.commit()
+        self.db.refresh(evidence)
+        return evidence
+
+    def get_audit_events(self, complaint_id: str) -> List[AuditEventModel]:
+        """Retrieves append-only audit trail for a complaint."""
+        return self.db.query(AuditEventModel).filter(
+            AuditEventModel.complaint_id == complaint_id
+        ).order_by(AuditEventModel.event_timestamp.asc()).all()
+

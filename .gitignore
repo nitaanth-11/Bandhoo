@@ -43,3 +43,7 @@ scraper_staging/
 *.db
 *.sqlite
 *.sqlite3
+
+# Controlled Private Storage
+private_storage/
+
