@@ -185,9 +185,38 @@ class EvidenceMetadataInput(BaseModel):
     sha256: Optional[str] = None
 
 
+class ComplainantDetails(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    full_name: str
+    phone: Optional[str] = None
+    email: Optional[str] = None
+    address: Optional[str] = None
+    alternate_contact: Optional[str] = None
+
+
+class MissingPersonDetails(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    full_name: str
+    alias: Optional[str] = None
+    age: Optional[int] = Field(None, ge=0, le=150)
+    gender: Optional[str] = None
+    height_cm: Optional[float] = None
+    complexion: Optional[str] = None
+    identifying_marks: Optional[str] = None
+    clothing_last_seen: Optional[str] = None
+    last_seen_datetime: Optional[str] = None
+    last_seen_location: Optional[str] = None
+    relationship_to_complainant: Optional[str] = None
+    medical_conditions_or_vulnerabilities: Optional[str] = None
+    known_suspects_or_concerns: Optional[str] = None
+
+
 class ComplaintStructureRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
     statement: str = Field(..., description="The complainant's original account, verbatim.")
     clarifications: List[str] = Field(default_factory=list, description="Later clarifications, verbatim, in order.")
     evidence: List[EvidenceMetadataInput] = Field(default_factory=list)
     location: Optional[LocationInput] = None
+    complainant: Optional[ComplainantDetails] = None
+    missing_person: Optional[MissingPersonDetails] = None
+

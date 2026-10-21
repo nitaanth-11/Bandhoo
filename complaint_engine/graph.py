@@ -33,6 +33,7 @@ from complaint_engine.jurisdiction import assess_point
 from complaint_engine.models import (
     ComplaintStructureRequest, Contradiction, EvidenceItem, FactItem, JurisdictionAssessment, LogEntry,
     MissingInfo, NodeError, RejectedItem, ReviewDecision, Statement, VerificationEvent, sha256_text, utc_now,
+    ComplainantDetails, MissingPersonDetails,
 )
 
 WORKFLOW_VERSION = "complaint-structuring-0.2"
@@ -87,6 +88,8 @@ class ComplaintState(TypedDict, total=False):
     original_statement: Annotated[Optional[Statement], keep_original]
     original_sha256: str
     clarifications: List[Statement]
+    complainant: Optional[ComplainantDetails]
+    missing_person: Optional[MissingPersonDetails]
     input_valid: bool
     language: dict
     facts: List[FactItem]
@@ -124,6 +127,7 @@ def intake(state: ComplaintState, config: RunnableConfig) -> dict:
     clarifications = [Statement.create(f"S{i}", "clarification", c)
                       for i, c in enumerate([c for c in req.clarifications if isinstance(c, str) and c.strip()], 2)]
     return {"original_statement": original, "original_sha256": original.sha256, "clarifications": clarifications,
+            "complainant": req.complainant, "missing_person": req.missing_person,
             "input_valid": True, "language": checks.language_profile([original] + clarifications)}
 
 
@@ -242,7 +246,14 @@ def validate_and_route(state: ComplaintState, config: RunnableConfig) -> dict:
         reasons.append("Core information missing: " + ", ".join(open_core) + ".")
     if state.get("rejected_items"):
         reasons.append(f"{len(state['rejected_items'])} extracted item(s) could not be grounded in the statement and were rejected.")
-    if any(HIGH_RISK.search(s.text) for s in _statements(state)):
+    if state.get("missing_person") is not None:
+        from complaint_engine.urgency import assess_urgency
+        u_level, u_reasons, _ = assess_urgency(
+            " ".join(s.text for s in _statements(state)),
+            missing_person=state["missing_person"]
+        )
+        reasons.extend(u_reasons)
+    elif any(HIGH_RISK.search(s.text) for s in _statements(state)):
         reasons.append("The account mentions potentially serious harm; prioritise human review.")
     if (state.get("language") or {}).get("coverage") == "limited":
         reasons.append(checks.LIMITED_COVERAGE_NOTE)
@@ -307,6 +318,15 @@ def build_report(state: ComplaintState, config: RunnableConfig) -> dict:
     else:
         processing_status = "incomplete" if errors else "complete"
     checklist = []
+    mp = state.get("missing_person")
+    if mp is not None:
+        from complaint_engine.urgency import assess_urgency, LEGAL_NO_WAITING_PERIOD_NOTICE
+        u_level, u_reasons, u_actions = assess_urgency(
+            " ".join(s.text for s in _statements(state)),
+            missing_person=mp
+        )
+        for act in u_actions:
+            checklist.append(act)
     for e in state.get("evidence") or []:
         checklist.append(f"Examine {e.evidence_id} ({e.evidence_type}); supplied, not examined, authenticity not assessed.")
     for f in statement_facts:
@@ -362,6 +382,15 @@ def build_report(state: ComplaintState, config: RunnableConfig) -> dict:
         "errors": [e.model_dump() for e in errors],
         "processing_log": [l.model_dump() for l in state.get("log") or []],
     }
+    if mp is not None:
+        report["missing_person_details"] = mp.model_dump()
+        report["urgency_assessment"] = {
+            "level": u_level,
+            "reasons": u_reasons,
+            "legal_mandate": LEGAL_NO_WAITING_PERIOD_NOTICE,
+        }
+    if state.get("complainant") is not None:
+        report["complainant_details"] = state["complainant"].model_dump()
     if processing_status == "failed":
         report["received_input"] = _received_input(state["raw_input"])
     report["draft_text"] = render_draft(report)

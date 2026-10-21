@@ -8,6 +8,7 @@ if os.environ.get("BANDHOO_SKIP_DOTENV") != "1":
         load_dotenv()
     except ImportError:
         pass
+from typing import Optional
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -156,6 +157,80 @@ async def structure_complaint(data: ComplaintStructureRequest):
     """
     status, body = structure_for_api(data)
     return body if status == 200 else JSONResponse(status_code=status, content=body)
+
+
+@app.post("/api/v1/complaints/compile")
+async def compile_complaint(data: ComplaintStructureRequest):
+    """
+    Compiles all relevant user information into a consistent, reviewable complaint record,
+    integrating timeline, roles, missing persons, legal candidates, and database persistence.
+    """
+    from complaint_engine.compiler import compile_complaint_record
+    from db.session import SessionLocal
+    db = SessionLocal()
+    try:
+        record = compile_complaint_record(data, include_legal_candidates=True, db_session=db)
+        return record
+    finally:
+        db.close()
+
+
+@app.post("/api/v1/complaints/generate-pdf")
+async def generate_pdf_endpoint(data: ComplaintStructureRequest):
+    """
+    Compiles complaint and generates a formal, paginated PDF document.
+    """
+    from fastapi.responses import Response
+    from complaint_engine.compiler import compile_complaint_record
+    from complaint_engine.pdf_generator import generate_complaint_pdf
+    from db.session import SessionLocal
+    db = SessionLocal()
+    try:
+        record = compile_complaint_record(data, include_legal_candidates=True, db_session=db)
+        pdf_bytes, filename, file_size, sha256_hash = generate_complaint_pdf(record)
+        return Response(
+            content=pdf_bytes,
+            media_type="application/pdf",
+            headers={
+                "Content-Disposition": f'attachment; filename="{filename}"',
+                "X-Document-SHA256": sha256_hash,
+                "X-Document-Size": str(file_size),
+            }
+        )
+    finally:
+        db.close()
+
+
+@app.post("/api/v1/complaints/email-draft")
+async def email_draft_endpoint(data: ComplaintStructureRequest, recipient_email: Optional[str] = None):
+    """
+    Prepares an email draft for user confirmation prior to transmission.
+    """
+    from complaint_engine.compiler import compile_complaint_record
+    from complaint_engine.pdf_generator import generate_complaint_pdf
+    from complaint_engine.email_draft import prepare_complaint_email_draft, EmailAttachmentMetadata
+    from db.session import SessionLocal
+    db = SessionLocal()
+    try:
+        record = compile_complaint_record(data, include_legal_candidates=True, db_session=db)
+        pdf_bytes, filename, file_size, sha256_hash = generate_complaint_pdf(record)
+        attachment = EmailAttachmentMetadata(
+            file_name=filename,
+            file_size_bytes=file_size,
+            sha256_hash=sha256_hash
+        )
+        draft = prepare_complaint_email_draft(record, recipient_email=recipient_email, pdf_attachment=attachment)
+        return draft.model_dump()
+    finally:
+        db.close()
+
+
+@app.get("/api/health/db")
+async def db_health_check():
+    """Returns database connection status and health."""
+    from db.session import check_db_health
+    return check_db_health()
+
 
 
 @app.post("/api/classify-offence", response_model=OffenceClassificationResponse)

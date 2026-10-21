@@ -54,6 +54,35 @@ def render_draft(report: dict) -> str:
     if coverage.get("coverage") == "limited":
         lines.append(f"Language: {coverage.get('note')}")
 
+    complainant = report.get("complainant_details")
+    if complainant:
+        lines += [
+            "",
+            "COMPLAINANT DETAILS",
+            f"Name: {complainant.get('full_name')}",
+            f"Phone: {complainant.get('phone') or 'Not provided'}",
+            f"Email: {complainant.get('email') or 'Not provided'}",
+            f"Address: {complainant.get('address') or 'Not provided'}",
+        ]
+
+    mp = report.get("missing_person_details")
+    if mp:
+        age_str = f"{mp.get('age')}" if mp.get('age') is not None else "Not stated"
+        minor_tag = " [MINOR - Mandatory Section 137 BNS Registration Required]" if mp.get('age') is not None and mp.get('age') < 18 else ""
+        lines += [
+            "",
+            "MISSING PERSON DETAILS (IMMEDIATE ACTION REQUIRED - ZERO WAITING PERIOD APPLIES)",
+            f"Full Name: {mp.get('full_name')}",
+            f"Age: {age_str}{minor_tag}",
+            f"Gender: {mp.get('gender') or 'Not stated'}",
+            f"Last Seen: {mp.get('last_seen_datetime') or 'Not stated'} at {mp.get('last_seen_location') or 'Not stated'}",
+            f"Physical Description: {mp.get('complexion') or 'complexion not stated'}, height {mp.get('height_cm') or 'unknown'} cm, marks: {mp.get('identifying_marks') or 'none stated'}",
+            f"Clothing Last Seen: {mp.get('clothing_last_seen') or 'Not stated'}",
+            f"Relationship to Complainant: {mp.get('relationship_to_complainant') or 'Not stated'}",
+            f"Medical Vulnerabilities: {mp.get('medical_conditions_or_vulnerabilities') or 'None stated'}",
+            "Statutory Notice: Under Supreme Court directives (Bachpan Bachao Andolan v. UOI), NO 48-hour or 24-hour waiting period is applicable. Record immediately.",
+        ]
+
     lines += ["", "1. COMPLAINANT'S ACCOUNT (verbatim, as received)"]
     statements = report.get("complainant_statements") or []
     for s in statements:
