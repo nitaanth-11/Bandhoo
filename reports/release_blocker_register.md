@@ -190,24 +190,53 @@ The items are "potential" because confirming a defect and approving a fix both g
 5. **Remaining corpus and schedule items:** RB-12 to RB-15, RB-21, RB-22, RB-24 to RB-36.
 6. **Potential implementation defects (added 2026-10-21):** RB-52 and RB-53 (§10). Each is independent of the seven-year question (RB-09) and can be reviewed separately; see `reports/section_173_3_remediation_proposal.md`.
 
-## Appendix B. Baseline SHA-256 hashes (2026-10-20, first 16 hex characters)
+## Appendix B. Baseline SHA-256 Hashes & Controlled Refresh
 
-| File | Hash |
-|---|---|
-| `legal_engine/__init__.py` | `d313c8e4c45d51df` |
-| `legal_engine/amounts.py` | `35aeeeb80b4d3f3e` |
-| `legal_engine/corpus.py` | `d5be04d2059f2dba` |
-| `legal_engine/corpus_guard.py` | `27eb7bd2613ca296` |
-| `legal_engine/llm_client.py` | `99f7f3fce32cc217` |
-| `legal_engine/retrieval.py` | `6aef165b2df9f75f` |
-| `legal_engine/schedule_registry.py` | `6f0af12b994706d7` |
-| `legal_engine/schemas.py` | `8ce3535987fab323` |
-| `legal_engine/service.py` | `a64d55fe2015f6fe` |
-| `legal_engine/synonyms.py` | `4a8a830fec0ac0b0` |
-| `main.py` | `54ecd10e5097b1ad` |
-| `scrape_bns.py` | `7e5c4440ff0a1d0f` |
-| `benchmark/evaluate_benchmark.py` | `7a23da466d8ca567` |
-| `benchmark/build_dataset.py` | `a736cc4c9be2fd05` |
-| `bns_rag_dataset.json` | `7c7e3322b277e8bd` |
-| `benchmark/bns_synthetic_benchmark_50.json` | `36f2e00dc517fe03` |
-| Pre-migration backup | `d053ce3de31ef17d` |
+### Historical Baseline (2026-10-20, first 16 hex characters)
+The initial baseline recorded 17 key files before the complaint engine and trust/safety integration.
+
+| File | Hash | Note |
+|---|---|---|
+| `legal_engine/__init__.py` | `d313c8e4c45d51df` | Original baseline |
+| `legal_engine/amounts.py` | `35aeeeb80b4d3f3e` | Original baseline |
+| `legal_engine/corpus.py` | `d5be04d2059f2dba` | Original baseline |
+| `legal_engine/corpus_guard.py` | `27eb7bd2613ca296` | Original baseline |
+| `legal_engine/llm_client.py` | `99f7f3fce32cc217` | Original baseline |
+| `legal_engine/retrieval.py` | `6aef165b2df9f75f` | Original baseline |
+| `legal_engine/schedule_registry.py` | `6f0af12b994706d7` | Original baseline |
+| `legal_engine/schemas.py` | `8ce3535987fab323` | Original baseline |
+| `legal_engine/service.py` | `a64d55fe2015f6fe` | Original baseline |
+| `legal_engine/synonyms.py` | `4a8a830fec0ac0b0` | Original baseline |
+| `main.py` | `54ecd10e5097b1ad` | Pre-LangGraph baseline |
+| `scrape_bns.py` | `7e5c4440ff0a1d0f` | Original baseline |
+| `benchmark/evaluate_benchmark.py` | `7a23da466d8ca567` | Original baseline |
+| `benchmark/build_dataset.py` | `a736cc4c9be2fd05` | Original baseline |
+| `bns_rag_dataset.json` | `7c7e3322b277e8bd` | Original baseline |
+| `benchmark/bns_synthetic_benchmark_50.json` | `36f2e00dc517fe03` | Original baseline |
+| Pre-migration backup (`reports/backups/bns_rag_dataset.pre_integrity_migration_2026-10-20.json`) | `d053ce3de31ef17d` | Unchanged, read-only |
+
+### Refreshed Controlled Baseline: Record BR-2026-10-21-01 (Checkpoint 6)
+Reconciled after Checkpoint 2 (deterministic defect fixes) and Checkpoint 5 (CORS, error sanitization, dependency lockfile, and ESLint remediation).
+
+**1. Reconciled Core Production Files:**
+| File | 2026-10-20 Hash | 2026-10-21 Hash | Provenance & Rationale |
+|---|---|---|---|
+| `main.py` | `54ecd10e5097b1ad` | `d848442f7e7632f5` | Reconciled: LangGraph integration (`ea8b6b43cd54e2f1`), hardened CORS whitelist, and top-level PII exception handler. |
+| `requirements-lock.txt` | *(new)* | `e893b3d0c94a3245` | Pinned exact production runtime dependencies. |
+| `src/App.jsx` | `0a2001554785f3a0` | `ce4187a92edd397c` | Trust/safety integration, configurable `API_BASE_URL`, and 0-warning ESLint refactor. |
+
+**2. Complaint Engine Components (Added Row Group):**
+| Component | Hash (first 16 hex chars) | Role |
+|---|---|---|
+| `complaint_engine/__init__.py` | `bf18be70cd69f606` | Package initialization |
+| `complaint_engine/checks.py` | `56427e31a405edd9` | Contradiction, loss & unsupported checks |
+| `complaint_engine/draft.py` | `6e4bda6ecc23ba29` | Verbatim narrative drafting & section mapping |
+| `complaint_engine/extraction.py` | `fd3f7ec9eff770e7` | Deterministic entity & fact extraction |
+| `complaint_engine/graph.py` | `18798991921aaa61` | LangGraph state graph & review workflow |
+| `complaint_engine/jurisdiction.py` | `94576e146bd1b6b2` | Polygon containment & 100m buffer logic |
+| `complaint_engine/models.py` | `adf946d8cf835faf` | Pydantic complaint models & schemas |
+
+**3. Unchanged Baseline Invariants (100% Identity Preserved):**
+All 16 other baseline files match their original 2026-10-20 hashes exactly (`legal_engine/*` [10 files], `scrape_bns.py`, `benchmark/evaluate_benchmark.py`, `benchmark/build_dataset.py`, `bns_rag_dataset.json`, `benchmark/bns_synthetic_benchmark_50.json`, and pre-migration backup).
+
+*Note: All blockers (RB-01 through RB-53) remain OPEN. Refreshing the checksum baseline verifies technical and operational state integrity without prematurely closing substantive legal or external review blockers.*
