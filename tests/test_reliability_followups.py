@@ -26,7 +26,8 @@ from legal_engine.schemas import NarrativeInput
 from legal_engine.service import LegalAnalysisService
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-BENCHMARK_PATH = os.path.join(BASE_DIR, "benchmark", "bns_synthetic_benchmark_50.json")
+_BENCH_CANDIDATE = os.path.join(BASE_DIR, "datasets", "bns_synthetic_benchmark_50.json")
+BENCHMARK_PATH = _BENCH_CANDIDATE if os.path.exists(_BENCH_CANDIDATE) else os.path.join(BASE_DIR, "benchmark", "bns_synthetic_benchmark_50.json")
 DISPUTED_IDS = ["BNS-BM-17", "BNS-BM-20", "BNS-BM-21", "BNS-BM-22", "BNS-BM-28", "BNS-BM-30", "BNS-BM-31", "BNS-BM-45"]
 
 ATTEMPT_NARRATIVE = (

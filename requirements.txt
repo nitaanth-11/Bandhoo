@@ -17,6 +17,3 @@ langgraph>=1.2.16
 # Tests
 pytest>=9.1.1
 
-# Optional, only for the one-off data preparation scripts (not required by the API or tests):
-#   kml_loader.py -> fastkml, shapely
-#   scrape_bns.py -> nltk

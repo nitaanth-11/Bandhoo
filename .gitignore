@@ -38,8 +38,6 @@ htmlcov/
 
 # Unreviewed scraper output (see reports/CORPUS_UPDATE_WORKFLOW.md)
 scraper_staging/
-scrape_bns.py
-kml_loader.py
 
 # Local databases
 *.db
