@@ -1,0 +1,46 @@
+flowchart TD
+    Start([Citizen Narrative Input x]) --> LenCheck{Length >= 5 chars?}
+    LenCheck -- No --> RetBrief[Return status: input_too_brief]
+    LenCheck -- Yes --> TruncCheck{Length > 8000 chars?}
+    TruncCheck -- Yes --> Truncate[Truncate to 8000 chars] --> SynTrans
+    TruncCheck -- No --> SynTrans[Synonym Normalisation<br/>synonyms.py]
+
+    SynTrans --> GrievanceGate{Non-Penal Grievance Screening<br/>_detect_non_penal_grievance}
+    
+    GrievanceGate -- "Affirmative Violence, Weapon,<br/>Theft, or Fraud Present" --> ClauseSeg[Clause-Level Segmentation & BM25 Retrieval<br/>retrieve_clause_level]
+    GrievanceGate -- "Figurative Metaphor or<br/>Consumer Pricing Dispute" --> NonPenalResp[Return status: non_penal_gate<br/>Civil Advisory / CPA 2019 Remedy]
+
+    ClauseSeg --> GlobalBM25[Global BM25 Evaluation<br/>k1=1.5, b=0.75, rel_thresh=0.35]
+    ClauseSeg --> ClauseBM25[Multi-Action Clause BM25<br/>Iterative evaluation on clauses >= 3 words]
+    GlobalBM25 --> MaxPool[Max-Pooling Aggregation<br/>S_rag = max(s_global, max s_clause)]
+    ClauseBM25 --> MaxPool
+    MaxPool --> CandPruning[Dynamic Relative-Threshold Pruning<br/>Keep s_j / s_1 >= 0.35, cap at top-8]
+
+    CandPruning --> NegDetect[Detect Explicit Negations<br/>NEGATION_PATTERNS]
+
+    NegDetect --> CheckLLMAvailable{Gemini LLM Client<br/>Available & Active?}
+    
+    CheckLLMAvailable -- "Yes (API Key Configured)" --> AttemptLLM[Invoke Gemini 2.5 Flash<br/>evaluate_complaint with statutory context]
+    CheckLLMAvailable -- "No (No Key / Offline)" --> FallbackBM25[Activate Deterministic Fallback<br/>fallback_status = fallback_llm_unavailable]
+
+    AttemptLLM --> LLMSuccess{LLM Call Succeeded &<br/>Schema Valid?}
+    LLMSuccess -- "Yes" --> LLMEval[Parse applicability_score a_j,<br/>supported & unestablished elements]
+    LLMSuccess -- "No (Timeout / Quota / Bad JSON)" --> FallbackBM25
+
+    FallbackBM25 --> FilterOverlap[Filter candidates requiring >= 1 keyword overlap<br/>Tokens narrative & Keywords section != empty]
+    FilterOverlap --> FallbackScore[Assign applicability score = norm_score]
+
+    LLMEval --> ElementAudit[Statutory Element & Contradiction Audit<br/>_validate_candidate_elements]
+    FallbackScore --> ElementAudit
+
+    ElementAudit --> ContraCheck{Statutory Contradiction<br/>Detected? e.g. Robbery<br/>with no force/threat}
+    ContraCheck -- "Yes" --> ScoreZero[Set applicability = 0.0<br/>Set S_final = 0.0<br/>Decouple from BM25]
+    ContraCheck -- "No" --> ScoreBlend[Blended Decoupled Score<br/>S_final = 0.7 a_j + 0.3 min(S_rag, 1.0)]
+
+    ScoreZero --> FilterPos{S_final > 0.0?}
+    ScoreBlend --> FilterPos
+    FilterPos -- "No" --> DropSection[Drop candidate section]
+    FilterPos -- "Yes" --> SchedLookup[Lookup Schedule I Procedural Metadata<br/>BNSS Schedule I: is_cognizable, is_bailable]
+
+    SchedLookup --> Audit173[Section 173(3) BNSS Audit<br/>Punishment 3 to 7 years ceiling check]
+    Audit173 --> FinalResp([Emit OffenceClassificationResponse])

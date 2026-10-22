@@ -1,0 +1,43 @@
+sequenceDiagram
+    autonumber
+    actor Citizen as Complainant
+    participant UI as React Frontend
+    participant API as FastAPI Backend (main.py)
+    participant Engine as Complaint Structuring Engine
+    participant PDF as ReportLab PDF Generator
+    participant Mail as Email Routing Service
+    participant Repo as Async PostgreSQL Repository
+    participant Officer as Police Station / Human Reviewer
+
+    Citizen->>UI: Submit complaint narrative & location
+    UI->>API: POST /complaint/compile
+    API->>Engine: run_structuring(request)
+    Engine-->>API: Structured Report (facts, jurisdiction, review_route)
+
+    opt Compile Official PDF Draft
+        API->>PDF: generate_complaint_pdf(report, language="en/hi/mr")
+        PDF-->>API: Binary PDF Buffer (Bilingual formatting, official disclaimers)
+        API->>Repo: store_document_version(complaint_id, pdf_bytes, sha256)
+        Repo-->>API: document_version_id
+    end
+
+    opt Prepare Station Dispatch Email
+        API->>Mail: draft_station_email(report, station_name, document_version_id)
+        Mail-->>API: EmailDraft (to: ps.station.mum@mahapolice.gov.in)
+        API->>Repo: store_email_draft(complaint_id, email_draft)
+        Repo-->>API: draft_id
+    end
+
+    API->>Repo: record_audit_event(action="complaint_compiled", actor="system_engine")
+    Repo-->>API: audit_event_id
+
+    API-->>UI: Response Payload (Report, PDF Download URL, Station Email Preview)
+    UI-->>Citizen: Display structured draft, officer checklist, and disclaimer notice
+
+    alt If review_route == "ready_for_police_review"
+        Citizen->>UI: Review & Confirm submission
+        UI->>Officer: Dispatch formal draft email to local police station
+    else If review_route == "human_review_required"
+        UI-->>Citizen: Prompt for missing facts / Advise personal station visit
+        UI->>Officer: Queue for manual desk officer inquiry
+    end

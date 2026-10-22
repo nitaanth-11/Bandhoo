@@ -1,0 +1,21 @@
+flowchart TD
+    CoordIn([Input Coordinates: lat, lon]) --> FiniteCheck{Is lat & lon finite<br/>and non-null?}
+    FiniteCheck -- No --> RetNoLoc[Return status: no_location<br/>station: null<br/>'Police jurisdiction requires confirmation']
+    FiniteCheck -- Yes --> LoadGeoJSON[Load Police Station GeoJSON Features<br/>mumbai_police_jurisdictions.geojson]
+
+    LoadGeoJSON --> PolyLoop[Iterate Through All Station Geometries]
+    PolyLoop --> RayCastExterior{Point Inside Exterior Ring?<br/>Ray-Casting Jordan Curve Theorem<br/>Odd Parity Crossings}
+    
+    RayCastExterior -- No --> NextStation[Evaluate next station]
+    RayCastExterior -- Yes --> HoleCheck{Point Inside Any Interior Hole?}
+    HoleCheck -- Yes --> NextStation
+    HoleCheck -- No --> RecordHit[Record Station as Spatial Hit] --> NextStation
+
+    NextStation --> HitCountCheck{Total Station Hits?}
+    HitCountCheck -- "0 Hits (Outside All)" --> RetOutside[Return status: outside_all<br/>station: null]
+    HitCountCheck -- "> 1 Hits (Polygon Overlap)" --> RetMulti[Return status: multiple<br/>station: null]
+    HitCountCheck -- "Exactly 1 Hit" --> BoundaryDist[Compute Distance to Nearest Edge d_min<br/>Local Equirectangular Metric Projection<br/>kx = 111320 cos lat, ky = 110540]
+
+    BoundaryDist --> BufferCheck{d_min < 100.0 meters?<br/>100m Boundary Ambiguity Buffer}
+    BufferCheck -- "Yes (Near Boundary)" --> RetNear[Return status: near_boundary<br/>station: null<br/>distance_to_boundary_m: d_min<br/>'Police jurisdiction requires confirmation']
+    BufferCheck -- "No (Inside Station Core)" --> RetInside[Return status: inside<br/>station: Station Name<br/>distance_to_boundary_m: d_min<br/>'Map-based estimate; police to confirm']

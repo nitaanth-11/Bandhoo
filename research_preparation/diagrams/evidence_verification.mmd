@@ -1,0 +1,42 @@
+flowchart TD
+    Upload([Uploaded Evidence File Buffer B]) --> SizeCheck{File Size <= 50 MB?}
+    SizeCheck -- No --> RejectSize[Return Error: File exceeds 50MB maximum size]
+    SizeCheck -- Yes --> MagicBytes[Inspect Header Magic Bytes<br/>B 0 to 32 against SUPPORTED_MIME_TYPES]
+
+    MagicBytes --> MimeCheck{Valid MIME Signature?<br/>JPEG, PNG, PDF, MP4, MP3, WAV}
+    MimeCheck -- No --> RejectMime[Return Error: Unsupported file format or corrupted header]
+    MimeCheck -- Yes --> ComputeSHA[Compute SHA-256 Checksum<br/>sha256_hash = SHA256 B]
+
+    ComputeSHA --> SampleBytes[Extract Sample Byte Slice<br/>S = B 64 to 4096]
+    SampleBytes --> MeanByte[Compute Mean Byte Value mu]
+    MeanByte --> ExposureCheck{mu < 10.0 or mu > 245.0?}
+    ExposureCheck -- "mu < 10.0" --> Underexposed[exposure = underexposed_dark<br/>sharpness = 0.2]
+    ExposureCheck -- "mu > 245.0" --> Overexposed[exposure = overexposed_white<br/>sharpness = 0.2]
+    ExposureCheck -- "10.0 <= mu <= 245.0" --> CalcDelta[Compute Adjacent Byte Gradient Delta_avg<br/>sum abs S_i - S_i-1 / len S]
+    CalcDelta --> CalcSharpness[Compute Sharpness Score<br/>sharpness = clamp Delta_avg / 10.0, 0.05, 1.0]
+
+    Underexposed --> MetaCheck
+    Overexposed --> MetaCheck
+    CalcSharpness --> MetaCheck[Screen Metadata Chunk B 0 to 65536<br/>Latin-1 String Decoding]
+
+    MetaCheck --> ToolRegex{Matches Generative Tool Signatures?<br/>Midjourney, Stable Diffusion, DALL-E, Photoshop}
+    ToolRegex -- Yes --> FlagTool[indicators: tool references detected<br/>p_synthetic = max p, 0.75]
+    ToolRegex -- No --> FilenameCheck{Filename contains synthetic keywords?<br/>dalle, stablediffusion, ai_gen}
+
+    FlagTool --> FilenameCheck
+    FilenameCheck -- Yes --> FlagName[indicators: filename generative pattern<br/>p_synthetic = max p, 0.65]
+    FilenameCheck -- No --> StatusRoute{p_synthetic score?}
+
+    FlagName --> StatusRoute
+    StatusRoute -- "p_synthetic >= 0.5" --> StatusHuman[screening_status = flagged_for_human_review]
+    StatusRoute -- "0.2 < p_synthetic < 0.5" --> StatusAmbiguous[screening_status = ambiguous]
+    StatusRoute -- "p_synthetic <= 0.2" --> StatusClean[screening_status = clean_screening]
+
+    StatusHuman --> dHashStage[Compute 64-bit dHash on 9x8 Grayscale Matrix]
+    StatusAmbiguous --> dHashStage
+    StatusClean --> dHashStage
+
+    dHashStage --> DuplicateCheck{Hamming Distance <= 5<br/>to existing uploaded evidence?}
+    DuplicateCheck -- Yes --> FlagDuplicate[Flag duplicate evidence upload]
+    DuplicateCheck -- No --> OutputResult([Emit EvidenceValidationResult<br/>MIME, SHA256, Sharpness, Screening Status])
+    FlagDuplicate --> OutputResult

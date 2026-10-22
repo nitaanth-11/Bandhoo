@@ -1,0 +1,46 @@
+graph TB
+    subgraph CoreImplementedSystem["Implemented Baseline System (Bandhoo v1.0)"]
+        BM25Core["BM25Okapi Lexical Retrieval"]
+        LangGraphCore["LangGraph Fact Structuring"]
+        PolyContainment["Ray-Casting Polygon Containment"]
+        GeminiFallback["Gemini 2.5 Flash / Rule Fallback"]
+        ReportLabCore["ReportLab PDF & Standard Email"]
+    end
+
+    subgraph ProposedFutureExtensions["Proposed Future Research & Engineering Extensions"]
+        subgraph DenseRetrieval["Dense Semantic Retrieval Tier"]
+            BiEncoder["Fine-Tuned Legal Bi-Encoder\n(LegalBERT / BGE-M3 / ColBERT)"]
+            HybridFusion["Reciprocal Rank Fusion (RRF)\n(BM25 Lexical + Bi-Encoder Dense)"]
+            VectorStore[("High-Dimensional Vector DB\n(pgvector / HNSW Index)")]
+        end
+
+        subgraph LocalFineTunedLLM["Self-Hosted Sovereign Foundation Model"]
+            FineTunedLLM["Domain Fine-Tuned BNS Model\n(Mistral-7B / Llama-3-8B-Legal on bns_finetune_dataset.json)"]
+            QuantizedInference["vLLM / ONNX Runtime Local Inference\n(Zero Cloud Dependency for Sensitive Crimes)"]
+        end
+
+        subgraph DeepEvidenceForensics["Deep Neural Evidentiary Forensics"]
+            CNNTamper["Convolutional Neural Network (CNN)\n(Error Level Analysis & Splice Detection)"]
+            DocOCR["Multilingual Legal OCR\n(Tesseract / Donut for FIR Receipts & Medical Bills)"]
+        end
+
+        subgraph InstitutionalInteroperability["Official Law Enforcement Integration"]
+            CCTNS_Bridge["National CCTNS Gateway\n(Direct E-Filing & General Diary Ingestion)"]
+            DigitalSign["Aadhaar e-Sign / PKI Cryptographic Signatures\n(Legally Binding Under IT Act 2000)"]
+        end
+    end
+
+    %% Interactions between Implemented and Proposed
+    BM25Core -.-> HybridFusion
+    BiEncoder -.-> HybridFusion
+    BiEncoder <--> VectorStore
+    HybridFusion -.-> FineTunedLLM
+
+    GeminiFallback -.-> QuantizedInference
+    FineTunedLLM -.-> QuantizedInference
+
+    LangGraphCore -.-> DocOCR
+    DocOCR -.-> CNNTamper
+
+    ReportLabCore -.-> DigitalSign
+    DigitalSign -.-> CCTNS_Bridge

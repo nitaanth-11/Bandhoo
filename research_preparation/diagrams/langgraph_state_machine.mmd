@@ -1,0 +1,72 @@
+stateDiagram-v2
+    [*] --> START
+
+    state "START (Initialize In-Memory State)" as START
+    state "Node: intake" as intake
+    state "Decision: _after_intake" as after_intake <<choice>>
+    state "Node: extract_facts" as extract_facts
+    state "Node: attribute_sources" as attribute_sources
+    state "Node: detect_missing" as detect_missing
+    state "Node: detect_contradictions" as detect_contradictions
+    state "Node: associate_evidence" as associate_evidence
+    state "Node: assess_jurisdiction" as assess_jurisdiction
+    state "Node: validate_and_route" as validate_and_route
+    state "Decision: _after_validation" as after_validation <<choice>>
+    state "Node: human_review" as human_review
+    state "Node: police_review" as police_review
+    state "Node: build_report" as build_report
+    state "END" as END
+
+    START --> intake: Initial State (raw_input, trusted_events)
+    
+    note right of intake
+        Reducer: keep_original
+        Sets original_statement & SHA256 nonce.
+        Raises ImmutableStatementError on modification.
+        Validates statement length > 0.
+    end note
+
+    intake --> after_intake
+    after_intake --> extract_facts: input_valid == True
+    after_intake --> validate_and_route: input_valid == False (Empty Statement)
+
+    extract_facts --> attribute_sources: Deterministic regex extractions + Grounded LLM items
+    
+    note right of attribute_sources
+        Verifies exact character spans:
+        T[start:end] == span_text
+        Mismatched spans -> rejected_items
+    end note
+
+    attribute_sources --> detect_missing: Kept facts with valid spans
+    detect_missing --> detect_contradictions: Evaluates core statutory gaps (datetime, location)
+    detect_contradictions --> associate_evidence: Evaluates internal conflicts
+    associate_evidence --> assess_jurisdiction: Links user attachments & verified police events
+    assess_jurisdiction --> validate_and_route: Point-in-polygon containment & 100m buffer
+
+    note right of validate_and_route
+        Evaluates 8 Safety Gates:
+        1. Statement input validity
+        2. Statement SHA256 integrity
+        3. All facts grounded with valid spans
+        4. Zero contradiction conflicts
+        5. Unambiguous inside jurisdiction (>100m)
+        6. Zero missing core fields
+        7. Zero high-risk unflagged patterns
+        8. Zero node execution errors
+    end note
+
+    validate_and_route --> after_validation
+    after_validation --> police_review: All 8 criteria satisfied (route == "ready_for_police_review")
+    after_validation --> human_review: Any criteria failed (route == "human_review_required")
+
+    note left of human_review
+        Fail-safe fallback:
+        Default route for all edge cases,
+        near-boundary coordinates, or errors.
+    end note
+
+    human_review --> build_report: ReviewDecision payload
+    police_review --> build_report: ReviewDecision payload
+
+    build_report --> END: Emits structured draft, officer checklist, and audit log

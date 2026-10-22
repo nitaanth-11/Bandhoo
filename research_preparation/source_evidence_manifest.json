@@ -1,0 +1,214 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "project": "Bandhoo BNS Prediction Engine",
+  "audit_version": "1.0.0",
+  "audit_timestamp": "2026-10-21T16:40:00Z",
+  "authoritative_findings": {
+    "total_python_tests_collected": 391,
+    "total_frontend_tests": 23,
+    "total_bns_statutory_sections": 358,
+    "total_mumbai_police_jurisdiction_polygons": 91,
+    "total_legal_benchmark_cases": 50,
+    "total_structuring_benchmark_cases": 34,
+    "total_jurisdiction_benchmark_cases": 11
+  },
+  "components": [
+    {
+      "component_id": "GEO-JUR-01",
+      "name": "Polygon Containment Jurisdiction Engine",
+      "source_file": "complaint_engine/jurisdiction.py",
+      "entry_functions": [
+        {"name": "_point_in_ring", "line_start": 24, "line_end": 34},
+        {"name": "point_in_geometry", "line_start": 46, "line_end": 51},
+        {"name": "distance_to_boundary_m", "line_start": 53, "line_end": 68},
+        {"name": "assess_point", "line_start": 88, "line_end": 133}
+      ],
+      "primary_data_file": "mumbai_police_jurisdictions.geojson",
+      "test_coverage_files": [
+        "tests/test_jurisdiction_and_api.py",
+        "src/trustSafety.test.js"
+      ],
+      "key_invariants": [
+        "Ray-casting point in polygon algorithm handles outer ring and excludes interior holes",
+        "Boundary buffer threshold fixed at 100 meters (distance <= 100m -> status = 'near_boundary', station = null)",
+        "Nearest-centroid fallback is strictly forbidden and raises test failures if attempted"
+      ]
+    },
+    {
+      "component_id": "RET-BM25-02",
+      "name": "Lexical Statutory Retrieval Engine",
+      "source_file": "legal_engine/retrieval.py",
+      "entry_functions": [
+        {"name": "tokenize_legal_text", "line_start": 13, "line_end": 20},
+        {"name": "BM25LegalRetriever._build_index", "line_start": 32, "line_end": 45},
+        {"name": "BM25LegalRetriever.retrieve", "line_start": 46, "line_end": 98},
+        {"name": "BM25LegalRetriever.retrieve_clause_level", "line_start": 101, "line_end": 148}
+      ],
+      "primary_data_file": "bns_rag_dataset.json",
+      "test_coverage_files": [
+        "tests/test_retrieval_and_quality.py",
+        "tests/test_legal_engine.py"
+      ],
+      "key_invariants": [
+        "Uses rank_bm25.BM25Okapi over title, keywords, statutory text, and legacy scraped text",
+        "Prunes candidates whose raw score ratio relative to top candidate is < 0.35",
+        "Splits compound complaints into clauses and merges top clause candidates (max_k=8)"
+      ]
+    },
+    {
+      "component_id": "LEG-SRV-03",
+      "name": "Legal Safeguards & Pipeline Orchestrator",
+      "source_file": "legal_engine/service.py",
+      "entry_functions": [
+        {"name": "translate_synonyms", "line_start": 147, "line_end": 167},
+        {"name": "detect_negations", "line_start": 169, "line_end": 176},
+        {"name": "_validate_candidate_elements", "line_start": 178, "line_end": 391},
+        {"name": "_audit_173_3_claims", "line_start": 726, "line_end": 737},
+        {"name": "_detect_non_penal_grievance", "line_start": 870, "line_end": 998},
+        {"name": "analyze_complaint", "line_start": 1072, "line_end": 1154},
+        {"name": "_build_fallback_response", "line_start": 1302, "line_end": 1412}
+      ],
+      "primary_data_file": "legal_engine/schedule_registry.py",
+      "test_coverage_files": [
+        "tests/test_legal_accuracy_audit.py",
+        "tests/test_adversarial_grievance_audit.py",
+        "tests/test_procedural_law_audit.py",
+        "tests/test_reliability_followups.py"
+      ],
+      "key_invariants": [
+        "Non-penal / commercial pricing disputes strictly bypass penal retrieval",
+        "Explicit negation of weapons/violence/hurt zeroes Section 309 Robbery applicability",
+        "Section 173(3) BNSS caveats are attached to offences with 3-7 year punishments citing Lalita Kumari"
+      ]
+    },
+    {
+      "component_id": "LLM-CLI-04",
+      "name": "Foundation Model Client & Fallback Router",
+      "source_file": "legal_engine/llm_client.py",
+      "entry_functions": [
+        {"name": "GeminiLegalClient.__init__", "line_start": 40, "line_end": 64},
+        {"name": "GeminiLegalClient.evaluate_complaint", "line_start": 90, "line_end": 195}
+      ],
+      "test_coverage_files": [
+        "tests/test_gemini_pipeline.py"
+      ],
+      "key_invariants": [
+        "Model: gemini-2.5-flash via google-genai SDK",
+        "Inference failures trigger bounded retry (3 attempts) before falling back to rule-based BM25",
+        "Outputs adhere to strict Pydantic JSON schema with reasoning and supported statutory elements"
+      ]
+    },
+    {
+      "component_id": "CMP-GRF-05",
+      "name": "LangGraph Complaint Structuring Engine",
+      "source_file": "complaint_engine/graph.py",
+      "entry_functions": [
+        {"name": "intake", "line_start": 120, "line_end": 132},
+        {"name": "extract_facts", "line_start": 134, "line_end": 165},
+        {"name": "attribute_sources", "line_start": 167, "line_end": 179},
+        {"name": "validate_and_route", "line_start": 213, "line_end": 263},
+        {"name": "build_graph", "line_start": 477, "line_end": 498},
+        {"name": "run_structuring", "line_start": 500, "line_end": 526}
+      ],
+      "test_coverage_files": [
+        "tests/test_complaint_graph.py",
+        "tests/test_structuring_quality.py",
+        "tests/test_complaint_defect_regressions.py"
+      ],
+      "key_invariants": [
+        "Original statements are immutable and hashed with SHA-256",
+        "Every extracted fact must match a verbatim substring in the original statement",
+        "External tracing environment variables raise ExternalTracingRefused unless authorized"
+      ]
+    },
+    {
+      "component_id": "EXT-DET-06",
+      "name": "Deterministic Rule-Based Fact Extractor",
+      "source_file": "complaint_engine/extraction.py",
+      "entry_functions": [
+        {"name": "sentence_spans", "line_start": 178, "line_end": 189},
+        {"name": "extract_deterministic", "line_start": 295, "line_end": 349},
+        {"name": "validate_llm_items", "line_start": 367, "line_end": 402}
+      ],
+      "test_coverage_files": [
+        "tests/test_structuring_quality.py"
+      ],
+      "key_invariants": [
+        "Extracts facts across 7 categories (people, datetime, location, action, loss, witness, evidence)",
+        "Extracts exact start/end character offsets for every span",
+        "Classifies polarity as asserted, denied, or uncertain"
+      ]
+    },
+    {
+      "component_id": "CHK-CON-07",
+      "name": "Complaint Inconsistency & Contradiction Checker",
+      "source_file": "complaint_engine/checks.py",
+      "entry_functions": [
+        {"name": "detect_missing", "line_start": 93, "line_end": 147},
+        {"name": "detect_contradictions", "line_start": 176, "line_end": 254},
+        {"name": "associate_evidence", "line_start": 256, "line_end": 275}
+      ],
+      "test_coverage_files": [
+        "tests/test_complaint_defect_regressions.py",
+        "tests/test_structuring_quality.py"
+      ],
+      "key_invariants": [
+        "Detects pairwise conflicts between statements on time, date, amount, persons, and identity",
+        "Prohibits defamatory or speculative wording (e.g. 'lie', 'dishonest', 'fake') in contradiction notes"
+      ]
+    },
+    {
+      "component_id": "DB-PER-08",
+      "name": "Relational Persistence & SQLAlchemy Layer",
+      "source_file": "db/session.py",
+      "entry_functions": [
+        {"name": "create_configured_engine", "line_start": 34, "line_end": 55},
+        {"name": "session_scope", "line_start": 71, "line_end": 83},
+        {"name": "check_db_health", "line_start": 85, "line_end": 113}
+      ],
+      "models_file": "db/models.py",
+      "repository_file": "db/repository.py",
+      "test_coverage_files": [
+        "tests/test_database_persistence.py"
+      ],
+      "key_invariants": [
+        "SQLAlchemy 2.0 ORM with connection pooling (pool_size=10, max_overflow=20)",
+        "Pre-ping connection health check and credential masking in URLs and exception logs",
+        "Alembic migration 001_initial_schema.py provides DDL scripts for 8 tables"
+      ]
+    },
+    {
+      "component_id": "DOC-PDF-09",
+      "name": "Legal PDF Document Generation Engine",
+      "source_file": "complaint_engine/pdf_generator.py",
+      "entry_functions": [
+        {"name": "NumberedCanvas", "line_start": 23, "line_end": 56},
+        {"name": "generate_complaint_pdf", "line_start": 58, "line_end": 338}
+      ],
+      "test_coverage_files": [
+        "tests/test_pdf_and_email.py"
+      ],
+      "key_invariants": [
+        "Two-pass canvas computes total page count ('Page X of Y')",
+        "Renders Section 6 statutory table with classification, punishment, reasoning, and elements",
+        "Calculates and returns SHA-256 document checksum"
+      ]
+    },
+    {
+      "component_id": "EML-DRF-10",
+      "name": "Police Station Email Preparation Engine",
+      "source_file": "complaint_engine/email_draft.py",
+      "entry_functions": [
+        {"name": "prepare_complaint_email_draft", "line_start": 43, "line_end": 136}
+      ],
+      "test_coverage_files": [
+        "tests/test_pdf_and_email.py"
+      ],
+      "key_invariants": [
+        "Associates station email formatted as ps.[station_name].mum@mahapolice.gov.in",
+        "Includes statutory notice regarding Bachpan Bachao Andolan for missing persons",
+        "Requires explicit user confirmation prior to dispatch; no auto-send"
+      ]
+    }
+  ]
+}

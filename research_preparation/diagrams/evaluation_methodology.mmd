@@ -1,0 +1,78 @@
+flowchart TD
+    subgraph Benchmarks["Benchmark Suites"]
+        BNS50["BNS Synthetic Benchmark 50<br/>(50 cases, 3 languages, 12 categories)"]
+        Struct34["Structuring Benchmark 34<br/>(34 cases, 220 gold facts)"]
+        Juris11["Jurisdiction Benchmark 11<br/>(11 spatial cases, 102 station polygons)"]
+    end
+
+    subgraph Partitioning["Dataset Partitioning & Stratification"]
+        BNS_Dev["BNS Development Set (35 cases)"]
+        BNS_Holdout["BNS Heldout Set (15 cases - previously inspected)"]
+        BNS_Prov["Provisional Sub-Partition (8 cases pending legal review)"]
+        BNS_Clean["Verified Sub-Partition (42 cases)"]
+        
+        Struct_Dev["Structuring Dev Set (20 cases / 131 facts)"]
+        Struct_Holdout["Structuring Heldout Set (14 cases / 89 facts)"]
+    end
+
+    subgraph ExecutionHarness["Automated Evaluation Execution"]
+        EvalBNS["evaluate_benchmark.py"]
+        EvalStruct["evaluate_structuring.py"]
+        TestIdentities["test_benchmark_metric_identities.py"]
+    end
+
+    subgraph EvaluationModes["Inference Regimes"]
+        ModeFallback["Offline Deterministic BM25 Fallback<br/>(100% Reproducible, CPU-only, 50 cases)"]
+        ModeLive["Live Gemini 2.5 Flash API<br/>(Sample of 5 cases, subject to API quota)"]
+    end
+
+    subgraph MetricAudits["Strict Metric Assertions & Identities"]
+        Identity1["Identity: Total = TP + FP"]
+        Identity2["Identity: Micro Precision = TP / Total"]
+        Identity3["Identity: Micro Recall = Recovered / Ground Truth"]
+        Identity4["Identity: Unsupported Rate = 1.0 - Precision"]
+        Identity5["Partition Additivity: Overall = Dev + Holdout"]
+    end
+
+    subgraph FinalOutputs["Verified Research Artifacts"]
+        RepFallback["evaluation_report_fallback.json"]
+        RepLive["evaluation_report_live.json"]
+        RepBaseline["results_baseline.json"]
+        RepAfter["results_after.json"]
+        VerifiedTables["verified_results_tables.md"]
+    end
+
+    BNS50 --> BNS_Dev
+    BNS50 --> BNS_Holdout
+    BNS50 --> BNS_Prov
+    BNS50 --> BNS_Clean
+
+    Struct34 --> Struct_Dev
+    Struct34 --> Struct_Holdout
+
+    BNS_Dev --> EvalBNS
+    BNS_Holdout --> EvalBNS
+    Struct_Dev --> EvalStruct
+    Struct_Holdout --> EvalStruct
+    Juris11 --> EvalStruct
+
+    EvalBNS --> ModeFallback
+    EvalBNS --> ModeLive
+    EvalStruct --> ModeFallback
+
+    ModeFallback --> RepFallback
+    ModeLive --> RepLive
+    EvalStruct --> RepBaseline
+    EvalStruct --> RepAfter
+
+    RepFallback --> TestIdentities
+    TestIdentities --> Identity1
+    TestIdentities --> Identity2
+    TestIdentities --> Identity3
+    TestIdentities --> Identity4
+    TestIdentities --> Identity5
+
+    RepFallback --> VerifiedTables
+    RepLive --> VerifiedTables
+    RepBaseline --> VerifiedTables
+    RepAfter --> VerifiedTables

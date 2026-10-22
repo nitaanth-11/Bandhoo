@@ -1,0 +1,159 @@
+erDiagram
+    COMPLAINTS ||--o| MISSING_PERSON_REPORTS : "identifies (1:0..1)"
+    COMPLAINTS ||--o{ STRUCTURED_FACTS : "contains (1:N)"
+    STRUCTURED_FACTS ||--o{ FACT_SOURCE_SPANS : "grounded_in (1:N)"
+    COMPLAINTS ||--o{ EVIDENCE_FILES : "attaches (1:N)"
+    COMPLAINTS ||--o{ VERIFICATION_RESULTS : "verified_by (1:N)"
+    COMPLAINTS ||--o{ GENERATED_DOCUMENTS : "produces (1:N)"
+    GENERATED_DOCUMENTS ||--o{ DOCUMENT_VERSIONS : "versions (1:N)"
+    COMPLAINTS ||--o{ EMAIL_DRAFTS : "routes (1:N)"
+    COMPLAINTS ||--o{ AUDIT_EVENTS : "logs (1:N)"
+
+    COMPLAINTS {
+        string id PK "UUID"
+        string complaint_number UK "Unique Human-Readable ID"
+        string status "draft / submitted / archived"
+        text original_narration "Verbatim complainant statement"
+        string original_sha256 "SHA-256 cryptographic nonce"
+        json clarifications "Array of subsequent statements"
+        json complainant_details "Name, phone, Aadhaar/ID"
+        string incident_datetime_raw "Extracted text datetime"
+        datetime incident_datetime_normalized "Normalized ISO datetime"
+        string incident_location_raw "Extracted location text"
+        float incident_latitude "WGS84 Latitude"
+        float incident_longitude "WGS84 Longitude"
+        string jurisdiction_station "Assigned Mumbai Police Station"
+        string jurisdiction_status "inside / near_boundary / outside_all"
+        float jurisdiction_distance_m "Distance to boundary edge"
+        string review_route "ready_for_police_review / human_review_required"
+        json review_reasons "List of safety gate failure reasons"
+        json compiled_record "Full JSON structured snapshot"
+        string workflow_version "complaint-structuring-0.2"
+        datetime created_at "Creation timestamp"
+        datetime updated_at "Update timestamp"
+    }
+
+    MISSING_PERSON_REPORTS {
+        string id PK "UUID"
+        string complaint_id FK "References complaints.id"
+        string full_name "Name of missing individual"
+        string alias "Known aliases"
+        int age "Age in years"
+        string gender "Gender"
+        float height_cm "Height in centimeters"
+        string complexion "Complexion description"
+        text identifying_marks "Scars, tattoos, birthmarks"
+        text clothing_last_seen "Clothing description"
+        string last_seen_datetime "Last seen date and time"
+        string last_seen_location "Last seen location"
+        string relationship_to_complainant "Relationship"
+        text medical_conditions "Critical medical conditions"
+        string urgency_level "critical / high / medium"
+        string status "reported / tracing / located"
+        datetime created_at "Timestamp"
+        datetime updated_at "Timestamp"
+    }
+
+    STRUCTURED_FACTS {
+        string id PK "UUID"
+        string complaint_id FK "References complaints.id"
+        string item_key "Canonical key"
+        string kind "datetime / location / property / action"
+        text value "Extracted fact string"
+        text normalized_value "Normalized standard representation"
+        string polarity "asserted / negated"
+        string provenance "complainant_statement / ai_inference"
+        string verification_status "unverified / independently_verified"
+        string display_category "Statement / Verified / AI inference"
+        string extraction_method "regex / llm_grounded"
+        datetime created_at "Timestamp"
+    }
+
+    FACT_SOURCE_SPANS {
+        string id PK "UUID"
+        string fact_id FK "References structured_facts.id"
+        string statement_id "S1 (original) / S2 (clarification)"
+        int start_char "Character start offset in statement"
+        int end_char "Character end offset in statement"
+        text quote "Verbatim character substring"
+    }
+
+    EVIDENCE_FILES {
+        string id PK "UUID"
+        string complaint_id FK "References complaints.id"
+        string evidence_type "image / document / cctv / receipt"
+        string file_name "Original filename"
+        bigint file_size_bytes "File size in bytes"
+        string mime_type "Verified MIME type"
+        string sha256_hash "File SHA-256 checksum"
+        string storage_backend "local_private / s3_blob"
+        string storage_key "Private storage path"
+        string custody_status "supplied_not_examined"
+        string authenticity_status "not_assessed / flagged / clean"
+        string verification_status "unverified / verified"
+        datetime uploaded_at "Timestamp"
+    }
+
+    VERIFICATION_RESULTS {
+        string id PK "UUID"
+        string complaint_id FK "References complaints.id"
+        string target_type "fact / evidence / identity"
+        string target_id "Referenced fact or evidence ID"
+        string verifier_id "Officer belt/employee number"
+        string verifier_role "Investigating Officer / Station In-Charge"
+        string authorization_reference "GD entry or official memo"
+        string method "cctv_inspection / spot_visit / witness_statement"
+        string result "verified / contradicted / inconclusive"
+        text remarks "Officer notes"
+        datetime recorded_at "Verification timestamp"
+    }
+
+    GENERATED_DOCUMENTS {
+        string id PK "UUID"
+        string complaint_id FK "References complaints.id"
+        string document_type "complaint_draft_pdf / fir_advisory_pdf"
+        string title "Document title"
+        datetime created_at "Timestamp"
+        datetime updated_at "Timestamp"
+    }
+
+    DOCUMENT_VERSIONS {
+        string id PK "UUID"
+        string document_id FK "References generated_documents.id"
+        int version_number "Sequential version number"
+        bigint file_size_bytes "PDF size in bytes"
+        string sha256_hash "PDF SHA-256 hash"
+        string storage_backend "local_private"
+        string storage_key "Filesystem storage key"
+        string template_version "pdf-template-1.0"
+        json metadata_snapshot "Frozen complaint metadata"
+        datetime generated_at "Compilation timestamp"
+    }
+
+    EMAIL_DRAFTS {
+        string id PK "UUID"
+        string complaint_id FK "References complaints.id"
+        string recipient_email "ps.station.mum@mahapolice.gov.in"
+        string recipient_name "Station House Officer"
+        string recipient_type "police_station / complainant"
+        string subject "Formal Subject Line"
+        text body_text "Rendered ASCII plain text draft"
+        text body_html "Rendered HTML email body"
+        string status "draft_pending_confirmation / dispatched"
+        boolean user_confirmed "User confirmation flag"
+        string attached_version_id "Attached PDF document version"
+        datetime created_at "Timestamp"
+    }
+
+    AUDIT_EVENTS {
+        string id PK "UUID"
+        string complaint_id FK "References complaints.id"
+        string entity_type "complaint / fact / evidence / document"
+        string entity_id "ID of affected entity"
+        string action "created / extracted / routed / compiled"
+        string actor_type "system_engine / citizen / police_officer"
+        string actor_id "bandhoo_workflow / user_id"
+        datetime event_timestamp "Append-only timestamp"
+        json payload_before "Pre-operation state"
+        json payload_after "Post-operation state"
+    }

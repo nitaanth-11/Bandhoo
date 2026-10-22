@@ -1,0 +1,98 @@
+graph TD
+    classDef client fill:#e0f2fe,stroke:#0284c7,stroke-width:2px,color:#0369a1;
+    classDef intake fill:#fef3c7,stroke:#d97706,stroke-width:2px,color:#92400e;
+    classDef graphNode fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#15803d;
+    classDef legalNode fill:#f3e8ff,stroke:#9333ea,stroke-width:2px,color:#6b21a8;
+    classDef dispatch fill:#fee2e2,stroke:#dc2626,stroke-width:2px,color:#991b1b;
+    classDef storage fill:#f1f5f9,stroke:#475569,stroke-width:2px,color:#1e293b;
+
+    subgraph UserInterface["Client Tier (React 19 / Leaflet)"]
+        UI_Narrative["Citizen Incident Narration<br/>(English, Hindi, Hinglish)"]:::client
+        UI_Location["GPS / Map Selection<br/>(Leaflet Coordinates)"]:::client
+        UI_Evidence["Evidence Upload<br/>(Images, Documents)"]:::client
+        UI_Missing["Missing Person Details<br/>(Optional Urgent Intake)"]:::client
+    end
+
+    subgraph API_Tier["FastAPI Application Tier (main.py)"]
+        API_Route{"Endpoint Router"}:::intake
+        API_Predict["/predict/legal-section"]:::intake
+        API_Structure["/complaint/structure"]:::intake
+        API_Compile["/complaint/compile"]:::intake
+        API_Missing["/complaint/missing-person"]:::intake
+    end
+
+    subgraph LegalPipeline["Legal Classification Engine (legal_engine/)"]
+        Synonym_Pass["Synonym Translation & Normalisation<br/>(synonyms.py)"]:::legalNode
+        Grievance_Gate{"Non-Penal Grievance Gate<br/>(service.py)"}:::legalNode
+        Non_Penal_Resp["Preliminary Civil / Consumer Advisory<br/>(No Penal Charges)"]:::legalNode
+        BM25_Retrieve["Clause-Level Okapi BM25 Retrieval<br/>(retrieval.py - k1=1.5, b=0.75, rel_thresh=0.35)"]:::legalNode
+        LLM_Gate{"Gemini 2.5 Flash Available?"}:::legalNode
+        LLM_Exec["Gemini Semantic Reasoning<br/>(llm_client.py)"]:::legalNode
+        Fallback_Exec["Deterministic BM25 Keyword Overlap<br/>(service.py fallback)"]:::legalNode
+        Decoupled_Validate["Statutory Element Validation & Decoupled Scoring<br/>(service.py: 0.7 app + 0.3 rag; 0.0 on contradiction)"]:::legalNode
+        BNSS_Audit["Section 173(3) BNSS Procedural Audit<br/>(3 to 7 Year Ceiling & Schedule I Registry)"]:::legalNode
+    end
+
+    subgraph LangGraphPipeline["Complaint Structuring Engine (complaint_engine/)"]
+        LG_Intake["Intake & Statement Nonce Hashing<br/>(keep_original reducer)"]:::graphNode
+        LG_Extract["Exact-Span Grounded Fact Extraction<br/>(extraction.py)"]:::graphNode
+        LG_Checks["Consistency & Contradiction Audit<br/>(checks.py)"]:::graphNode
+        LG_Jurisdiction["Point-in-Polygon Jurisdiction & 100m Buffer<br/>(jurisdiction.py)"]:::graphNode
+        LG_Screening["Evidence Pre-Screening & dHash<br/>(evidence_screening.py)"]:::graphNode
+        LG_Route{"Conjunctive Safety Gate<br/>(validate_and_route)"}:::graphNode
+        LG_HumanReview["Human Review Required<br/>(Uncertain / Near Boundary / Contradictions)"]:::graphNode
+        LG_PoliceReview["Ready for Police Review<br/>(All 8 Criteria Satisfied)"]:::graphNode
+        LG_Report["Compile Verified Draft & Audit Checklist<br/>(compiler.py)"]:::graphNode
+    end
+
+    subgraph OutputTier["Persistence & Output Compilation Tier"]
+        DB_Postgres[("PostgreSQL Database<br/>(SQLAlchemy Async Repository)")]:::storage
+        PDF_Gen["Bilingual ReportLab PDF Generator<br/>(pdf_generator.py)"]:::dispatch
+        Email_Draft["Official Station Email Dispatch Draft<br/>(ps.station.mum@mahapolice.gov.in)"]:::dispatch
+    end
+
+    %% Data Flow Connections
+    UI_Narrative --> API_Route
+    UI_Location --> API_Route
+    UI_Evidence --> API_Route
+    UI_Missing --> API_Route
+
+    API_Route --> API_Predict
+    API_Route --> API_Structure
+    API_Route --> API_Compile
+    API_Route --> API_Missing
+
+    API_Predict --> Synonym_Pass
+    Synonym_Pass --> Grievance_Gate
+    Grievance_Gate -- "Consumer Pricing / Figurative Metaphor" --> Non_Penal_Resp
+    Grievance_Gate -- "Affirmative Penal Crime Present" --> BM25_Retrieve
+
+    BM25_Retrieve --> LLM_Gate
+    LLM_Gate -- "API Key Active & Online" --> LLM_Exec
+    LLM_Gate -- "Offline / Timeout / Quota 503" --> Fallback_Exec
+
+    LLM_Exec --> Decoupled_Validate
+    Fallback_Exec --> Decoupled_Validate
+    Decoupled_Validate --> BNSS_Audit
+
+    API_Structure --> LG_Intake
+    API_Compile --> LG_Intake
+    API_Missing --> LG_Intake
+
+    LG_Intake --> LG_Extract
+    LG_Extract --> LG_Checks
+    LG_Checks --> LG_Jurisdiction
+    LG_Checks --> LG_Screening
+    LG_Jurisdiction --> LG_Route
+    LG_Screening --> LG_Route
+
+    LG_Route -- "Fail (Ambiguity / Errors / Near Boundary)" --> LG_HumanReview
+    LG_Route -- "Pass (All 8 Invariants Met)" --> LG_PoliceReview
+
+    LG_HumanReview --> LG_Report
+    LG_PoliceReview --> LG_Report
+
+    LG_Report --> DB_Postgres
+    LG_Report --> PDF_Gen
+    LG_Report --> Email_Draft
+    BNSS_Audit --> PDF_Gen

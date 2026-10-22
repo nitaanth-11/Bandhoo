@@ -1,0 +1,93 @@
+graph TB
+    subgraph ClientLayer["Client & User Intake Layer (React 19 / Leaflet GIS)"]
+        UI_Home["Home Dashboard / Language Toggle (EN / HI / MR)"]
+        UI_GPS["GPS Address Prompt Modal (100m Buffer Confirmation)"]
+        UI_Form["Complaint & Missing Person Forms (SC Mandate Triage)"]
+        UI_Draft["Complaint Draft Sheet & Official Action Controls"]
+    end
+
+    subgraph APILayer["API Gateway & Service Orchestration (FastAPI / main.py)"]
+        API_Jurisdiction["/api/get-jurisdiction"]
+        API_Classify["/api/classify-offence"]
+        API_Structure["/api/v1/complaints/structure"]
+        API_Compile["/api/v1/complaints/compile"]
+        API_PDF["/api/v1/complaints/generate-pdf"]
+        API_Email["/api/v1/complaints/email-draft"]
+    end
+
+    subgraph LegalEngineLayer["Statutory Legal Engine (legal_engine/)"]
+        SynonymMapper["Synonym Translation Engine (Hindi/English/Hinglish Regex)"]
+        GrievanceGate{"Non-Penal Grievance Gate\n(Commercial / Metaphorical / Civil)"}
+        BM25Retriever["BM25Okapi Retrieval Engine\n(Clause-Level Segmentation & 0.35 Relative Pruning)"]
+        CorpusStore[("BNS 2023 Statutory Corpus\n(358 Verified Gazette Sections)")]
+        ScheduleRegistry["BNSS First Schedule Part I Registry\n(Cognizability, Bail, Court & Sec 173(3) Rules)"]
+        ElementVerifier["Statutory Element & Negation Verifier\n(Sec 309 Robbery / Sec 303 Theft Thresholds)"]
+        LLMRouter{"LLM Available & Healthy?"}
+        GeminiClient["Gemini 2.5 Flash Legal Client\n(Bounded Retry & Structured JSON Schema)"]
+        FallbackEngine["Deterministic Heuristic Fallback Engine\n(BM25 Relevance & Schedule I Mapping)"]
+    end
+
+    subgraph ComplaintStructuringLayer["LangGraph Complaint Structuring (complaint_engine/)"]
+        PrivacyGuard{"LangSmith Tracing Guard\n(Zero-Knowledge Policy)"}
+        StateGraph["LangGraph StateGraph Workflow"]
+        NodeIntake["Node: intake\n(SHA-256 Immutability Lock)"]
+        NodeExtract["Node: extract_facts\n(7 Categories: People, Datetime, Location, Action, Loss, Witness, Evidence)"]
+        NodeSourceSpan["Node: attribute_sources\n(Verbatim Exact Character Offset Spans)"]
+        NodeChecks["Node: detect_missing & detect_contradictions\n(Pairwise Verbatim Quotes, No Defamatory Wording)"]
+        NodeEvidence["Node: associate_evidence\n(Magic Bytes & Heuristic Exif Analysis)"]
+        NodeJurisdiction["Node: assess_jurisdiction\n(Ray-Casting Polygon Containment & 100m Boundary Buffer)"]
+        NodeRoute{"Node: validate_and_route\n(Zero-Error Inspection)"}
+        RouteHuman["Route: human_review_required"]
+        RoutePolice["Route: ready_for_police_review"]
+        NodeReport["Node: build_report\n(Standardized Audit JSON)"]
+    end
+
+    subgraph PersistenceAndOutputLayer["Persistence, Document & Dispatch Layer"]
+        DB[(Relational DB: SQLite / PostgreSQL\nSQLAlchemy 2.0 Pool & Alembic)]
+        Compiler["Complaint Compiler\n(Chronological Timeline & Role Resolution)"]
+        PDFGen["ReportLab PDF Generator\n(NumberedCanvas Two-Pass 'Page X of Y')"]
+        EmailPrep["Official Police Email Preparer\n(ps.[station].mum@mahapolice.gov.in)"]
+        PrivateStorage["Private File Storage\n(Path-Traversal Protected Storage)"]
+    end
+
+    %% Data Flow Connections
+    UI_Home --> API_Jurisdiction
+    UI_Form --> API_Classify
+    UI_Form --> API_Structure
+    UI_Draft --> API_Compile
+    UI_Draft --> API_PDF
+    UI_Draft --> API_Email
+
+    API_Jurisdiction --> NodeJurisdiction
+    API_Classify --> SynonymMapper
+
+    SynonymMapper --> GrievanceGate
+    GrievanceGate -- "Civil/Metaphorical" --> UI_Draft
+    GrievanceGate -- "Penal Allegation" --> BM25Retriever
+
+    BM25Retriever <--> CorpusStore
+    BM25Retriever --> ElementVerifier
+    ElementVerifier <--> ScheduleRegistry
+    ElementVerifier --> LLMRouter
+
+    LLMRouter -- "API Key Active & OK" --> GeminiClient
+    LLMRouter -- "Offline / Timeout / Errored" --> FallbackEngine
+    GeminiClient --> API_Classify
+    FallbackEngine --> API_Classify
+
+    API_Structure --> PrivacyGuard
+    PrivacyGuard -- "Tracing Detected without Perm" --> ErrorState["ExternalTracingRefused (503)"]
+    PrivacyGuard -- "Privacy Compliant" --> StateGraph
+
+    StateGraph --> NodeIntake --> NodeExtract --> NodeSourceSpan --> NodeChecks --> NodeEvidence --> NodeJurisdiction --> NodeRoute
+    NodeRoute -- "Has Inconsistencies / Errors" --> RouteHuman --> NodeReport
+    NodeRoute -- "Fully Verified" --> RoutePolice --> NodeReport
+    NodeReport --> API_Structure
+
+    API_Compile --> Compiler
+    Compiler <--> DB
+    Compiler --> PDFGen
+    Compiler --> EmailPrep
+    NodeEvidence <--> PrivateStorage
+    PDFGen --> API_PDF
+    EmailPrep --> API_Email
