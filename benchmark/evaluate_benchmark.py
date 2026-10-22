@@ -1140,7 +1140,7 @@ def main():
     parser = argparse.ArgumentParser(description="Evaluate Bandhoo against BNS Benchmark")
     parser.add_argument(
         "--benchmark",
-        default=os.path.join(BASE_DIR, "benchmark", "bns_synthetic_benchmark_50.json"),
+        default=os.path.join(BASE_DIR, "datasets", "bns_synthetic_benchmark_50.json") if os.path.exists(os.path.join(BASE_DIR, "datasets", "bns_synthetic_benchmark_50.json")) else os.path.join(BASE_DIR, "benchmark", "bns_synthetic_benchmark_50.json"),
         help="Path to benchmark JSON"
     )
     parser.add_argument(

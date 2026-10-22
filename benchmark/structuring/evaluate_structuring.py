@@ -266,7 +266,10 @@ def summarise(cases):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__.split("\n")[1])
-    parser.add_argument("--cases", default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "structuring_cases.json"))
+    root_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    datasets_cases = os.path.join(root_dir, "datasets", "structuring_cases.json")
+    default_cases = datasets_cases if os.path.exists(datasets_cases) else os.path.join(os.path.dirname(os.path.abspath(__file__)), "structuring_cases.json")
+    parser.add_argument("--cases", default=default_cases)
     parser.add_argument("--out", default=None, help="write the full JSON report here")
     args = parser.parse_args()
     with open(args.cases, encoding="utf-8") as fh:

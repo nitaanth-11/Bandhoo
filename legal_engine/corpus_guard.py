@@ -15,6 +15,7 @@ import shutil
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROTECTED_CORPUS_FILES = (
+    os.path.join(REPO_ROOT, "datasets", "bns_rag_dataset.json"),
     os.path.join(REPO_ROOT, "bns_rag_dataset.json"),
     os.path.join(REPO_ROOT, "public", "bns_rag_dataset.json"),
 )

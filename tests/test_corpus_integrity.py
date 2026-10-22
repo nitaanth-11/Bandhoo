@@ -21,7 +21,8 @@ from legal_engine.schemas import NarrativeInput, OffenceClassificationResponse
 from legal_engine.service import LegalAnalysisService
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DATASET_PATH = os.path.join(BASE_DIR, "bns_rag_dataset.json")
+_DATASET_CANDIDATE = os.path.join(BASE_DIR, "datasets", "bns_rag_dataset.json")
+DATASET_PATH = _DATASET_CANDIDATE if os.path.exists(_DATASET_CANDIDATE) else os.path.join(BASE_DIR, "bns_rag_dataset.json")
 LOG_PATH = os.path.join(BASE_DIR, "reports", "corpus_corrections_log_2026-10-20.json")
 TEXT_STATUSES = {"consistent_with_gazette", "restored_from_gazette", "differs_from_gazette_needs_review", "possibly_incomplete"}
 PUNISHMENT_STATUSES = {"consistent_with_gazette", "verified_against_gazette", "no_punishment_clause", "unknown", "unverified"}

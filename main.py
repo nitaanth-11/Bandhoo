@@ -81,7 +81,9 @@ def translate_synonyms(text: str):
 
 # ── Load the police stations dataset ──
 current_dir = os.path.dirname(os.path.abspath(__file__))
-json_path = os.path.join(current_dir, "police_stations_data.json")
+json_path = os.path.join(current_dir, "datasets", "police_stations_data.json")
+if not os.path.exists(json_path):
+    json_path = os.path.join(current_dir, "police_stations_data.json")
 
 if not os.path.exists(json_path):
     raise FileNotFoundError(f"Required station dataset not found at: {json_path}")

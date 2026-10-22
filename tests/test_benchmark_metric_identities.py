@@ -10,8 +10,8 @@ import pytest
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 FALLBACK_REPORT_PATH = os.path.join(BASE_DIR, "benchmark", "evaluation_report_fallback.json")
-LIVE_REPORT_PATH = os.path.join(BASE_DIR, "benchmark", "evaluation_report_live.json")
-BENCHMARK_PATH = os.path.join(BASE_DIR, "benchmark", "bns_synthetic_benchmark_50.json")
+_BENCH_CANDIDATE = os.path.join(BASE_DIR, "datasets", "bns_synthetic_benchmark_50.json")
+BENCHMARK_PATH = _BENCH_CANDIDATE if os.path.exists(_BENCH_CANDIDATE) else os.path.join(BASE_DIR, "benchmark", "bns_synthetic_benchmark_50.json")
 
 
 @pytest.fixture

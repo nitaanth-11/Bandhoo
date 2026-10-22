@@ -18,7 +18,9 @@ from complaint_engine.models import JurisdictionAssessment
 
 JURISDICTION_CONFIRMATION_MESSAGE = "Police jurisdiction requires confirmation."
 NEAR_BOUNDARY_METERS = 100.0
-DEFAULT_GEOJSON = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "mumbai_police_jurisdictions.geojson")
+REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+_GEOJSON_CANDIDATE = os.path.join(REPO_ROOT, "datasets", "mumbai_police_jurisdictions.geojson")
+DEFAULT_GEOJSON = _GEOJSON_CANDIDATE if os.path.exists(_GEOJSON_CANDIDATE) else os.path.join(REPO_ROOT, "mumbai_police_jurisdictions.geojson")
 
 
 def _point_in_ring(x: float, y: float, ring: List[List[float]]) -> bool:

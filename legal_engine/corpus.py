@@ -38,7 +38,15 @@ class BNSCorpus:
     def __init__(self, dataset_path: Optional[str] = None):
         if dataset_path is None:
             base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-            dataset_path = os.path.join(base_dir, "bns_rag_dataset.json")
+            for candidate in [
+                os.path.join(base_dir, "datasets", "bns_rag_dataset.json"),
+                os.path.join(base_dir, "bns_rag_dataset.json"),
+            ]:
+                if os.path.exists(candidate):
+                    dataset_path = candidate
+                    break
+            else:
+                dataset_path = os.path.join(base_dir, "datasets", "bns_rag_dataset.json")
 
         self.dataset_path = dataset_path
         self.sections_by_num: Dict[int, Dict[str, Any]] = {}
